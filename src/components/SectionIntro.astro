@@ -1,0 +1,100 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  href: string;
+}
+
+const { number, title, href } = Astro.props;
+---
+
+<a href={href} class="section-intro">
+  <div class="section-intro-head">
+    <span class="section-intro-num">{number}</span>
+    <h3>{title}</h3>
+  </div>
+  <div class="section-intro-body">
+    <slot />
+  </div>
+  <span class="section-intro-arrow" aria-hidden="true">&rarr;</span>
+</a>
+
+<style>
+  .section-intro {
+    display: grid;
+    grid-template-columns: 12rem 1fr auto;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding: var(--space-xl) 0;
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-text);
+    transition: color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .section-intro:last-child {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .section-intro:hover {
+    color: var(--color-text);
+  }
+
+  .section-intro:hover .section-intro-arrow {
+    color: var(--color-accent);
+    transform: translateX(4px);
+  }
+
+  .section-intro:hover h3 {
+    color: var(--color-accent);
+  }
+
+  .section-intro-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .section-intro-num {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .section-intro h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.2;
+    transition: color 0.2s ease;
+  }
+
+  .section-intro-body {
+    max-width: 32rem;
+  }
+
+  .section-intro-body :global(p) {
+    font-size: var(--text-base);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+
+  .section-intro-arrow {
+    font-size: var(--text-lg);
+    color: var(--color-text-dim);
+    transition: color 0.2s ease, transform 0.2s ease;
+    align-self: center;
+  }
+
+  @media (max-width: 768px) {
+    .section-intro {
+      grid-template-columns: 1fr auto;
+      gap: var(--space-sm);
+    }
+
+    .section-intro-body {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

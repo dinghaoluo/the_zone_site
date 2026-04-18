@@ -9,14 +9,14 @@ Each entry records the source, destination, and justification for the import.
 
 - **Source**: `L:/projects/the_zone/05_publication/fonts/MajorMonoDisplay-Regular.ttf`
 - **Destination**: `L:/projects/the_zone_site/public/fonts/MajorMonoDisplay-Regular.ttf`
-- **Supports**: homepage display typography, navigation branding, footer branding
+- **Supports**: site display typography and branding
 - **Why allowed**: publication-stage font asset stored under `05_publication/fonts/`; non-prose, release-safe asset
 
 ### Candidate: `JetBrainsMono-Regular.ttf`
 
 - **Source**: `L:/projects/the_zone/05_publication/fonts/JetBrainsMono-Regular.ttf`
 - **Destination**: `L:/projects/the_zone_site/public/fonts/JetBrainsMono-Regular.ttf`
-- **Supports**: mono labels, microtypography, structural annotations
+- **Supports**: mono labels, footnotes, and data annotations
 - **Why allowed**: publication-stage font asset stored under `05_publication/fonts/`; non-prose, release-safe asset
 
 ## Imports
@@ -25,18 +25,18 @@ Each entry records the source, destination, and justification for the import.
 
 - **Source**: `L:/projects/the_zone/05_publication/fonts/MajorMonoDisplay-Regular.ttf`
 - **Imported**: 2026-04-17
-- **Supports**: homepage hero wordmark and site branding
+- **Supports**: hero wordmark and site branding
 - **Justification**: approved publication asset copied as a local static font with no runtime dependency
 
 ### Imported: `JetBrainsMono-Regular.ttf`
 
 - **Source**: `L:/projects/the_zone/05_publication/fonts/JetBrainsMono-Regular.ttf`
 - **Imported**: 2026-04-17
-- **Supports**: structural labels, section eyebrows, and metric typography
+- **Supports**: section numbering, footnotes, and structural labels
 - **Justification**: approved publication asset copied as a local static font with no runtime dependency
 
 ## Boundary Notes
 
-- No data exports were copied for this homepage pass.
-- The structural preview uses manually encoded aggregate episode word-count values derived from inspection of `episode_metadata_public.csv`, not a copied dataset.
+- No new upstream assets were copied in this editorial refinement pass.
+- The compact sparkline still uses manually encoded episode word-count values derived earlier from inspection of `episode_metadata_public.csv`, not a copied dataset.
 - No quotations were copied or used.

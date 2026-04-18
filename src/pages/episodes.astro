@@ -5,47 +5,57 @@ import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
 ---
 
-<Layout title="Episodes" description="The seventy-three episodes of Gravity's Rainbow and their structural relationships.">
+<Layout title="Episodes" description="The seventy-three episodes of Gravity's Rainbow, treated as a formal sequence.">
   <Nav slot="nav" />
 
   <Section>
-    <p class="eyebrow">Episodes</p>
-    <h1>Seventy-three episodes.</h1>
-    <p class="page-lede">
-      The episodes of <em>Gravity's Rainbow</em> and their structural
-      relationships across the novel's four parts.
-    </p>
-    <p class="placeholder-note">Episode data and visualisations are being prepared.</p>
+    <div class="page-head reveal visible">
+      <p class="eyebrow">01</p>
+      <h1>The seventy-three episodes</h1>
+      <div class="page-lede">
+        <p>
+          <em>Gravity's Rainbow</em> divides into seventy-three episodes spread
+          unevenly across four named parts. They range from a few hundred words to
+          more than sixteen thousand, and their distribution is itself a structural
+          signal: Part&nbsp;I clusters around a median length, Part&nbsp;III proliferates
+          and varies wildly, and Part&nbsp;IV tapers toward a final long episode that
+          trails off mid-sentence.
+        </p>
+        <p>
+          This section treats each episode as a formal unit — measuring scale,
+          sequence position, and the structural rhythm of the novel's architecture.
+          Visualisations are being prepared.
+        </p>
+      </div>
+    </div>
   </Section>
 
   <Footer slot="footer" />
 </Layout>
 
 <style>
-  h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: var(--space-md);
-  }
-
   .eyebrow {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-accent);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
   }
 
-  .page-lede {
-    font-size: var(--text-lg);
-    line-height: 1.8;
-    color: var(--color-text-secondary);
-    max-width: 40rem;
+  h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     margin-bottom: var(--space-xl);
   }
 
-  .placeholder-note {
-    font-style: italic;
-    color: var(--color-text-dim);
+  .page-lede {
+    max-width: var(--max-width-narrow);
+  }
+
+  .page-lede p {
+    font-size: var(--text-base);
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
   }
 </style>

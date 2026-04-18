@@ -5,47 +5,56 @@ import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
 ---
 
-<Layout title="Network" description="The character network atlas of Gravity's Rainbow — who connects to whom and where.">
+<Layout title="Network" description="Mapping the social geometry of Gravity's Rainbow.">
   <Nav slot="nav" />
 
   <Section>
-    <p class="eyebrow">Network</p>
-    <h1>The character atlas.</h1>
-    <p class="page-lede">
-      Mapping connections, co-occurrences, and communities across the novel
-      from episode-level co-presence data.
-    </p>
-    <p class="placeholder-note">Network visualisation is being prepared from the F06 character atlas backbone.</p>
+    <div class="page-head reveal visible">
+      <p class="eyebrow">03</p>
+      <h1>Mapping the novel's social geometry</h1>
+      <div class="page-lede">
+        <p>
+          One hundred and thirty-eight named characters appear across the novel's
+          seventy-three episodes. Some recur persistently; others surface once and
+          vanish. The network page maps their co-presence — which characters share
+          episodes, how frequently, and in what structural positions — to make visible
+          the social architecture that the text builds and then dismantles.
+        </p>
+        <p>
+          The underlying data is drawn from the F06 character atlas, a public-safe
+          export of episode-level mention counts and co-occurrence tables. The full
+          interactive network visualisation is being prepared.
+        </p>
+      </div>
+    </div>
   </Section>
 
   <Footer slot="footer" />
 </Layout>
 
 <style>
-  h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: var(--space-md);
-  }
-
   .eyebrow {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-accent);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
   }
 
-  .page-lede {
-    font-size: var(--text-lg);
-    line-height: 1.8;
-    color: var(--color-text-secondary);
-    max-width: 40rem;
+  h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     margin-bottom: var(--space-xl);
   }
 
-  .placeholder-note {
-    font-style: italic;
-    color: var(--color-text-dim);
+  .page-lede {
+    max-width: var(--max-width-narrow);
+  }
+
+  .page-lede p {
+    font-size: var(--text-base);
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
   }
 </style>

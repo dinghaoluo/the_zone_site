@@ -5,47 +5,57 @@ import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
 ---
 
-<Layout title="Dissolution" description="Tracking the structural disintegration of Gravity's Rainbow across its four parts.">
+<Layout title="Dissolution" description="Tracking Slothrop's disappearance across Gravity's Rainbow.">
   <Nav slot="nav" />
 
   <Section>
-    <p class="eyebrow">Dissolution</p>
-    <h1>Slothrop dissolves.</h1>
-    <p class="page-lede">
-      Tracking the novel's structural disintegration — how episodes fragment,
-      shorten, and multiply as the narrative moves toward the Counterforce.
-    </p>
-    <p class="placeholder-note">Dissolution analysis and visualisations are being prepared.</p>
+    <div class="page-head reveal visible">
+      <p class="eyebrow">02</p>
+      <h1>Tracking Slothrop's disappearance</h1>
+      <div class="page-lede">
+        <p>
+          Tyrone Slothrop begins the novel as something like a protagonist. By
+          Part&nbsp;IV he has scattered into aliases, rumours, and absence. The
+          dissolution is not sudden — it accumulates across dozens of episodes as
+          canonical mentions thin, alias diversity rises, and the characters who
+          once orbited him disperse into their own plotlines.
+        </p>
+        <p>
+          This section tracks the dissolution quantitatively: mentions per episode,
+          alias share, co-character orbit density, and the lengthening runs of
+          episodes in which Slothrop does not appear at all. Visualisations are
+          being prepared.
+        </p>
+      </div>
+    </div>
   </Section>
 
   <Footer slot="footer" />
 </Layout>
 
 <style>
-  h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: var(--space-md);
-  }
-
   .eyebrow {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-accent);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
   }
 
-  .page-lede {
-    font-size: var(--text-lg);
-    line-height: 1.8;
-    color: var(--color-text-secondary);
-    max-width: 40rem;
+  h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
     margin-bottom: var(--space-xl);
   }
 
-  .placeholder-note {
-    font-style: italic;
-    color: var(--color-text-dim);
+  .page-lede {
+    max-width: var(--max-width-narrow);
+  }
+
+  .page-lede p {
+    font-size: var(--text-base);
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
   }
 </style>

@@ -4,110 +4,130 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
 import HeroCanvas from "../components/HeroCanvas.astro";
+import SectionIntro from "../components/SectionIntro.astro";
 import StructuralPreview from "../components/StructuralPreview.astro";
 
 const base = import.meta.env.BASE_URL;
-
-const sections = [
-  {
-    href: `${base}episodes/`,
-    title: "Episodes",
-    description:
-      "Seventy-three episodes, unevenly distributed across four parts, treated as a formal sequence rather than a mere table of contents.",
-  },
-  {
-    href: `${base}dissolution/`,
-    title: "Dissolution",
-    description:
-      "Measures of Slothrop's dispersal and attenuation, tracing how narrative centrality frays into aliases, absence, and orbit.",
-  },
-  {
-    href: `${base}network/`,
-    title: "Network",
-    description:
-      "A character atlas built from episode-level co-presence, mapping density, recurrence, and the novel's shifting social geometries.",
-  },
-  {
-    href: `${base}strands/`,
-    title: "Strands",
-    description:
-      "Narrative strands, motifs, and handoffs arranged as structural lines through the novel rather than as isolated themes.",
-  },
-];
 ---
 
-<Layout title="Home" description="A structural atlas of Gravity's Rainbow.">
+<Layout title="Home" description="A companion to Gravity's Rainbow: diagrams, networks, and dissolving structures.">
   <Nav slot="nav" />
 
   <section class="hero">
     <HeroCanvas />
     <div class="container hero-inner">
-      <div class="hero-copy reveal visible">
+      <div class="hero-copy">
         <p class="hero-kicker">Thomas Pynchon · 1973</p>
         <h1>The Zone</h1>
-        <p class="hero-subtitle">A structural atlas of <em>Gravity's Rainbow</em>.</p>
-        <p class="hero-intro">
-          An editorial platform for reading the novel through episodes, networks,
-          dissolution, and strand geometry — computationally grounded, visually
-          legible, and interpretively restrained.
+        <p class="hero-subtitle">
+          A companion to <em>Gravity's Rainbow</em>: episodes, character networks,
+          and dissolving structures, traced through careful computation and reading.
         </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href={`${base}network/`}>Explore the Network</a>
-          <a class="button button-secondary" href={`${base}episodes/`}>View the Episodes</a>
-        </div>
+        <p class="hero-links">
+          <a href={`${base}network/`}>Begin with the network <span aria-hidden="true">&rarr;</span></a>
+          <span class="hero-or">or</span>
+          <a href={`${base}episodes/`}>start from the episodes</a>
+        </p>
       </div>
     </div>
   </section>
 
-  <Section id="overview">
-    <div class="section-heading">
-      <p class="eyebrow">Structure</p>
-      <h2>Four ways into the book.</h2>
-      <p>
-        The site is organised around four complementary views of the novel's form,
-        each designed to make a different structural pressure visible.
-      </p>
+  <Section id="contents">
+    <div class="section-label reveal">
+      <p class="eyebrow">Contents</p>
     </div>
 
-    <div class="card-grid">
-      {sections.map((item) => (
-        <a href={item.href} class="structure-card">
-          <div class="structure-card-top">
-            <span class="structure-index">0{sections.indexOf(item) + 1}</span>
-            <h3>{item.title}</h3>
-          </div>
-          <p>{item.description}</p>
-          <span class="structure-link">Enter section</span>
-        </a>
-      ))}
+    <div class="reveal">
+      <SectionIntro number="01" title="Episodes" href={`${base}episodes/`}>
+        <p>
+          Pynchon's novel divides into seventy-three episodes spread unevenly across
+          four parts. The shortest runs to a few hundred words; the longest, episode
+          3.11, sprawls past sixteen thousand. This section treats the episode as a
+          formal unit — measuring scale, sequence, and the structural rhythm of the
+          novel's four-part architecture.<sup class="fnref"><a href="#notes">1</a></sup>
+        </p>
+      </SectionIntro>
+    </div>
+
+    <div class="reveal">
+      <SectionIntro number="02" title="Dissolution" href={`${base}dissolution/`}>
+        <p>
+          Tyrone Slothrop, the closest thing the novel has to a protagonist, gradually
+          disperses. His name fractures into aliases, his presence thins, and other
+          characters fill the space he leaves behind. The dissolution page traces
+          these metrics episode by episode: canonical mentions, alias diversity,
+          orbit density, and the lengthening runs of absence.
+        </p>
+      </SectionIntro>
+    </div>
+
+    <div class="reveal">
+      <SectionIntro number="03" title="Network" href={`${base}network/`}>
+        <p>
+          One hundred and thirty-eight named characters appear across the seventy-three
+          episodes. This section maps their co-presence — who appears alongside whom,
+          how often, and in which structural positions — to reveal the shifting social
+          geometry of the novel, from the dense clusters of Part&nbsp;I to the scattered
+          constellations of Part&nbsp;IV.
+        </p>
+      </SectionIntro>
+    </div>
+
+    <div class="reveal">
+      <SectionIntro number="04" title="Strands" href={`${base}strands/`}>
+        <p>
+          Beyond characters and episodes, the novel organises itself along narrative
+          strands — recurring plotlines, thematic threads, and motif systems that weave
+          through the text. This section is still being consolidated; it will present
+          strand geometry, handoff points, and motif intensity once the underlying
+          data contracts are finalised.
+        </p>
+      </SectionIntro>
     </div>
   </Section>
 
-  <Section id="preview">
-    <div class="preview-layout">
-      <div class="section-heading preview-copy">
-        <p class="eyebrow">Preview</p>
-        <h2>A first structural view.</h2>
-        <p>
-          Before the full network and episode interfaces arrive, the homepage stages
-          the novel as a measurable shape: seventy-three episodes, unevenly clustered,
-          with Part III expanding into the book's largest field of variation.
-        </p>
-      </div>
+  <Section id="data" narrow={true}>
+    <div class="data-aside reveal">
+      <p class="eyebrow">In the data</p>
+      <p class="data-note">
+        73 episodes, four parts, ~333,000 words. The sparkline below shows each
+        episode's word count left to right, grouped by part. Notice Part&nbsp;III's
+        expansion — thirty-two episodes, the widest field of structural variation
+        in the novel.
+      </p>
       <StructuralPreview />
     </div>
   </Section>
 
   <Section id="method" narrow={true}>
-    <div class="method-block">
-      <p class="eyebrow">Method</p>
+    <div class="method-block reveal">
+      <p class="eyebrow">On method</p>
       <h2>Computational reading, kept answerable to form.</h2>
       <p>
-        The Zone combines structured textual analysis with editorial interpretation.
-        It uses public-safe exports from a larger research pipeline to build visual
-        models of episode scale, character presence, and narrative organisation,
-        then returns those abstractions to the level of reading.
+        The Zone is built from structured computational analysis of the text, combined
+        with close editorial reading. Character networks are derived from episode-level
+        co-presence counts; dissolution metrics track Slothrop's name, aliases, and
+        co-character density; strand geometry maps plotline continuity and motif
+        recurrence. All visualisations draw on public-safe exports from a larger
+        research pipeline,<sup class="fnref"><a href="#notes">2</a></sup> and the
+        interpretive layer is kept deliberately restrained — the aim is legibility,
+        not argument.
       </p>
+    </div>
+  </Section>
+
+  <Section id="notes" narrow={true}>
+    <div class="notes-block reveal">
+      <p class="eyebrow">Notes</p>
+      <ol class="notes-list">
+        <li>Episode boundaries follow the conventional section breaks marked by the
+          square-bracket numbering in most editions. Word counts are derived from a
+          normalised plain-text transcription.</li>
+        <li>The research pipeline and its full analytical outputs remain in a private
+          repository. Only explicitly public-safe, stripped exports are used on this
+          site. See <a href="https://github.com/dinghaoluo/the_zone_site">the source
+          repository</a> for the provenance log.</li>
+      </ol>
     </div>
   </Section>
 
@@ -117,263 +137,126 @@ const sections = [
 <style>
   .hero {
     position: relative;
-    min-height: calc(100vh - 3.5rem);
-    display: flex;
-    align-items: center;
+    padding: var(--space-3xl) 0;
     overflow: hidden;
-    border-bottom: 1px solid var(--color-border-subtle);
-    background:
-      radial-gradient(circle at 20% 20%, rgba(196, 163, 90, 0.08), transparent 40%),
-      linear-gradient(180deg, rgba(11, 11, 15, 0.92), rgba(11, 11, 15, 1));
-  }
-
-  .hero::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 4rem 4rem;
-    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.5), transparent 85%);
-    pointer-events: none;
   }
 
   .hero-inner {
     position: relative;
     z-index: 1;
-    width: 100%;
-    padding-top: var(--space-3xl);
-    padding-bottom: var(--space-3xl);
   }
 
   .hero-copy {
-    max-width: 44rem;
+    max-width: var(--max-width-narrow);
   }
 
   .hero-kicker {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-dim);
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-xl);
   }
 
   .hero h1 {
     font-family: var(--font-display);
-    font-size: clamp(2.75rem, 8vw, 6rem);
-    line-height: 0.98;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
     color: var(--color-text);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
   }
 
   .hero-subtitle {
     font-family: var(--font-heading);
-    font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.6;
     color: var(--color-text-secondary);
-    max-width: 32rem;
-    margin-bottom: var(--space-lg);
-  }
-
-  .hero-intro {
-    font-size: var(--text-lg);
-    line-height: 1.8;
-    color: var(--color-text-secondary);
-    max-width: 38rem;
+    max-width: 34rem;
     margin-bottom: var(--space-xl);
   }
 
-  .hero-actions {
-    display: flex;
-    gap: var(--space-md);
-    flex-wrap: wrap;
+  .hero-links {
+    font-size: var(--text-base);
+    line-height: 1.8;
   }
 
-  .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.875rem;
-    padding: 0 1.25rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
-    font-size: var(--text-sm);
-    letter-spacing: 0.02em;
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease,
-      background-color 0.2s ease,
-      color 0.2s ease;
-  }
-
-  .button:hover {
-    text-decoration: none;
-    transform: translateY(-1px);
-  }
-
-  .button-primary {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: #121212;
-  }
-
-  .button-primary:hover {
-    background: var(--color-accent-hover);
-    border-color: var(--color-accent-hover);
-    color: #121212;
-  }
-
-  .button-secondary {
-    color: var(--color-text);
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .button-secondary:hover {
-    border-color: var(--color-accent-dim);
+  .hero-links a {
     color: var(--color-accent);
   }
 
-  .section-heading {
-    max-width: 40rem;
-    margin-bottom: var(--space-xl);
+  .hero-or {
+    color: var(--color-text-dim);
+    margin: 0 0.3em;
+  }
+
+  .section-label {
+    margin-bottom: var(--space-sm);
   }
 
   .eyebrow {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-accent);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: var(--space-md);
   }
 
-  .section-heading h2,
+  .data-aside {
+    padding: var(--space-xl) 0;
+    border-top: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .data-note {
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    margin: var(--space-md) 0 var(--space-lg);
+    max-width: 36rem;
+  }
+
   .method-block h2 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: var(--space-md);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin: var(--space-lg) 0 var(--space-md);
   }
 
-  .section-heading p,
   .method-block p:last-child {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     line-height: 1.85;
     color: var(--color-text-secondary);
   }
 
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-md);
-  }
-
-  .structure-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 18rem;
-    padding: 1.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 65%),
-      var(--color-surface);
-    transition:
-      transform 0.25s ease,
-      border-color 0.25s ease,
-      background-color 0.25s ease,
-      box-shadow 0.25s ease;
-    color: var(--color-text);
-  }
-
-  .structure-card:hover {
-    text-decoration: none;
-    transform: translateY(-4px);
-    border-color: rgba(196, 163, 90, 0.45);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
-  }
-
-  .structure-card-top {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-  }
-
-  .structure-index {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-dim);
-    letter-spacing: 0.12em;
-  }
-
-  .structure-card h3 {
-    font-size: var(--text-2xl);
-  }
-
-  .structure-card p {
-    font-size: var(--text-base);
-    line-height: 1.75;
-    color: var(--color-text-secondary);
-    margin: var(--space-lg) 0;
-  }
-
-  .structure-link {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-accent);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .preview-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
-    gap: var(--space-xl);
-    align-items: start;
-  }
-
-  .preview-copy {
-    margin-bottom: 0;
+  .notes-block {
     padding-top: var(--space-md);
   }
 
-  .method-block {
-    text-align: left;
+  .notes-list {
+    margin-top: var(--space-lg);
+    padding-left: 1.5em;
+    list-style: decimal;
   }
 
-  @media (max-width: 980px) {
-    .card-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .notes-list li {
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-md);
+  }
 
-    .preview-layout {
-      grid-template-columns: 1fr;
-    }
+  .notes-list li a {
+    color: var(--color-accent-dim);
+  }
+
+  .notes-list li a:hover {
+    color: var(--color-accent);
   }
 
   @media (max-width: 640px) {
     .hero {
-      min-height: auto;
-    }
-
-    .hero-inner {
-      padding-top: 5rem;
-      padding-bottom: 5rem;
-    }
-
-    .hero-intro,
-    .section-heading p,
-    .method-block p:last-child {
-      font-size: var(--text-base);
-    }
-
-    .card-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .structure-card {
-      min-height: auto;
+      padding: var(--space-2xl) 0;
     }
   }
 </style>
