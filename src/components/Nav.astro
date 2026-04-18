@@ -1,0 +1,80 @@
+---
+const base = import.meta.env.BASE_URL;
+const pathname = Astro.url.pathname;
+
+const links = [
+  { href: `${base}`, label: "Home" },
+  { href: `${base}episodes/`, label: "Episodes" },
+  { href: `${base}dissolution/`, label: "Dissolution" },
+  { href: `${base}network/`, label: "Network" },
+  { href: `${base}strands/`, label: "Strands" },
+];
+
+function isActive(href: string): boolean {
+  if (href === base) return pathname === base || pathname === base.replace(/\/$/, "");
+  return pathname.startsWith(href);
+}
+---
+
+<nav class="nav">
+  <div class="nav-inner container">
+    <a class="nav-brand" href={base}>The Zone</a>
+    <ul class="nav-links">
+      {links.map(({ href, label }) => (
+        <li>
+          <a href={href} class:list={[{ active: isActive(href) }]}>{label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+  }
+
+  .nav-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  .nav-brand:hover {
+    text-decoration: none;
+    color: var(--color-accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+</style>

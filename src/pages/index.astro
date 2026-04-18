@@ -1,0 +1,99 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+---
+
+<Layout title="Home">
+  <Nav slot="nav" />
+
+  <section class="hero">
+    <h1>The Zone</h1>
+    <p class="subtitle">
+      A companion site for visualising the structure, networks, and dissolution
+      patterns of Thomas Pynchon's <em>Gravity's Rainbow</em> (1973).
+    </p>
+  </section>
+
+  <section class="overview">
+    <div class="card-grid">
+      <a href={`${import.meta.env.BASE_URL}episodes/`} class="card">
+        <h2>Episodes</h2>
+        <p>The seventy-three episodes and their structural relationships.</p>
+      </a>
+      <a href={`${import.meta.env.BASE_URL}dissolution/`} class="card">
+        <h2>Dissolution</h2>
+        <p>Tracking the novel's disintegration across its four parts.</p>
+      </a>
+      <a href={`${import.meta.env.BASE_URL}network/`} class="card">
+        <h2>Network</h2>
+        <p>The character network atlas — who connects to whom and where.</p>
+      </a>
+      <a href={`${import.meta.env.BASE_URL}strands/`} class="card">
+        <h2>Strands</h2>
+        <p>Thematic and narrative strands woven through the text.</p>
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding: 6rem 0 3rem;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--color-text), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    margin-top: 1rem;
+    font-size: 1.15rem;
+    color: var(--color-text-dim);
+    max-width: 36rem;
+    margin-inline: auto;
+    line-height: 1.7;
+  }
+
+  .overview {
+    padding: 3rem 0 6rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-surface);
+    transition: border-color 0.2s, transform 0.2s;
+    color: var(--color-text);
+  }
+
+  .card:hover {
+    border-color: var(--color-accent-dim);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    color: var(--color-text-dim);
+    line-height: 1.5;
+  }
+</style>
