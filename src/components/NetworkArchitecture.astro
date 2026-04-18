@@ -40,26 +40,26 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     <div class="arch-panel">
       <div class="panel-head">
         <span class="panel-letter">a</span>
-        <span class="panel-title">Narrative zones</span>
-        <span class="panel-subtitle">five communities by size</span>
+        <span class="panel-label">Narrative zones</span>
+        <span class="panel-sub">five communities by size</span>
       </div>
       <div id="community-list" class="community-list"></div>
     </div>
     <div class="arch-panel">
       <div class="panel-head">
         <span class="panel-letter">b</span>
-        <span class="panel-title">Connective labour</span>
-        <span class="panel-subtitle">betweenness centrality, top ten</span>
+        <span class="panel-label">Connective labour</span>
+        <span class="panel-sub">betweenness centrality, top ten</span>
       </div>
-      <div id="centrality-list" class="bar-list"></div>
+      <div id="centrality-list" class="stat-list"></div>
     </div>
     <div class="arch-panel">
       <div class="panel-head">
         <span class="panel-letter">c</span>
-        <span class="panel-title">Resilient bonds</span>
-        <span class="panel-subtitle">strongest non-protagonist dyads</span>
+        <span class="panel-label">Resilient bonds</span>
+        <span class="panel-sub">strongest non-protagonist dyads</span>
       </div>
-      <div id="dyads-list" class="bar-list"></div>
+      <div id="dyads-list" class="stat-list"></div>
     </div>
   </div>
 </div>
@@ -180,17 +180,13 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
 </script>
 
 <style>
-  .plate {
-    max-width: 56rem;
-  }
-
   .plate-head {
     margin-bottom: var(--space-lg);
   }
 
   .plate-num {
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-size: 0.8125rem;
     color: var(--color-accent);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -198,23 +194,24 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
 
   .plate-title {
     font-family: var(--font-heading);
-    font-size: var(--text-lg);
+    font-size: 1.35rem;
     font-weight: 400;
     font-style: italic;
     color: var(--color-text);
-    margin-top: 0.15rem;
+    margin-top: 0.2rem;
   }
 
+  /* --- Grid --- */
   .arch-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-xl);
   }
 
-  @media (min-width: 52rem) {
+  @media (min-width: 64rem) {
     .arch-grid {
       grid-template-columns: 1fr 1fr 1fr;
-      gap: var(--space-lg);
+      gap: var(--space-xl);
     }
   }
 
@@ -226,45 +223,44 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.4rem;
+    gap: 0.5rem;
     margin-bottom: var(--space-md);
-    padding-bottom: var(--space-xs);
+    padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--color-border);
   }
 
   .panel-letter {
     font-family: var(--font-heading);
-    font-size: var(--text-sm);
+    font-size: 1.125rem;
     font-style: italic;
     color: var(--color-accent);
   }
 
-  .panel-title {
+  .panel-label {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.875rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-text);
   }
 
-  .panel-subtitle {
+  .panel-sub {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     color: var(--color-text-dim);
     flex-basis: 100%;
   }
 
-  /* --- Community list --- */
+  /* --- Community entries --- */
   .community-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
   }
 
   .community-entry {
     display: flex;
-    gap: 0.6rem;
-    padding: 0.45rem 0;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
     border-bottom: 1px solid var(--color-border-subtle);
     cursor: pointer;
     transition: background 0.15s;
@@ -293,69 +289,68 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
   .community-entry :global(.c-head) {
     display: flex;
     align-items: baseline;
-    gap: 0.35rem;
+    gap: 0.4rem;
   }
 
   .community-entry :global(.c-num) {
     font-family: var(--font-heading);
-    font-size: var(--text-xs);
+    font-size: 0.875rem;
     font-style: italic;
     color: var(--color-text-dim);
-    min-width: 1rem;
+    min-width: 1.3rem;
   }
 
   .community-entry :global(.c-label) {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.8125rem;
     color: var(--color-text-secondary);
     flex: 1;
   }
 
   .community-entry :global(.c-count) {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.8125rem;
     color: var(--color-text-dim);
   }
 
   .community-entry :global(.c-anchors) {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     color: var(--color-text-dim);
-    margin-top: 0.1rem;
-    padding-left: 1.35rem;
+    margin-top: 0.15rem;
+    padding-left: 1.7rem;
   }
 
-  /* --- Bar rows (centrality) --- */
-  .bar-list {
+  /* --- Bar/stat rows --- */
+  .stat-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
   }
 
-  .bar-list :global(.bar-row) {
+  .stat-list :global(.bar-row) {
     display: grid;
-    grid-template-columns: 3px 4.5rem 1fr;
-    gap: 0.45rem;
+    grid-template-columns: 3px 5.5rem 1fr;
+    gap: 0.5rem;
     align-items: center;
-    padding: 0.3rem 0;
+    padding: 0.4rem 0;
     border-bottom: 1px solid var(--color-border-subtle);
   }
 
-  .bar-list :global(.bar-row:last-child) {
+  .stat-list :global(.bar-row:last-child) {
     border-bottom: none;
   }
 
-  .bar-list :global(.bar-mark) {
+  .stat-list :global(.bar-mark) {
     width: 3px;
     height: 100%;
-    min-height: 1rem;
+    min-height: 1.2rem;
     border-radius: 1px;
     align-self: stretch;
   }
 
-  .bar-list :global(.bar-name) {
+  .stat-list :global(.bar-name) {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.8125rem;
     color: var(--color-text-secondary);
     text-align: right;
     white-space: nowrap;
@@ -363,49 +358,47 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     text-overflow: ellipsis;
   }
 
-  .bar-list :global(.bar-track) {
-    height: 3px;
+  .stat-list :global(.bar-track) {
+    height: 5px;
     background: var(--color-border-subtle);
     border-radius: 1px;
-    position: relative;
   }
 
-  .bar-list :global(.bar-fill) {
+  .stat-list :global(.bar-fill) {
     display: block;
     height: 100%;
     background: var(--color-text-dim);
     border-radius: 1px;
   }
 
-  .bar-list :global(.bar-note) {
+  .stat-list :global(.bar-note) {
     grid-column: 2 / -1;
     font-family: var(--font-heading);
-    font-size: 0.6rem;
+    font-size: 0.8125rem;
     font-style: italic;
     color: var(--color-text-dim);
-    padding-left: 0;
     text-align: right;
     line-height: 1;
-    min-height: 0.7rem;
+    min-height: 0.9rem;
   }
 
   /* --- Dyad rows --- */
-  .bar-list :global(.dyad-row) {
+  .stat-list :global(.dyad-row) {
     display: grid;
-    grid-template-columns: 7rem 1fr 2.5rem;
-    gap: 0.45rem;
+    grid-template-columns: 9rem 1fr 3rem;
+    gap: 0.5rem;
     align-items: center;
-    padding: 0.3rem 0;
+    padding: 0.4rem 0;
     border-bottom: 1px solid var(--color-border-subtle);
   }
 
-  .bar-list :global(.dyad-row:last-child) {
+  .stat-list :global(.dyad-row:last-child) {
     border-bottom: none;
   }
 
-  .bar-list :global(.dyad-pair) {
+  .stat-list :global(.dyad-pair) {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     color: var(--color-text-secondary);
     text-align: right;
     white-space: nowrap;
@@ -413,21 +406,21 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     text-overflow: ellipsis;
   }
 
-  .bar-list :global(.dyad-track) {
-    height: 3px;
+  .stat-list :global(.dyad-track) {
+    height: 5px;
     background: var(--color-border-subtle);
     border-radius: 1px;
   }
 
-  .bar-list :global(.dyad-fill) {
+  .stat-list :global(.dyad-fill) {
     display: block;
     height: 100%;
     border-radius: 1px;
   }
 
-  .bar-list :global(.dyad-eps) {
+  .stat-list :global(.dyad-eps) {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     color: var(--color-text-dim);
     text-align: right;
   }

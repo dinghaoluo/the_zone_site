@@ -33,19 +33,21 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
   </Section>
 
-  <Section>
-    <div class="figure-block reveal visible">
+  <section class="plate-break reveal visible">
+    <div class="plate-container">
       <figure class="network-figure">
         <NetworkAtlas />
-        <figcaption>
-          Each node is a named character; edges connect characters who share at
-          least one episode. Node size reflects weighted degree. Colour marks
-          community assignment. Use the controls above to isolate Slothrop's
-          bridge role, explore individual communities, or view the full network.
-        </figcaption>
       </figure>
     </div>
-  </Section>
+    <div class="container">
+      <figcaption class="plate-caption">
+        Each node is a named character; edges connect characters who share at
+        least one episode. Node size reflects weighted degree. Colour marks
+        community assignment. Use the view controls to isolate Slothrop's
+        bridge role, explore individual communities, or view the full network.
+      </figcaption>
+    </div>
+  </section>
 
   <Section narrow={true}>
     <div class="prose-block reveal visible">
@@ -68,20 +70,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
   </Section>
 
-  <Section>
-    <div class="figure-block reveal visible">
+  <section class="plate-break reveal visible">
+    <div class="plate-container">
       <figure class="network-figure">
         <NetworkArchitecture />
-        <figcaption>
-          Three views of the co-presence network's structural properties.
-          The figure argues that the novel's social geometry is distributed rather
-          than hub-and-spoke: while Slothrop is the highest-degree node, the
-          network retains coherence if he is removed, held together by secondary
-          bridge characters across communities.
-        </figcaption>
       </figure>
     </div>
-  </Section>
+    <div class="container">
+      <figcaption class="plate-caption">
+        Three views of the co-presence network's structural properties.
+        The figure argues that the novel's social geometry is distributed rather
+        than hub-and-spoke: while Slothrop is the highest-degree node, the
+        network retains coherence if he is removed, held together by secondary
+        bridge characters across communities.
+      </figcaption>
+    </div>
+  </section>
 
   <Section narrow={true}>
     <div class="notes-block reveal visible">
@@ -135,22 +139,30 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     margin-bottom: var(--space-md);
   }
 
-  .figure-block {
-    max-width: var(--max-width);
+  /* --- Plate breakout --- */
+  .plate-break {
+    padding: var(--space-2xl) 0;
+  }
+
+  .plate-container {
+    max-width: min(92vw, 70rem);
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
   }
 
   .network-figure {
     margin: 0;
   }
 
-  figcaption {
-    margin-top: var(--space-md);
-    font-size: var(--text-sm);
+  .plate-caption {
+    margin-top: var(--space-lg);
+    font-size: 0.9375rem;
     line-height: 1.75;
     color: var(--color-text-dim);
     max-width: var(--max-width-narrow);
   }
 
+  /* --- Prose --- */
   .prose-block p {
     font-size: var(--text-base);
     line-height: 1.85;
@@ -159,6 +171,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     max-width: var(--max-width-narrow);
   }
 
+  /* --- Notes --- */
   .notes-block {
     padding-top: var(--space-md);
   }
