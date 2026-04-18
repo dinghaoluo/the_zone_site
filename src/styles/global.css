@@ -1,14 +1,69 @@
+@font-face {
+  font-family: "Major Mono Display";
+  src: url("/the_zone_site/fonts/MajorMonoDisplay-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/the_zone_site/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --color-bg: #0a0a0f;
-  --color-surface: #12121a;
-  --color-border: #1e1e2e;
-  --color-text: #c8c8d0;
-  --color-text-dim: #6e6e7a;
-  --color-accent: #7b8cde;
-  --color-accent-dim: #4a5580;
+  /* palette */
+  --color-bg: #0b0b0f;
+  --color-surface: #131318;
+  --color-surface-raised: #1a1a22;
+  --color-border: #24242e;
+  --color-border-subtle: #1c1c26;
+
+  --color-text: #d4d2c8;
+  --color-text-secondary: #918f83;
+  --color-text-dim: #5c5a50;
+
+  --color-accent: #c4a35a;
+  --color-accent-hover: #d4b36a;
+  --color-accent-dim: #8a7340;
+
+  /* part colours — muted, structural */
+  --color-part-1: #6b8caa;
+  --color-part-2: #8a7ba5;
+  --color-part-3: #7da07d;
+  --color-part-4: #b07070;
+
+  /* typography */
+  --font-display: "Major Mono Display", monospace;
+  --font-heading: "Cormorant Garamond", "Georgia", serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
-  --max-width: 72rem;
+
+  /* type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+
+  /* spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --space-3xl: 8rem;
+
+  /* layout */
+  --max-width: 68rem;
+  --max-width-narrow: 42rem;
 }
 
 *,
@@ -28,50 +83,55 @@ body {
   font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.6;
+  line-height: 1.65;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: var(--color-accent);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--color-accent-hover);
 }
 
 h1, h2, h3, h4 {
+  font-family: var(--font-heading);
   line-height: 1.2;
   font-weight: 600;
+  color: var(--color-text);
 }
 
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--space-lg);
 }
 
-.page-header {
-  padding: 4rem 0 2rem;
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: 2rem;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
-.page-header h1 {
-  font-size: 2rem;
-  letter-spacing: -0.02em;
+/* scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-.page-header p {
-  color: var(--color-text-dim);
-  margin-top: 0.5rem;
-  max-width: 40rem;
-}
-
-.placeholder {
-  padding: 3rem 0;
-  color: var(--color-text-dim);
-  font-style: italic;
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

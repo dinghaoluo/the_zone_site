@@ -1,0 +1,72 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+
+<footer class="footer">
+  <div class="footer-inner container">
+    <div class="footer-left">
+      <span class="footer-brand">The Zone</span>
+      <span class="footer-sep">·</span>
+      <span class="footer-note">A structural atlas of <em>Gravity's Rainbow</em></span>
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/dinghaoluo/the_zone_site" target="_blank" rel="noopener noreferrer">Source</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--color-border-subtle);
+    padding: var(--space-xl) 0;
+    margin-top: var(--space-3xl);
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--text-sm);
+    color: var(--color-text-dim);
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
+    color: var(--color-text-secondary);
+  }
+
+  .footer-sep {
+    color: var(--color-border);
+  }
+
+  .footer-note {
+    color: var(--color-text-dim);
+  }
+
+  .footer-right a {
+    color: var(--color-text-dim);
+    font-size: var(--text-sm);
+    transition: color 0.2s ease;
+  }
+
+  .footer-right a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 640px) {
+    .footer-inner {
+      flex-direction: column;
+      gap: var(--space-md);
+      text-align: center;
+    }
+  }
+</style>

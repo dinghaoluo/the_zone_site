@@ -1,17 +1,54 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Section from "../components/Section.astro";
 ---
 
-<Layout title="Strands" description="Thematic and narrative strands woven through Gravity's Rainbow.">
+<Layout title="Strands" description="Narrative strands, motifs, and handoffs across Gravity's Rainbow.">
   <Nav slot="nav" />
 
-  <header class="page-header">
-    <h1>Strands</h1>
-    <p>Thematic and narrative strands — motifs, titles, and recurring patterns woven through the text.</p>
-  </header>
+  <Section>
+    <p class="eyebrow">Strands</p>
+    <h1>Narrative geometry.</h1>
+    <p class="page-lede">
+      Strands, motifs, and handoffs arranged as structural lines through the
+      novel rather than as isolated themes.
+    </p>
+    <p class="placeholder-note">
+      Strand data is being consolidated. This section will be populated once
+      the public-safe export contract for strand and motif analysis is finalised.
+    </p>
+  </Section>
 
-  <div class="placeholder">
-    <p>Strand data is being consolidated. This section will be populated once the public-safe export contract for strand and motif analysis is finalised.</p>
-  </div>
+  <Footer slot="footer" />
 </Layout>
+
+<style>
+  h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .page-lede {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    max-width: 40rem;
+    margin-bottom: var(--space-xl);
+  }
+
+  .placeholder-note {
+    font-style: italic;
+    color: var(--color-text-dim);
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+interface Props {
+  id?: string;
+  narrow?: boolean;
+}
+
+const { id, narrow = false } = Astro.props;
+---
+
+<section id={id} class:list={["section", "reveal", { narrow }]}>
+  <div class="container">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: var(--space-3xl) 0;
+  }
+
+  .section + .section {
+    padding-top: 0;
+  }
+
+  .narrow :global(.container) {
+    max-width: var(--max-width-narrow);
+  }
+</style>

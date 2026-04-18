@@ -1,0 +1,260 @@
+---
+const episodes = [
+  { id: "1.01", part: 1, words: 2078 },
+  { id: "1.02", part: 1, words: 4004 },
+  { id: "1.03", part: 1, words: 1322 },
+  { id: "1.04", part: 1, words: 4164 },
+  { id: "1.05", part: 1, words: 3365 },
+  { id: "1.06", part: 1, words: 2095 },
+  { id: "1.07", part: 1, words: 2401 },
+  { id: "1.08", part: 1, words: 2508 },
+  { id: "1.09", part: 1, words: 3178 },
+  { id: "1.10", part: 1, words: 4564 },
+  { id: "1.11", part: 1, words: 624 },
+  { id: "1.12", part: 1, words: 4828 },
+  { id: "1.13", part: 1, words: 4054 },
+  { id: "1.14", part: 1, words: 10113 },
+  { id: "1.15", part: 1, words: 2836 },
+  { id: "1.16", part: 1, words: 7530 },
+  { id: "1.17", part: 1, words: 3987 },
+  { id: "1.18", part: 1, words: 4335 },
+  { id: "1.19", part: 1, words: 6311 },
+  { id: "1.20", part: 1, words: 2898 },
+  { id: "1.21", part: 1, words: 1565 },
+  { id: "2.01", part: 2, words: 3542 },
+  { id: "2.02", part: 2, words: 7003 },
+  { id: "2.03", part: 2, words: 9223 },
+  { id: "2.04", part: 2, words: 4623 },
+  { id: "2.05", part: 2, words: 3261 },
+  { id: "2.06", part: 2, words: 2004 },
+  { id: "2.07", part: 2, words: 9018 },
+  { id: "2.08", part: 2, words: 3966 },
+  { id: "3.01", part: 3, words: 5718 },
+  { id: "3.02", part: 3, words: 8354 },
+  { id: "3.03", part: 3, words: 6749 },
+  { id: "3.04", part: 3, words: 3129 },
+  { id: "3.05", part: 3, words: 10251 },
+  { id: "3.06", part: 3, words: 5199 },
+  { id: "3.07", part: 3, words: 5178 },
+  { id: "3.08", part: 3, words: 2992 },
+  { id: "3.09", part: 3, words: 861 },
+  { id: "3.10", part: 3, words: 2414 },
+  { id: "3.11", part: 3, words: 16777 },
+  { id: "3.12", part: 3, words: 6657 },
+  { id: "3.13", part: 3, words: 3893 },
+  { id: "3.14", part: 3, words: 5067 },
+  { id: "3.15", part: 3, words: 2147 },
+  { id: "3.16", part: 3, words: 3996 },
+  { id: "3.17", part: 3, words: 3018 },
+  { id: "3.18", part: 3, words: 1559 },
+  { id: "3.19", part: 3, words: 5772 },
+  { id: "3.20", part: 3, words: 5575 },
+  { id: "3.21", part: 3, words: 1482 },
+  { id: "3.22", part: 3, words: 6260 },
+  { id: "3.23", part: 3, words: 724 },
+  { id: "3.24", part: 3, words: 4859 },
+  { id: "3.25", part: 3, words: 3818 },
+  { id: "3.26", part: 3, words: 2660 },
+  { id: "3.27", part: 3, words: 1449 },
+  { id: "3.28", part: 3, words: 4464 },
+  { id: "3.29", part: 3, words: 1549 },
+  { id: "3.30", part: 3, words: 4884 },
+  { id: "3.31", part: 3, words: 8140 },
+  { id: "3.32", part: 3, words: 2947 },
+  { id: "4.01", part: 4, words: 3391 },
+  { id: "4.02", part: 4, words: 6077 },
+  { id: "4.03", part: 4, words: 7076 },
+  { id: "4.04", part: 4, words: 3341 },
+  { id: "4.05", part: 4, words: 4811 },
+  { id: "4.06", part: 4, words: 11649 },
+  { id: "4.07", part: 4, words: 2358 },
+  { id: "4.08", part: 4, words: 4936 },
+  { id: "4.09", part: 4, words: 3372 },
+  { id: "4.10", part: 4, words: 4084 },
+  { id: "4.11", part: 4, words: 780 },
+  { id: "4.12", part: 4, words: 11552 },
+];
+
+const partNames = [
+  "", // 0-indexed padding
+  "Beyond the Zero",
+  "Un Perm' au Casino Hermann Goering",
+  "In the Zone",
+  "The Counterforce",
+];
+
+const maxWords = Math.max(...episodes.map((e) => e.words));
+
+const partColors: Record<number, string> = {
+  1: "var(--color-part-1)",
+  2: "var(--color-part-2)",
+  3: "var(--color-part-3)",
+  4: "var(--color-part-4)",
+};
+
+const BAR_WIDTH = 8;
+const BAR_GAP = 3;
+const PART_GAP = 16;
+const MAX_HEIGHT = 160;
+
+let x = 0;
+type BarData = { x: number; height: number; color: string; id: string; words: number; part: number };
+const bars: BarData[] = [];
+let lastPart = 0;
+
+for (const ep of episodes) {
+  if (ep.part !== lastPart && lastPart !== 0) x += PART_GAP;
+  const height = (ep.words / maxWords) * MAX_HEIGHT;
+  bars.push({ x, height, color: partColors[ep.part], id: ep.id, words: ep.words, part: ep.part });
+  x += BAR_WIDTH + BAR_GAP;
+  lastPart = ep.part;
+}
+
+const totalWidth = x - BAR_GAP;
+const SVG_HEIGHT = MAX_HEIGHT + 40;
+
+const partGroups = [1, 2, 3, 4].map((p) => {
+  const partBars = bars.filter((b) => b.part === p);
+  const minX = Math.min(...partBars.map((b) => b.x));
+  const maxX = Math.max(...partBars.map((b) => b.x)) + BAR_WIDTH;
+  return { part: p, name: partNames[p], centerX: (minX + maxX) / 2 };
+});
+---
+
+<div class="preview-wrap">
+  <div class="preview-header">
+    <h3>Structural Fingerprint</h3>
+    <p class="preview-subtitle">73 episodes across four parts &mdash; bar height proportional to word count</p>
+  </div>
+
+  <div class="preview-svg-wrap">
+    <svg
+      viewBox={`-4 0 ${totalWidth + 8} ${SVG_HEIGHT}`}
+      preserveAspectRatio="xMidYMid meet"
+      class="fingerprint-svg"
+      role="img"
+      aria-label="Structural fingerprint of Gravity's Rainbow showing 73 episodes as vertical bars grouped by part"
+    >
+      {bars.map((b) => (
+        <rect
+          x={b.x}
+          y={MAX_HEIGHT - b.height}
+          width={BAR_WIDTH}
+          height={b.height}
+          fill={b.color}
+          opacity="0.7"
+          rx="1"
+        >
+          <title>{b.id}: {b.words.toLocaleString()} words</title>
+        </rect>
+      ))}
+
+      {partGroups.map((pg) => (
+        <text
+          x={pg.centerX}
+          y={MAX_HEIGHT + 18}
+          text-anchor="middle"
+          fill="var(--color-text-dim)"
+          font-size="9"
+          font-family="var(--font-mono)"
+        >
+          Part {pg.part}
+        </text>
+      ))}
+    </svg>
+  </div>
+
+  <div class="preview-stats">
+    <div class="stat">
+      <span class="stat-value">73</span>
+      <span class="stat-label">Episodes</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">138</span>
+      <span class="stat-label">Characters</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">333k</span>
+      <span class="stat-label">Words</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">4</span>
+      <span class="stat-label">Parts</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .preview-wrap {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: var(--space-xl);
+    overflow: hidden;
+  }
+
+  .preview-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .preview-header h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+  }
+
+  .preview-subtitle {
+    font-size: var(--text-sm);
+    color: var(--color-text-dim);
+  }
+
+  .preview-svg-wrap {
+    overflow-x: auto;
+    margin-bottom: var(--space-xl);
+  }
+
+  .fingerprint-svg {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+  }
+
+  .preview-stats {
+    display: flex;
+    gap: var(--space-xl);
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: var(--space-lg);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xl);
+    color: var(--color-accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 640px) {
+    .preview-wrap {
+      padding: var(--space-lg);
+    }
+
+    .preview-stats {
+      flex-wrap: wrap;
+      gap: var(--space-lg);
+    }
+  }
+</style>

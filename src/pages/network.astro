@@ -1,17 +1,51 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import Section from "../components/Section.astro";
 ---
 
 <Layout title="Network" description="The character network atlas of Gravity's Rainbow — who connects to whom and where.">
   <Nav slot="nav" />
 
-  <header class="page-header">
-    <h1>Network</h1>
-    <p>The master character network atlas — mapping connections, co-occurrences, and communities across the novel.</p>
-  </header>
+  <Section>
+    <p class="eyebrow">Network</p>
+    <h1>The character atlas.</h1>
+    <p class="page-lede">
+      Mapping connections, co-occurrences, and communities across the novel
+      from episode-level co-presence data.
+    </p>
+    <p class="placeholder-note">Network visualisation is being prepared from the F06 character atlas backbone.</p>
+  </Section>
 
-  <div class="placeholder">
-    <p>Network visualisation is being prepared from the F06 character atlas backbone.</p>
-  </div>
+  <Footer slot="footer" />
 </Layout>
+
+<style>
+  h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+  }
+
+  .page-lede {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    max-width: 40rem;
+    margin-bottom: var(--space-xl);
+  }
+
+  .placeholder-note {
+    font-style: italic;
+    color: var(--color-text-dim);
+  }
+</style>
