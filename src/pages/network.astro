@@ -3,6 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Layout title="Network" description="A co-presence map of named characters across the seventy-three episodes.">
@@ -14,11 +16,102 @@ import Section from "../components/Section.astro";
       <h1>Character co-presence</h1>
       <div class="page-lede">
         <p>
-          This page will use the F06 character atlas to map which named characters
-          share episodes, how often they recur, and where communities tighten or
-          scatter across the four parts.
+          One hundred and thirty named characters appear across the seventy-three
+          episodes. This page maps their co-presence — which characters share
+          episodes, how often they recur, and where communities form — using
+          public-safe exports from the 2D character network analysis.
+        </p>
+        <p>
+          Co-occurrence is not interaction. Two characters sharing an episode does
+          not mean they meet, speak, or act together. What the network shows is
+          structural proximity: characters the novel places in the same formal
+          unit, weighted by how often that placement recurs.
         </p>
       </div>
+    </div>
+  </Section>
+
+  <Section>
+    <div class="figure-block reveal visible">
+      <figure class="network-figure">
+        <img
+          src={`${base}/figures/step_2d/F06_master_character_network_atlas.svg`}
+          alt="Character co-presence atlas: 130 named characters positioned by community-aware spring layout, coloured by community, sized by weighted degree."
+          class="figure-img figure-img--atlas"
+          loading="lazy"
+        />
+        <figcaption>
+          <span class="figure-id">Fig. 1.</span> Master character network atlas.
+          Each node is a named character; edges connect characters who share at
+          least one episode. Node size reflects weighted degree (frequency-adjusted
+          co-presence). Colour marks community assignment: five detected communities
+          loosely correspond to the London–Counterforce cluster, the Quest and
+          Transition group around Slothrop, the Rocket System cluster around
+          Blicero and Enzian, the Pökler Island group, and a small Late Afterlives
+          set. Layout by community-aware spring algorithm.
+        </figcaption>
+      </figure>
+    </div>
+  </Section>
+
+  <Section narrow={true}>
+    <div class="prose-block reveal visible">
+      <p>
+        The atlas is dominated by Slothrop, who touches forty-six of the
+        seventy-three episodes and links to all five communities. His
+        betweenness centrality (0.83) reflects his structural role as a bridge
+        across the novel's social space. The next most central characters —
+        Pointsman, Blicero, Roger Mexico, Enzian — each anchor their own
+        cluster but remain well connected to Slothrop's neighbourhood.
+      </p>
+      <p>
+        Community detection finds five groups. The London Counterforce cluster
+        (Pointsman, Roger, Jessica, Pirate) is dense and tightly bounded. The
+        Rocket System cluster (Blicero, Enzian, Tchitcherine, Gottfried) is
+        sparser but stretches further. Between them, the Quest and Transition
+        group catches Slothrop's companions as they move across the Zone.
+      </p>
+    </div>
+  </Section>
+
+  <Section>
+    <div class="figure-block reveal visible">
+      <figure class="network-figure">
+        <img
+          src={`${base}/figures/step_2d/F05_network_architecture_flagship.svg`}
+          alt="Network architecture flagship: three-panel composite showing degree distribution, community structure, and bridge characters."
+          class="figure-img figure-img--flagship"
+          loading="lazy"
+        />
+        <figcaption>
+          <span class="figure-id">Fig. 2.</span> Network architecture. A
+          three-panel view of the co-presence network's structural properties.
+          The figure argues that the novel's social geometry is distributed rather
+          than hub-and-spoke: while Slothrop is the highest-degree node, the
+          network retains coherence if he is removed, held together by secondary
+          bridge characters across communities.
+        </figcaption>
+      </figure>
+    </div>
+  </Section>
+
+  <Section narrow={true}>
+    <div class="notes-block reveal visible">
+      <p class="eyebrow">Notes</p>
+      <ol class="notes-list">
+        <li>
+          The network is built from episode-level co-occurrence counts exported
+          as public-safe CSVs. Edge weights use association strength (a
+          normalised co-occurrence measure) rather than raw counts. Community
+          detection uses the Louvain algorithm.
+        </li>
+        <li>
+          Both figures draw only on the public-safe data layer. The underlying
+          node and edge tables are available in the
+          <a href="https://github.com/dinghaoluo/the_zone_site">source
+          repository</a> under <code>public/data/step_2d/</code>.
+        </li>
+      </ol>
     </div>
   </Section>
 
@@ -49,5 +142,84 @@ import Section from "../components/Section.astro";
     line-height: 1.85;
     color: var(--color-text-secondary);
     margin-bottom: var(--space-md);
+  }
+
+  .figure-block {
+    max-width: var(--max-width);
+  }
+
+  .network-figure {
+    margin: 0;
+  }
+
+  .figure-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 2px;
+    background: var(--color-surface);
+  }
+
+  .figure-img--atlas {
+    max-width: 56rem;
+  }
+
+  .figure-img--flagship {
+    max-width: 56rem;
+  }
+
+  figcaption {
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    line-height: 1.75;
+    color: var(--color-text-dim);
+    max-width: var(--max-width-narrow);
+  }
+
+  .figure-id {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    letter-spacing: 0.03em;
+  }
+
+  .prose-block p {
+    font-size: var(--text-base);
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
+    max-width: var(--max-width-narrow);
+  }
+
+  .notes-block {
+    padding-top: var(--space-md);
+  }
+
+  .notes-list {
+    margin-top: var(--space-lg);
+    padding-left: 1.5em;
+    list-style: decimal;
+  }
+
+  .notes-list li {
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-md);
+  }
+
+  .notes-list li a {
+    color: var(--color-accent-dim);
+  }
+
+  .notes-list li a:hover {
+    color: var(--color-accent);
+  }
+
+  .notes-list code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
   }
 </style>
