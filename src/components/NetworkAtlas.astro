@@ -1,323 +1,600 @@
 ---
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
 ---
 
-<div class="atlas-wrap">
-  <div id="network-atlas" class="atlas-container" data-base={base}></div>
-  <div id="atlas-legend" class="atlas-legend"></div>
-  <div id="atlas-tooltip" class="atlas-tooltip"></div>
+<div class="plate" id="plate-atlas">
+  <header class="plate-head">
+    <span class="plate-num">Plate I</span>
+    <h3 class="plate-title">Character co-presence</h3>
+  </header>
+
+  <nav class="control-strip" id="atlas-controls">
+    <button class="ctrl active" data-mode="overview">Overview</button>
+    <button class="ctrl" data-mode="slothrop">Slothrop</button>
+    <button class="ctrl" data-mode="communities">Communities</button>
+    <button class="ctrl" data-mode="full">Full</button>
+  </nav>
+
+  <div class="community-strip" id="community-strip"></div>
+
+  <div class="atlas-body">
+    <div id="network-atlas" class="atlas-canvas" data-base={base}></div>
+    <aside id="atlas-note" class="atlas-note"></aside>
+  </div>
 </div>
+
+<script define:vars={{ romanNumerals }}>
+  window.__atlasRomanNumerals = romanNumerals;
+</script>
 
 <script>
   import * as d3 from 'd3';
 
-  const container = document.getElementById('network-atlas')!;
-  const legendEl = document.getElementById('atlas-legend')!;
-  const tooltipEl = document.getElementById('atlas-tooltip')!;
-  const base = container.dataset.base || '';
+  const canvas = document.getElementById('network-atlas')!;
+  const noteEl = document.getElementById('atlas-note')!;
+  const stripEl = document.getElementById('community-strip')!;
+  const base = canvas.dataset.base || '';
+  const romanNumerals: string[] = (window as any).__atlasRomanNumerals || ['i','ii','iii','iv','v'];
 
-  const WIDTH = 900;
-  const HEIGHT = 800;
-  const PADDING = 40;
+  const W = 900, H = 800, PAD = 50;
 
-  const svg = d3.select(container)
+  type Mode = 'overview' | 'slothrop' | 'communities' | 'full';
+  let mode: Mode = 'overview';
+  let selectedCommunity: number | null = null;
+  let locked: string | null = null;
+
+  const svg = d3.select(canvas)
     .append('svg')
-    .attr('viewBox', `0 0 ${WIDTH} ${HEIGHT}`)
+    .attr('viewBox', `0 0 ${W} ${H}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
     .attr('role', 'img')
-    .attr('aria-label', 'Interactive character co-presence network: 130 named characters positioned by community-aware spring layout');
+    .attr('aria-label', 'Interactive character co-presence network: 130 named characters across five communities');
 
-  const bg = svg.append('rect')
-    .attr('width', WIDTH)
-    .attr('height', HEIGHT)
+  svg.append('rect')
+    .attr('width', W).attr('height', H)
     .attr('fill', 'var(--color-surface)')
     .attr('rx', 2);
 
-  const g = svg.append('g');
+  const gHulls = svg.append('g').attr('class', 'hulls');
+  const gEdges = svg.append('g').attr('class', 'edges');
+  const gNodes = svg.append('g').attr('class', 'nodes');
+  const gLabels = svg.append('g').attr('class', 'labels');
 
   Promise.all([
     fetch(`${base}/data/step_2d/master_network_layout_nodes_public.csv`).then(r => r.text()),
     fetch(`${base}/data/step_2d/master_network_layout_edges_public.csv`).then(r => r.text()),
   ]).then(([nodesText, edgesText]) => {
     const nodes = d3.csvParse(nodesText, d => ({
-      id: d.id!,
-      short_name: d.short_name!,
-      x: +d.x!,
-      y: +d.y!,
-      community_id: +d.community_id!,
-      community_label: d.community_label!,
+      id: d.id!, short_name: d.short_name!,
+      x: +d.x!, y: +d.y!,
+      community_id: +d.community_id!, community_label: d.community_label!,
       community_colour: d.community_colour!,
-      weighted_degree: +d.weighted_degree!,
-      degree: +d.degree!,
+      weighted_degree: +d.weighted_degree!, degree: +d.degree!,
       betweenness_centrality: +d.betweenness_centrality!,
-      episode_count: +d.episode_count!,
-      label_tier: +d.label_tier!,
+      episode_count: +d.episode_count!, label_tier: +d.label_tier!,
       display_radius: +d.display_radius!,
     }));
 
     const edges = d3.csvParse(edgesText, d => ({
-      source: d.source!,
-      target: d.target!,
-      weight: +d.weight!,
-      shared_episode_count: +d.shared_episode_count!,
-      association_strength: +d.association_strength!,
-      display_width: +d.display_width!,
+      source: d.source!, target: d.target!,
+      weight: +d.weight!, shared_episode_count: +d.shared_episode_count!,
+      association_strength: +d.association_strength!, display_width: +d.display_width!,
     }));
 
     const nodeMap = new Map(nodes.map(n => [n.id, n]));
 
-    const xExtent = d3.extent(nodes, d => d.x) as [number, number];
-    const yExtent = d3.extent(nodes, d => d.y) as [number, number];
+    const xExt = d3.extent(nodes, d => d.x) as [number, number];
+    const yExt = d3.extent(nodes, d => d.y) as [number, number];
+    const xS = d3.scaleLinear().domain([xExt[0] - 0.4, xExt[1] + 0.4]).range([PAD, W - PAD]);
+    const yS = d3.scaleLinear().domain([yExt[0] - 0.4, yExt[1] + 0.4]).range([H - PAD, PAD]);
+    const rS = d3.scaleLinear().domain([0, 1]).range([2, 12]);
 
-    const xScale = d3.scaleLinear()
-      .domain([xExtent[0] - 0.3, xExtent[1] + 0.3])
-      .range([PADDING, WIDTH - PADDING]);
-
-    const yScale = d3.scaleLinear()
-      .domain([yExtent[0] - 0.3, yExtent[1] + 0.3])
-      .range([HEIGHT - PADDING, PADDING]);
-
-    const rScale = d3.scaleLinear()
-      .domain([0, 1])
-      .range([2.5, 14]);
-
-    const adjacency = new Map<string, Set<string>>();
-    for (const n of nodes) adjacency.set(n.id, new Set());
+    const adj = new Map<string, Set<string>>();
+    for (const n of nodes) adj.set(n.id, new Set());
     for (const e of edges) {
-      adjacency.get(e.source)?.add(e.target);
-      adjacency.get(e.target)?.add(e.source);
+      adj.get(e.source)?.add(e.target);
+      adj.get(e.target)?.add(e.source);
     }
 
-    const edgeLines = g.append('g').attr('class', 'edges')
-      .selectAll('line')
-      .data(edges)
-      .join('line')
-      .attr('x1', d => xScale(nodeMap.get(d.source)!.x))
-      .attr('y1', d => yScale(nodeMap.get(d.source)!.y))
-      .attr('x2', d => xScale(nodeMap.get(d.target)!.x))
-      .attr('y2', d => yScale(nodeMap.get(d.target)!.y))
+    // --- Community data ---
+    const communities = [...new Map(nodes.map(n => [
+      n.community_id, { id: n.community_id, label: n.community_label, colour: n.community_colour }
+    ])).values()].sort((a, b) => a.id - b.id);
+
+    const communityNodes = new Map<number, typeof nodes>();
+    for (const c of communities) communityNodes.set(c.id, nodes.filter(n => n.community_id === c.id));
+
+    // --- Hulls ---
+    function paddedHull(pts: [number, number][], pad: number): [number, number][] | null {
+      if (pts.length < 3) return null;
+      const hull = d3.polygonHull(pts);
+      if (!hull || hull.length < 3) return null;
+      const cx = d3.mean(hull, p => p[0])!;
+      const cy = d3.mean(hull, p => p[1])!;
+      return hull.map(([px, py]) => {
+        const dx = px - cx, dy = py - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const s = (dist + pad) / dist;
+        return [cx + dx * s, cy + dy * s] as [number, number];
+      });
+    }
+
+    const hullLine = d3.line<[number, number]>()
+      .curve(d3.curveCatmullRomClosed.alpha(0.5))
+      .x(d => d[0]).y(d => d[1]);
+
+    const hullPaths = new Map<number, string>();
+    for (const c of communities) {
+      const pts: [number, number][] = communityNodes.get(c.id)!.map(n => [xS(n.x), yS(n.y)]);
+      const hull = paddedHull(pts, 28);
+      if (hull) hullPaths.set(c.id, hullLine(hull)!);
+    }
+
+    const hulls = gHulls.selectAll('path')
+      .data(communities.filter(c => hullPaths.has(c.id)))
+      .join('path')
+      .attr('d', d => hullPaths.get(d.id)!)
+      .attr('fill', d => d.colour)
+      .attr('fill-opacity', 0.04)
+      .attr('stroke', d => d.colour)
+      .attr('stroke-opacity', 0.06)
+      .attr('stroke-width', 1);
+
+    // --- Edges ---
+    const edgeLines = gEdges.selectAll('line')
+      .data(edges).join('line')
+      .attr('x1', d => xS(nodeMap.get(d.source)!.x))
+      .attr('y1', d => yS(nodeMap.get(d.source)!.y))
+      .attr('x2', d => xS(nodeMap.get(d.target)!.x))
+      .attr('y2', d => yS(nodeMap.get(d.target)!.y))
       .attr('stroke', 'var(--color-text-dim)')
-      .attr('stroke-opacity', d => 0.04 + d.display_width * 0.12)
-      .attr('stroke-width', d => 0.3 + d.display_width * 1.5);
+      .attr('stroke-width', d => 0.3 + d.display_width * 1.2);
 
-    const nodeGroups = g.append('g').attr('class', 'nodes')
-      .selectAll('g')
-      .data(nodes)
-      .join('g')
-      .attr('transform', d => `translate(${xScale(d.x)},${yScale(d.y)})`);
-
-    nodeGroups.append('circle')
-      .attr('r', d => rScale(d.display_radius))
+    // --- Nodes ---
+    const circles = gNodes.selectAll('circle')
+      .data(nodes).join('circle')
+      .attr('cx', d => xS(d.x))
+      .attr('cy', d => yS(d.y))
+      .attr('r', d => rS(d.display_radius))
       .attr('fill', d => d.community_colour)
-      .attr('fill-opacity', 0.85)
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 0.5)
-      .attr('stroke-opacity', 0.3);
+      .attr('fill-opacity', 0.75);
 
-    nodeGroups.append('text')
+    // --- Labels ---
+    const labels = gLabels.selectAll('text')
+      .data(nodes).join('text')
+      .attr('x', d => xS(d.x) + rS(d.display_radius) + 3)
+      .attr('y', d => yS(d.y) + 1)
       .text(d => d.short_name)
-      .attr('x', d => rScale(d.display_radius) + 3)
-      .attr('y', 1)
-      .attr('class', d => `node-label tier-${d.label_tier}`)
       .attr('fill', d => d.label_tier === 1 ? 'var(--color-text)' : 'var(--color-text-dim)')
-      .attr('font-size', d => d.label_tier === 1 ? '8px' : '6.5px')
-      .attr('dominant-baseline', 'middle');
+      .attr('font-family', d => d.label_tier === 1 ? 'var(--font-heading)' : 'var(--font-mono)')
+      .attr('font-size', d => d.label_tier === 1 ? '9px' : '6.5px')
+      .attr('dominant-baseline', 'middle')
+      .attr('class', d => `atlas-label tier-${d.label_tier}`)
+      .attr('pointer-events', 'none');
 
-    let locked: string | null = null;
+    // --- Hit areas (invisible larger circles for interaction) ---
+    const hitAreas = gNodes.selectAll('.hit')
+      .data(nodes).join('circle')
+      .attr('class', 'hit')
+      .attr('cx', d => xS(d.x))
+      .attr('cy', d => yS(d.y))
+      .attr('r', d => Math.max(rS(d.display_radius), 6) + 3)
+      .attr('fill', 'transparent')
+      .attr('cursor', 'pointer');
 
-    function highlight(id: string | null) {
-      if (!id) {
-        nodeGroups.attr('opacity', 1);
-        edgeLines.attr('stroke-opacity', (d: any) => 0.04 + d.display_width * 0.12);
-        g.selectAll('.node-label')
-          .attr('opacity', (d: any) => d.label_tier <= 2 ? 1 : 0);
-        tooltipEl.style.opacity = '0';
+    // --- Note ---
+    function showNote(node: typeof nodes[0] | null, annotation?: string) {
+      if (!node) {
+        noteEl.style.opacity = '0';
         return;
       }
-
-      const neighbours = adjacency.get(id) || new Set();
-
-      nodeGroups.attr('opacity', (d: any) =>
-        d.id === id || neighbours.has(d.id) ? 1 : 0.1
-      );
-
-      edgeLines.attr('stroke-opacity', (d: any) =>
-        d.source === id || d.target === id ? 0.5 : 0.02
-      );
-
-      g.selectAll('.node-label')
-        .attr('opacity', (d: any) =>
-          d.id === id || neighbours.has(d.id) ? 1 : 0
-        );
-
-      const node = nodeMap.get(id)!;
-      tooltipEl.innerHTML = `
-        <strong>${node.short_name}</strong>
-        <span class="tt-community" style="color:${node.community_colour}">${node.community_label}</span>
-        <span class="tt-detail">${node.episode_count} episodes · degree ${node.degree}</span>
+      noteEl.innerHTML = `
+        <p class="note-name">${node.short_name}</p>
+        <p class="note-community" style="color:${node.community_colour}">${node.community_label}</p>
+        <p class="note-stats">${node.episode_count} episodes · ${node.degree} connections</p>
+        ${annotation ? `<p class="note-annotation">${annotation}</p>` : ''}
       `;
-      tooltipEl.style.opacity = '1';
+      noteEl.style.opacity = '1';
     }
 
-    g.selectAll('.node-label.tier-3').attr('opacity', 0);
+    function showModeNote(text: string) {
+      noteEl.innerHTML = `<p class="note-annotation">${text}</p>`;
+      noteEl.style.opacity = '1';
+    }
 
-    nodeGroups
-      .on('mouseenter', function(event, d: any) {
-        if (!locked) highlight(d.id);
+    // --- Mode rendering ---
+    const DUR = 350;
+
+    function applyOverview() {
+      const t = svg.transition().duration(DUR);
+
+      hulls.transition(t).attr('fill-opacity', 0.04).attr('stroke-opacity', 0.06);
+      edgeLines.transition(t)
+        .attr('stroke', 'var(--color-text-dim)')
+        .attr('stroke-opacity', (d: any) => d.display_width >= 0.15 ? 0.03 + d.display_width * 0.15 : 0);
+      circles.transition(t).attr('fill-opacity', 0.75).attr('r', (d: any) => rS(d.display_radius));
+      labels.transition(t).attr('opacity', (d: any) => d.label_tier === 1 ? 1 : 0);
+
+      showModeNote('Strongest connections and community regions across 130 characters.');
+    }
+
+    function applySlothrop() {
+      const t = svg.transition().duration(DUR);
+      const sid = 'Tyrone Slothrop';
+      const neighbours = adj.get(sid) || new Set();
+
+      hulls.transition(t).attr('fill-opacity', 0.02).attr('stroke-opacity', 0.03);
+
+      edgeLines.transition(t)
+        .attr('stroke', (d: any) => {
+          if (d.source === sid) return nodeMap.get(d.target)!.community_colour;
+          if (d.target === sid) return nodeMap.get(d.source)!.community_colour;
+          return 'var(--color-text-dim)';
+        })
+        .attr('stroke-opacity', (d: any) =>
+          d.source === sid || d.target === sid ? 0.25 + d.display_width * 0.3 : 0.01
+        );
+
+      circles.transition(t)
+        .attr('fill-opacity', (d: any) =>
+          d.id === sid ? 1 : neighbours.has(d.id) ? 0.7 : 0.08
+        )
+        .attr('r', (d: any) =>
+          d.id === sid ? rS(d.display_radius) + 2 : rS(d.display_radius)
+        );
+
+      labels.transition(t).attr('opacity', (d: any) =>
+        d.id === sid ? 1 : neighbours.has(d.id) && d.label_tier <= 2 ? 0.9 : 0
+      );
+
+      const s = nodeMap.get(sid)!;
+      showNote(s, `Bridges all five communities. Betweenness centrality: ${s.betweenness_centrality.toFixed(2)}.`);
+    }
+
+    function applyCommunity(cid: number) {
+      const t = svg.transition().duration(DUR);
+      const cIds = new Set(communityNodes.get(cid)!.map(n => n.id));
+
+      hulls.transition(t)
+        .attr('fill-opacity', (d: any) => d.id === cid ? 0.07 : 0.015)
+        .attr('stroke-opacity', (d: any) => d.id === cid ? 0.12 : 0.02);
+
+      edgeLines.transition(t)
+        .attr('stroke', (d: any) =>
+          cIds.has(d.source) && cIds.has(d.target)
+            ? communities.find(c => c.id === cid)!.colour
+            : 'var(--color-text-dim)'
+        )
+        .attr('stroke-opacity', (d: any) =>
+          cIds.has(d.source) && cIds.has(d.target) ? 0.12 + d.display_width * 0.25 : 0.01
+        );
+
+      circles.transition(t)
+        .attr('fill-opacity', (d: any) => cIds.has(d.id) ? 0.85 : 0.06);
+
+      labels.transition(t).attr('opacity', (d: any) =>
+        cIds.has(d.id) ? (d.label_tier <= 2 ? 1 : 0.7) : 0
+      );
+
+      const c = communities.find(c => c.id === cid)!;
+      const count = communityNodes.get(cid)!.length;
+      const top3 = communityNodes.get(cid)!
+        .sort((a, b) => b.weighted_degree - a.weighted_degree)
+        .slice(0, 3)
+        .map(n => n.short_name).join(', ');
+      showModeNote(`${c.label} — ${count} characters. Anchored by ${top3}.`);
+    }
+
+    function applyFull() {
+      const t = svg.transition().duration(DUR);
+
+      hulls.transition(t).attr('fill-opacity', 0.02).attr('stroke-opacity', 0.04);
+      edgeLines.transition(t)
+        .attr('stroke', 'var(--color-text-dim)')
+        .attr('stroke-opacity', (d: any) => 0.02 + d.display_width * 0.1);
+      circles.transition(t).attr('fill-opacity', 0.7).attr('r', (d: any) => rS(d.display_radius));
+      labels.transition(t).attr('opacity', (d: any) =>
+        d.label_tier === 1 ? 1 : d.label_tier === 2 ? 0.7 : 0.45
+      );
+
+      showModeNote('Complete network: 130 characters, 1,959 co-presence edges.');
+    }
+
+    function setMode(m: Mode) {
+      mode = m;
+      locked = null;
+      document.querySelectorAll('#atlas-controls .ctrl').forEach(b =>
+        b.classList.toggle('active', (b as HTMLElement).dataset.mode === m)
+      );
+      stripEl.style.display = m === 'communities' ? 'flex' : 'none';
+
+      switch (m) {
+        case 'overview': applyOverview(); break;
+        case 'slothrop': applySlothrop(); break;
+        case 'communities':
+          if (selectedCommunity !== null) applyCommunity(selectedCommunity);
+          else { selectedCommunity = 1; applyCommunity(1); updateStripActive(); }
+          break;
+        case 'full': applyFull(); break;
+      }
+    }
+
+    // --- Highlight on hover/click within current mode ---
+    function highlightNode(id: string | null) {
+      if (!id) {
+        setMode(mode);
+        return;
+      }
+      const neighbours = adj.get(id) || new Set();
+      const t = svg.transition().duration(200);
+
+      circles.transition(t).attr('fill-opacity', (d: any) =>
+        d.id === id ? 1 : neighbours.has(d.id) ? 0.65 : 0.06
+      );
+      edgeLines.transition(t).attr('stroke-opacity', (d: any) =>
+        d.source === id || d.target === id ? 0.35 : 0.01
+      );
+      labels.transition(t).attr('opacity', (d: any) =>
+        d.id === id || neighbours.has(d.id) ? 1 : 0
+      );
+      hulls.transition(t).attr('fill-opacity', 0.015).attr('stroke-opacity', 0.02);
+
+      showNote(nodeMap.get(id)!);
+    }
+
+    // --- Controls ---
+    document.querySelectorAll('#atlas-controls .ctrl').forEach(btn => {
+      btn.addEventListener('click', () => setMode((btn as HTMLElement).dataset.mode as Mode));
+    });
+
+    // --- Community strip ---
+    function updateStripActive() {
+      stripEl.querySelectorAll('.community-btn').forEach(b => {
+        const cid = +(b as HTMLElement).dataset.cid!;
+        b.classList.toggle('active', cid === selectedCommunity);
+      });
+    }
+
+    for (const c of communities) {
+      const btn = document.createElement('button');
+      btn.className = 'community-btn';
+      btn.dataset.cid = String(c.id);
+      const ri = romanNumerals[c.id - 1] || String(c.id);
+      btn.innerHTML = `<span class="c-dot" style="background:${c.colour}"></span><span class="c-num">${ri}.</span> ${c.label}`;
+      btn.addEventListener('click', () => {
+        selectedCommunity = c.id;
+        updateStripActive();
+        if (mode === 'communities') applyCommunity(c.id);
+        else setMode('communities');
+      });
+      stripEl.appendChild(btn);
+    }
+
+    // --- Interaction ---
+    hitAreas
+      .on('mouseenter', function(_event: any, d: any) {
+        if (!locked) highlightNode(d.id);
       })
       .on('mouseleave', function() {
-        if (!locked) highlight(null);
+        if (!locked) setMode(mode);
       })
-      .on('click', function(event, d: any) {
+      .on('click', function(event: any, d: any) {
         event.stopPropagation();
         if (locked === d.id) {
           locked = null;
-          highlight(null);
+          setMode(mode);
         } else {
           locked = d.id;
-          highlight(d.id);
+          highlightNode(d.id);
         }
       });
 
-    bg.on('click', () => {
-      locked = null;
-      highlight(null);
+    svg.on('click', () => {
+      if (locked) { locked = null; setMode(mode); }
     });
 
-    const communities = [
-      ...new Map(nodes.map(n => [n.community_id, { id: n.community_id, label: n.community_label, colour: n.community_colour }])).values()
-    ].sort((a, b) => a.id - b.id);
-
-    for (const c of communities) {
-      const chip = document.createElement('button');
-      chip.className = 'legend-chip';
-      chip.innerHTML = `<span class="chip-dot" style="background:${c.colour}"></span>${c.label}`;
-      chip.addEventListener('click', () => {
-        const communityNodes = nodes.filter(n => n.community_id === c.id);
-        const communityIds = new Set(communityNodes.map(n => n.id));
-
-        nodeGroups.attr('opacity', (d: any) => communityIds.has(d.id) ? 1 : 0.08);
-        edgeLines.attr('stroke-opacity', (d: any) =>
-          communityIds.has(d.source) && communityIds.has(d.target) ? 0.3 : 0.01
-        );
-        g.selectAll('.node-label')
-          .attr('opacity', (d: any) => communityIds.has(d.id) ? 1 : 0);
-        locked = null;
-      });
-      legendEl.appendChild(chip);
-    }
-
-    const resetBtn = document.createElement('button');
-    resetBtn.className = 'legend-chip legend-reset';
-    resetBtn.textContent = 'Reset';
-    resetBtn.addEventListener('click', () => {
-      locked = null;
-      highlight(null);
+    // --- Cross-component events ---
+    window.addEventListener('atlas-highlight-community', (e: any) => {
+      selectedCommunity = e.detail;
+      updateStripActive();
+      setMode('communities');
     });
-    legendEl.appendChild(resetBtn);
 
-    window.dispatchEvent(new CustomEvent('atlas-ready', { detail: { nodeMap, xScale, yScale, highlight: (id: string | null) => { locked = id; highlight(id); } } }));
+    window.dispatchEvent(new CustomEvent('atlas-ready', {
+      detail: {
+        highlightCharacter: (id: string | null) => { locked = id; highlightNode(id); },
+        highlightCommunity: (cid: number) => { selectedCommunity = cid; updateStripActive(); setMode('communities'); },
+        setMode,
+      }
+    }));
+
+    // --- Initial ---
+    applyOverview();
   });
 </script>
 
 <style>
-  .atlas-wrap {
-    position: relative;
+  .plate {
     max-width: 56rem;
   }
 
-  .atlas-container {
-    width: 100%;
+  .plate-head {
+    margin-bottom: var(--space-md);
+  }
+
+  .plate-num {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .plate-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-text);
+    margin-top: 0.15rem;
+  }
+
+  .control-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-sm);
+  }
+
+  .ctrl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3rem 0;
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .ctrl:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .ctrl.active {
+    color: var(--color-accent);
+  }
+
+  .ctrl.active::after {
+    content: '';
+    position: absolute;
+    bottom: -0.55rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-accent);
+  }
+
+  .ctrl + .ctrl::before {
+    content: '·';
+    margin: 0 0.75rem;
+    color: var(--color-border);
+    pointer-events: none;
+  }
+
+  .community-strip {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-bottom: var(--space-md);
+    padding-left: 0.1rem;
+  }
+
+  .community-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.2rem 0;
+    transition: color 0.2s;
+  }
+
+  .community-btn:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .community-btn.active {
+    color: var(--color-text);
+  }
+
+  .community-btn .c-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .community-btn .c-num {
+    font-style: italic;
+  }
+
+  .atlas-body {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: flex-start;
+  }
+
+  .atlas-canvas {
+    flex: 1;
+    min-width: 0;
     border: 1px solid var(--color-border-subtle);
     border-radius: 2px;
     background: var(--color-surface);
-    cursor: default;
   }
 
-  .atlas-container :global(svg) {
+  .atlas-canvas :global(svg) {
     display: block;
     width: 100%;
     height: auto;
   }
 
-  .atlas-container :global(.nodes g) {
-    cursor: pointer;
-  }
-
-  .atlas-container :global(.node-label) {
-    font-family: var(--font-mono);
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .atlas-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: var(--space-md);
-  }
-
-  .legend-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.6rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-secondary);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-  }
-
-  .legend-chip:hover {
-    border-color: var(--color-accent-dim);
-    color: var(--color-text);
-  }
-
-  .legend-reset {
-    color: var(--color-text-dim);
-  }
-
-  .chip-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .atlas-tooltip {
-    position: absolute;
-    top: var(--space-md);
-    right: var(--space-md);
-    padding: 0.6rem 0.8rem;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 3px;
+  .atlas-note {
+    width: 11rem;
+    flex-shrink: 0;
+    padding-top: var(--space-sm);
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    max-width: 14rem;
+    transition: opacity 0.25s;
   }
 
-  .atlas-tooltip :global(strong) {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--color-text);
+  .atlas-note :global(.note-name) {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    color: var(--color-accent);
+    line-height: 1.3;
   }
 
-  .atlas-tooltip :global(.tt-community) {
+  .atlas-note :global(.note-community) {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+    margin-top: 0.15rem;
   }
 
-  .atlas-tooltip :global(.tt-detail) {
+  .atlas-note :global(.note-stats) {
+    font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-dim);
+    margin-top: 0.1rem;
+  }
+
+  .atlas-note :global(.note-annotation) {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    line-height: 1.6;
+    margin-top: 0.4rem;
+  }
+
+  @media (max-width: 52rem) {
+    .atlas-body {
+      flex-direction: column;
+    }
+
+    .atlas-note {
+      width: 100%;
+    }
   }
 </style>

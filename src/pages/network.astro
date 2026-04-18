@@ -38,14 +38,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <figure class="network-figure">
         <NetworkAtlas />
         <figcaption>
-          <span class="figure-id">Fig. 1.</span> Master character network atlas.
           Each node is a named character; edges connect characters who share at
-          least one episode. Node size reflects weighted degree (frequency-adjusted
-          co-presence). Colour marks community assignment: five detected communities
-          loosely correspond to the London–Counterforce cluster, the Quest and
-          Transition group around Slothrop, the Rocket System cluster around
-          Blicero and Enzian, the Pökler Island group, and a small Late Afterlives
-          set. Hover or click a node to explore its connections.
+          least one episode. Node size reflects weighted degree. Colour marks
+          community assignment. Use the controls above to isolate Slothrop's
+          bridge role, explore individual communities, or view the full network.
         </figcaption>
       </figure>
     </div>
@@ -77,8 +73,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <figure class="network-figure">
         <NetworkArchitecture />
         <figcaption>
-          <span class="figure-id">Fig. 2.</span> Network architecture. A
-          three-panel view of the co-presence network's structural properties.
+          Three views of the co-presence network's structural properties.
           The figure argues that the novel's social geometry is distributed rather
           than hub-and-spoke: while Slothrop is the highest-degree node, the
           network retains coherence if he is removed, held together by secondary
@@ -99,7 +94,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           detection uses the Louvain algorithm.
         </li>
         <li>
-          Both figures draw only on the public-safe data layer. The underlying
+          Both plates draw only on the public-safe data layer. The underlying
           node and edge tables are available in the
           <a href="https://github.com/dinghaoluo/the_zone_site">source
           repository</a> under <code>public/data/step_2d/</code>.
@@ -154,13 +149,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     line-height: 1.75;
     color: var(--color-text-dim);
     max-width: var(--max-width-narrow);
-  }
-
-  .figure-id {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-dim);
-    letter-spacing: 0.03em;
   }
 
   .prose-block p {
