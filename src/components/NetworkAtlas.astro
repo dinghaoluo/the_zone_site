@@ -1,0 +1,323 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="atlas-wrap">
+  <div id="network-atlas" class="atlas-container" data-base={base}></div>
+  <div id="atlas-legend" class="atlas-legend"></div>
+  <div id="atlas-tooltip" class="atlas-tooltip"></div>
+</div>
+
+<script>
+  import * as d3 from 'd3';
+
+  const container = document.getElementById('network-atlas')!;
+  const legendEl = document.getElementById('atlas-legend')!;
+  const tooltipEl = document.getElementById('atlas-tooltip')!;
+  const base = container.dataset.base || '';
+
+  const WIDTH = 900;
+  const HEIGHT = 800;
+  const PADDING = 40;
+
+  const svg = d3.select(container)
+    .append('svg')
+    .attr('viewBox', `0 0 ${WIDTH} ${HEIGHT}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')
+    .attr('role', 'img')
+    .attr('aria-label', 'Interactive character co-presence network: 130 named characters positioned by community-aware spring layout');
+
+  const bg = svg.append('rect')
+    .attr('width', WIDTH)
+    .attr('height', HEIGHT)
+    .attr('fill', 'var(--color-surface)')
+    .attr('rx', 2);
+
+  const g = svg.append('g');
+
+  Promise.all([
+    fetch(`${base}/data/step_2d/master_network_layout_nodes_public.csv`).then(r => r.text()),
+    fetch(`${base}/data/step_2d/master_network_layout_edges_public.csv`).then(r => r.text()),
+  ]).then(([nodesText, edgesText]) => {
+    const nodes = d3.csvParse(nodesText, d => ({
+      id: d.id!,
+      short_name: d.short_name!,
+      x: +d.x!,
+      y: +d.y!,
+      community_id: +d.community_id!,
+      community_label: d.community_label!,
+      community_colour: d.community_colour!,
+      weighted_degree: +d.weighted_degree!,
+      degree: +d.degree!,
+      betweenness_centrality: +d.betweenness_centrality!,
+      episode_count: +d.episode_count!,
+      label_tier: +d.label_tier!,
+      display_radius: +d.display_radius!,
+    }));
+
+    const edges = d3.csvParse(edgesText, d => ({
+      source: d.source!,
+      target: d.target!,
+      weight: +d.weight!,
+      shared_episode_count: +d.shared_episode_count!,
+      association_strength: +d.association_strength!,
+      display_width: +d.display_width!,
+    }));
+
+    const nodeMap = new Map(nodes.map(n => [n.id, n]));
+
+    const xExtent = d3.extent(nodes, d => d.x) as [number, number];
+    const yExtent = d3.extent(nodes, d => d.y) as [number, number];
+
+    const xScale = d3.scaleLinear()
+      .domain([xExtent[0] - 0.3, xExtent[1] + 0.3])
+      .range([PADDING, WIDTH - PADDING]);
+
+    const yScale = d3.scaleLinear()
+      .domain([yExtent[0] - 0.3, yExtent[1] + 0.3])
+      .range([HEIGHT - PADDING, PADDING]);
+
+    const rScale = d3.scaleLinear()
+      .domain([0, 1])
+      .range([2.5, 14]);
+
+    const adjacency = new Map<string, Set<string>>();
+    for (const n of nodes) adjacency.set(n.id, new Set());
+    for (const e of edges) {
+      adjacency.get(e.source)?.add(e.target);
+      adjacency.get(e.target)?.add(e.source);
+    }
+
+    const edgeLines = g.append('g').attr('class', 'edges')
+      .selectAll('line')
+      .data(edges)
+      .join('line')
+      .attr('x1', d => xScale(nodeMap.get(d.source)!.x))
+      .attr('y1', d => yScale(nodeMap.get(d.source)!.y))
+      .attr('x2', d => xScale(nodeMap.get(d.target)!.x))
+      .attr('y2', d => yScale(nodeMap.get(d.target)!.y))
+      .attr('stroke', 'var(--color-text-dim)')
+      .attr('stroke-opacity', d => 0.04 + d.display_width * 0.12)
+      .attr('stroke-width', d => 0.3 + d.display_width * 1.5);
+
+    const nodeGroups = g.append('g').attr('class', 'nodes')
+      .selectAll('g')
+      .data(nodes)
+      .join('g')
+      .attr('transform', d => `translate(${xScale(d.x)},${yScale(d.y)})`);
+
+    nodeGroups.append('circle')
+      .attr('r', d => rScale(d.display_radius))
+      .attr('fill', d => d.community_colour)
+      .attr('fill-opacity', 0.85)
+      .attr('stroke', '#fff')
+      .attr('stroke-width', 0.5)
+      .attr('stroke-opacity', 0.3);
+
+    nodeGroups.append('text')
+      .text(d => d.short_name)
+      .attr('x', d => rScale(d.display_radius) + 3)
+      .attr('y', 1)
+      .attr('class', d => `node-label tier-${d.label_tier}`)
+      .attr('fill', d => d.label_tier === 1 ? 'var(--color-text)' : 'var(--color-text-dim)')
+      .attr('font-size', d => d.label_tier === 1 ? '8px' : '6.5px')
+      .attr('dominant-baseline', 'middle');
+
+    let locked: string | null = null;
+
+    function highlight(id: string | null) {
+      if (!id) {
+        nodeGroups.attr('opacity', 1);
+        edgeLines.attr('stroke-opacity', (d: any) => 0.04 + d.display_width * 0.12);
+        g.selectAll('.node-label')
+          .attr('opacity', (d: any) => d.label_tier <= 2 ? 1 : 0);
+        tooltipEl.style.opacity = '0';
+        return;
+      }
+
+      const neighbours = adjacency.get(id) || new Set();
+
+      nodeGroups.attr('opacity', (d: any) =>
+        d.id === id || neighbours.has(d.id) ? 1 : 0.1
+      );
+
+      edgeLines.attr('stroke-opacity', (d: any) =>
+        d.source === id || d.target === id ? 0.5 : 0.02
+      );
+
+      g.selectAll('.node-label')
+        .attr('opacity', (d: any) =>
+          d.id === id || neighbours.has(d.id) ? 1 : 0
+        );
+
+      const node = nodeMap.get(id)!;
+      tooltipEl.innerHTML = `
+        <strong>${node.short_name}</strong>
+        <span class="tt-community" style="color:${node.community_colour}">${node.community_label}</span>
+        <span class="tt-detail">${node.episode_count} episodes · degree ${node.degree}</span>
+      `;
+      tooltipEl.style.opacity = '1';
+    }
+
+    g.selectAll('.node-label.tier-3').attr('opacity', 0);
+
+    nodeGroups
+      .on('mouseenter', function(event, d: any) {
+        if (!locked) highlight(d.id);
+      })
+      .on('mouseleave', function() {
+        if (!locked) highlight(null);
+      })
+      .on('click', function(event, d: any) {
+        event.stopPropagation();
+        if (locked === d.id) {
+          locked = null;
+          highlight(null);
+        } else {
+          locked = d.id;
+          highlight(d.id);
+        }
+      });
+
+    bg.on('click', () => {
+      locked = null;
+      highlight(null);
+    });
+
+    const communities = [
+      ...new Map(nodes.map(n => [n.community_id, { id: n.community_id, label: n.community_label, colour: n.community_colour }])).values()
+    ].sort((a, b) => a.id - b.id);
+
+    for (const c of communities) {
+      const chip = document.createElement('button');
+      chip.className = 'legend-chip';
+      chip.innerHTML = `<span class="chip-dot" style="background:${c.colour}"></span>${c.label}`;
+      chip.addEventListener('click', () => {
+        const communityNodes = nodes.filter(n => n.community_id === c.id);
+        const communityIds = new Set(communityNodes.map(n => n.id));
+
+        nodeGroups.attr('opacity', (d: any) => communityIds.has(d.id) ? 1 : 0.08);
+        edgeLines.attr('stroke-opacity', (d: any) =>
+          communityIds.has(d.source) && communityIds.has(d.target) ? 0.3 : 0.01
+        );
+        g.selectAll('.node-label')
+          .attr('opacity', (d: any) => communityIds.has(d.id) ? 1 : 0);
+        locked = null;
+      });
+      legendEl.appendChild(chip);
+    }
+
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'legend-chip legend-reset';
+    resetBtn.textContent = 'Reset';
+    resetBtn.addEventListener('click', () => {
+      locked = null;
+      highlight(null);
+    });
+    legendEl.appendChild(resetBtn);
+
+    window.dispatchEvent(new CustomEvent('atlas-ready', { detail: { nodeMap, xScale, yScale, highlight: (id: string | null) => { locked = id; highlight(id); } } }));
+  });
+</script>
+
+<style>
+  .atlas-wrap {
+    position: relative;
+    max-width: 56rem;
+  }
+
+  .atlas-container {
+    width: 100%;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 2px;
+    background: var(--color-surface);
+    cursor: default;
+  }
+
+  .atlas-container :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .atlas-container :global(.nodes g) {
+    cursor: pointer;
+  }
+
+  .atlas-container :global(.node-label) {
+    font-family: var(--font-mono);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .atlas-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: var(--space-md);
+  }
+
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .legend-chip:hover {
+    border-color: var(--color-accent-dim);
+    color: var(--color-text);
+  }
+
+  .legend-reset {
+    color: var(--color-text-dim);
+  }
+
+  .chip-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .atlas-tooltip {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: 0.6rem 0.8rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    max-width: 14rem;
+  }
+
+  .atlas-tooltip :global(strong) {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text);
+  }
+
+  .atlas-tooltip :global(.tt-community) {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .atlas-tooltip :global(.tt-detail) {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+  }
+</style>

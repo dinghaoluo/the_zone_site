@@ -3,6 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
+import NetworkAtlas from "../components/NetworkAtlas.astro";
+import NetworkArchitecture from "../components/NetworkArchitecture.astro";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -34,12 +36,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <Section>
     <div class="figure-block reveal visible">
       <figure class="network-figure">
-        <img
-          src={`${base}/figures/step_2d/F06_master_character_network_atlas.svg`}
-          alt="Character co-presence atlas: 130 named characters positioned by community-aware spring layout, coloured by community, sized by weighted degree."
-          class="figure-img figure-img--atlas"
-          loading="lazy"
-        />
+        <NetworkAtlas />
         <figcaption>
           <span class="figure-id">Fig. 1.</span> Master character network atlas.
           Each node is a named character; edges connect characters who share at
@@ -48,7 +45,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           loosely correspond to the London–Counterforce cluster, the Quest and
           Transition group around Slothrop, the Rocket System cluster around
           Blicero and Enzian, the Pökler Island group, and a small Late Afterlives
-          set. Layout by community-aware spring algorithm.
+          set. Hover or click a node to explore its connections.
         </figcaption>
       </figure>
     </div>
@@ -78,12 +75,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <Section>
     <div class="figure-block reveal visible">
       <figure class="network-figure">
-        <img
-          src={`${base}/figures/step_2d/F05_network_architecture_flagship.svg`}
-          alt="Network architecture flagship: three-panel composite showing degree distribution, community structure, and bridge characters."
-          class="figure-img figure-img--flagship"
-          loading="lazy"
-        />
+        <NetworkArchitecture />
         <figcaption>
           <span class="figure-id">Fig. 2.</span> Network architecture. A
           three-panel view of the co-presence network's structural properties.
@@ -111,6 +103,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           node and edge tables are available in the
           <a href="https://github.com/dinghaoluo/the_zone_site">source
           repository</a> under <code>public/data/step_2d/</code>.
+          Static reference versions of the original figures are available for download:
+          <a href={`${base}/figures/step_2d/F06_master_character_network_atlas.svg`}>atlas (SVG)</a>,
+          <a href={`${base}/figures/step_2d/F05_network_architecture_flagship.svg`}>architecture (SVG)</a>.
         </li>
       </ol>
     </div>
@@ -151,23 +146,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .network-figure {
     margin: 0;
-  }
-
-  .figure-img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 2px;
-    background: var(--color-surface);
-  }
-
-  .figure-img--atlas {
-    max-width: 56rem;
-  }
-
-  .figure-img--flagship {
-    max-width: 56rem;
   }
 
   figcaption {

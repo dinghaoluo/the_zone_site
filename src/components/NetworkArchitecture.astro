@@ -1,0 +1,371 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const centralityAnnotations: Record<string, string> = {
+  'Tyrone Slothrop': 'protagonist bridge',
+  'Ned Pointsman': 'cross-community bridge',
+  'Roger Mexico': 'counterforce anchor',
+  'Weissmann / Blicero': 'rocket-system anchor',
+  'Enzian': 'zone-line nexus',
+  'Gerhardt von Göll': 'quest-system bridge',
+  'Tchitcherine': 'parallel quest nexus',
+  'Katje Borgesius': 'transition bridge',
+  'Laszlo Jamf': 'backstory linchpin',
+  'Pirate Prentice': 'counterforce link',
+};
+
+const dyadAnnotations: Record<string, string> = {
+  'Jessica Swanlake — Roger Mexico': 'recurring pair',
+  'Ned Pointsman — Roger Mexico': 'cross-community bridge',
+  'Tantivy Mucker-Maffick — Tyrone Slothrop': 'early-novel pair',
+  'Jessica Swanlake — Ned Pointsman': 'cross-role pair',
+  'Ned Pointsman — Tyrone Slothrop': 'surveillance axis',
+  'Katje Borgesius — Tyrone Slothrop': 'transition pair',
+  'Weissmann / Blicero — Enzian': 'shared-system pair',
+  'Roger Mexico — Tyrone Slothrop': 'counterforce-quest bridge',
+  'Katje Borgesius — Ned Pointsman': 'institutional pair',
+  'Ned Pointsman — Pirate Prentice': 'London-cluster pair',
+};
+---
+
+<div class="arch-grid" data-base={base}>
+  <div class="arch-panel" id="panel-community">
+    <h3 class="panel-title">Narrative Zones</h3>
+    <p class="panel-subtitle">five communities by size and key characters</p>
+    <div id="community-cards" class="community-cards"></div>
+  </div>
+  <div class="arch-panel" id="panel-centrality">
+    <h3 class="panel-title">Connective Labour</h3>
+    <p class="panel-subtitle">betweenness centrality — who bridges communities</p>
+    <div id="centrality-chart" class="bar-chart-container"></div>
+  </div>
+  <div class="arch-panel" id="panel-dyads">
+    <h3 class="panel-title">Resilient Bonds</h3>
+    <p class="panel-subtitle">strongest non-protagonist dyads by association strength</p>
+    <div id="dyads-chart" class="bar-chart-container"></div>
+  </div>
+</div>
+
+<script define:vars={{ centralityAnnotations, dyadAnnotations }}>
+  // Data passed from frontmatter
+  window.__archAnnotations = { centralityAnnotations, dyadAnnotations };
+</script>
+
+<script>
+  import * as d3 from 'd3';
+
+  const grid = document.querySelector('.arch-grid') as HTMLElement;
+  const base = grid?.dataset.base || '';
+  const annotations = (window as any).__archAnnotations || { centralityAnnotations: {}, dyadAnnotations: {} };
+
+  Promise.all([
+    fetch(`${base}/data/step_2d/master_network_layout_nodes_public.csv`).then(r => r.text()),
+    fetch(`${base}/data/step_2d/master_network_layout_edges_public.csv`).then(r => r.text()),
+  ]).then(([nodesText, edgesText]) => {
+    const nodes = d3.csvParse(nodesText, d => ({
+      id: d.id!,
+      short_name: d.short_name!,
+      community_id: +d.community_id!,
+      community_label: d.community_label!,
+      community_colour: d.community_colour!,
+      weighted_degree: +d.weighted_degree!,
+      degree: +d.degree!,
+      betweenness_centrality: +d.betweenness_centrality!,
+      episode_count: +d.episode_count!,
+    }));
+
+    const edges = d3.csvParse(edgesText, d => ({
+      source: d.source!,
+      target: d.target!,
+      weight: +d.weight!,
+      shared_episode_count: +d.shared_episode_count!,
+      association_strength: +d.association_strength!,
+      display_width: +d.display_width!,
+    }));
+
+    buildCommunityCards(nodes);
+    buildCentralityChart(nodes);
+    buildDyadsChart(edges, nodes);
+  });
+
+  function buildCommunityCards(nodes: any[]) {
+    const container = document.getElementById('community-cards')!;
+
+    const communities = d3.groups(nodes, (d: any) => d.community_id)
+      .map(([id, members]) => ({
+        id,
+        label: members[0].community_label,
+        colour: members[0].community_colour,
+        count: members.length,
+        top3: members.sort((a, b) => b.weighted_degree - a.weighted_degree).slice(0, 3),
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    for (const c of communities) {
+      const card = document.createElement('div');
+      card.className = 'community-card';
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="card-dot" style="background:${c.colour}"></span>
+          <span class="card-label">${c.label}</span>
+          <span class="card-count">${c.count}</span>
+        </div>
+        <div class="card-characters">${c.top3.map((n: any) => n.short_name).join(' · ')}</div>
+      `;
+      card.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('atlas-highlight-community', { detail: c.id }));
+      });
+      container.appendChild(card);
+    }
+  }
+
+  function buildCentralityChart(nodes: any[]) {
+    const container = document.getElementById('centrality-chart')!;
+    const top10 = [...nodes].sort((a, b) => b.betweenness_centrality - a.betweenness_centrality).slice(0, 10);
+
+    const margin = { top: 4, right: 100, bottom: 20, left: 90 };
+    const width = 380;
+    const barHeight = 22;
+    const gap = 6;
+    const height = margin.top + margin.bottom + top10.length * (barHeight + gap);
+
+    const svg = d3.select(container)
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    const xMax = d3.max(top10, d => d.betweenness_centrality) || 1;
+    const xScale = d3.scaleLinear().domain([0, xMax]).range([0, width - margin.left - margin.right]);
+
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    top10.forEach((d, i) => {
+      const y = i * (barHeight + gap);
+
+      g.append('rect')
+        .attr('x', 0)
+        .attr('y', y)
+        .attr('width', xScale(d.betweenness_centrality))
+        .attr('height', barHeight)
+        .attr('fill', d.community_colour)
+        .attr('opacity', 0.85)
+        .attr('rx', 2);
+
+      g.append('text')
+        .attr('x', -6)
+        .attr('y', y + barHeight / 2)
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', 'var(--color-text-secondary)')
+        .attr('font-size', '8px')
+        .attr('font-family', 'var(--font-mono)')
+        .text(d.short_name);
+
+      const annotation = annotations.centralityAnnotations[d.id];
+      if (annotation) {
+        g.append('text')
+          .attr('x', xScale(d.betweenness_centrality) + 5)
+          .attr('y', y + barHeight / 2)
+          .attr('dominant-baseline', 'middle')
+          .attr('fill', 'var(--color-text-dim)')
+          .attr('font-size', '6px')
+          .attr('font-family', 'var(--font-mono)')
+          .text(annotation);
+      }
+    });
+
+    g.append('line')
+      .attr('x1', 0).attr('x2', width - margin.left - margin.right)
+      .attr('y1', top10.length * (barHeight + gap))
+      .attr('y2', top10.length * (barHeight + gap))
+      .attr('stroke', 'var(--color-border)')
+      .attr('stroke-width', 0.5);
+
+    g.append('text')
+      .attr('x', (width - margin.left - margin.right) / 2)
+      .attr('y', top10.length * (barHeight + gap) + 14)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-size', '7px')
+      .attr('font-family', 'var(--font-mono)')
+      .text('betweenness centrality');
+  }
+
+  function buildDyadsChart(edges: any[], nodes: any[]) {
+    const container = document.getElementById('dyads-chart')!;
+    const nodeMap = new Map(nodes.map((n: any) => [n.id, n]));
+
+    const nonProtag = edges.filter(e =>
+      e.source !== 'Tyrone Slothrop' && e.target !== 'Tyrone Slothrop'
+    );
+    const top10 = [...nonProtag].sort((a, b) => b.association_strength - a.association_strength).slice(0, 10);
+
+    const margin = { top: 4, right: 50, bottom: 20, left: 140 };
+    const width = 420;
+    const barHeight = 22;
+    const gap = 6;
+    const height = margin.top + margin.bottom + top10.length * (barHeight + gap);
+
+    const svg = d3.select(container)
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    const xMax = d3.max(top10, d => d.association_strength) || 1;
+    const xScale = d3.scaleLinear().domain([0, xMax]).range([0, width - margin.left - margin.right]);
+
+    const colorScale = d3.scaleSequential(d3.interpolateYlOrRd)
+      .domain([0, xMax]);
+
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    top10.forEach((d, i) => {
+      const y = i * (barHeight + gap);
+      const srcNode = nodeMap.get(d.source);
+      const tgtNode = nodeMap.get(d.target);
+      const srcName = srcNode?.short_name || d.source;
+      const tgtName = tgtNode?.short_name || d.target;
+      const pairLabel = `${srcName} — ${tgtName}`;
+      const pairKey = `${d.source} — ${d.target}`;
+
+      g.append('rect')
+        .attr('x', 0)
+        .attr('y', y)
+        .attr('width', xScale(d.association_strength))
+        .attr('height', barHeight)
+        .attr('fill', colorScale(d.association_strength))
+        .attr('opacity', 0.85)
+        .attr('rx', 2);
+
+      g.append('text')
+        .attr('x', -6)
+        .attr('y', y + barHeight / 2)
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', 'var(--color-text-secondary)')
+        .attr('font-size', '7px')
+        .attr('font-family', 'var(--font-mono)')
+        .text(pairLabel);
+
+      g.append('text')
+        .attr('x', xScale(d.association_strength) + 4)
+        .attr('y', y + barHeight / 2)
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', 'var(--color-text-dim)')
+        .attr('font-size', '6.5px')
+        .attr('font-family', 'var(--font-mono)')
+        .text(`${d.shared_episode_count} eps`);
+    });
+
+    g.append('line')
+      .attr('x1', 0).attr('x2', width - margin.left - margin.right)
+      .attr('y1', top10.length * (barHeight + gap))
+      .attr('y2', top10.length * (barHeight + gap))
+      .attr('stroke', 'var(--color-border)')
+      .attr('stroke-width', 0.5);
+
+    g.append('text')
+      .attr('x', (width - margin.left - margin.right) / 2)
+      .attr('y', top10.length * (barHeight + gap) + 14)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-size', '7px')
+      .attr('font-family', 'var(--font-mono)')
+      .text('association strength');
+  }
+</script>
+
+<style>
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    max-width: 56rem;
+  }
+
+  @media (min-width: 52rem) {
+    .arch-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-lg);
+    }
+  }
+
+  .arch-panel {
+    min-width: 0;
+  }
+
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.03em;
+    margin-bottom: 0.2rem;
+  }
+
+  .panel-subtitle {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-md);
+  }
+
+  .bar-chart-container :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .community-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .community-card {
+    padding: 0.5rem 0.65rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .community-card:hover {
+    border-color: var(--color-accent-dim);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .card-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text);
+    flex: 1;
+  }
+
+  .card-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+  }
+
+  .card-characters {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    margin-top: 0.2rem;
+    padding-left: 1.1rem;
+  }
+</style>
