@@ -7,26 +7,34 @@ import HeroCanvas from "../components/HeroCanvas.astro";
 import SectionIntro from "../components/SectionIntro.astro";
 import StructuralPreview from "../components/StructuralPreview.astro";
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sitePath = (path: string) => `${base}/${path.replace(/^\//, '')}`;
 ---
 
-<Layout title="Home" description="A companion to Gravity's Rainbow: diagrams, networks, and dissolving structures.">
+<Layout title="Home" description="A visual companion to Gravity's Rainbow (1973).">
   <Nav slot="nav" />
 
   <section class="hero">
     <HeroCanvas />
     <div class="container hero-inner">
       <div class="hero-copy">
-        <p class="hero-kicker">Thomas Pynchon · 1973</p>
         <h1>The Zone</h1>
         <p class="hero-subtitle">
-          A companion to <em>Gravity's Rainbow</em>: episodes, character networks,
-          and dissolving structures, traced through careful computation and reading.
+          A visual companion to <em>Gravity's Rainbow</em> (1973).
+        </p>
+        <p class="hero-intro">
+          Episodes, character co-presence, Slothrop's disappearance, and
+          recurring strands — drawn from a private research pipeline and
+          reduced here to public-safe diagrams and notes.
         </p>
         <p class="hero-links">
-          <a href={`${base}network/`}>Begin with the network <span aria-hidden="true">&rarr;</span></a>
-          <span class="hero-or">or</span>
-          <a href={`${base}episodes/`}>start from the episodes</a>
+          <a href={sitePath("network/")}>Network</a>
+          <span class="hero-sep">&middot;</span>
+          <a href={sitePath("episodes/")}>Episodes</a>
+          <span class="hero-sep">&middot;</span>
+          <a href={sitePath("dissolution/")}>Dissolution</a>
+          <span class="hero-sep">&middot;</span>
+          <a href={sitePath("strands/")}>Strands</a>
         </p>
       </div>
     </div>
@@ -38,49 +46,40 @@ const base = import.meta.env.BASE_URL;
     </div>
 
     <div class="reveal">
-      <SectionIntro number="01" title="Episodes" href={`${base}episodes/`}>
+      <SectionIntro number="01" title="Episodes" href={sitePath("episodes/")}>
         <p>
-          Pynchon's novel divides into seventy-three episodes spread unevenly across
-          four parts. The shortest runs to a few hundred words; the longest, episode
-          3.11, sprawls past sixteen thousand. This section treats the episode as a
-          formal unit — measuring scale, sequence, and the structural rhythm of the
-          novel's four-part architecture.<sup class="fnref"><a href="#notes">1</a></sup>
+          The novel divided into seventy-three formal units. This view starts
+          with length, order, and part structure before adding interpretive
+          links.<sup class="fnref"><a href="#notes">1</a></sup>
         </p>
       </SectionIntro>
     </div>
 
     <div class="reveal">
-      <SectionIntro number="02" title="Dissolution" href={`${base}dissolution/`}>
+      <SectionIntro number="02" title="Dissolution" href={sitePath("dissolution/")}>
         <p>
-          Tyrone Slothrop, the closest thing the novel has to a protagonist, gradually
-          disperses. His name fractures into aliases, his presence thins, and other
-          characters fill the space he leaves behind. The dissolution page traces
-          these metrics episode by episode: canonical mentions, alias diversity,
-          orbit density, and the lengthening runs of absence.
+          Slothrop does not simply exit the book. His name, aliases, companions,
+          and absences thin out unevenly. This view tracks that thinning as a
+          sequence.
         </p>
       </SectionIntro>
     </div>
 
     <div class="reveal">
-      <SectionIntro number="03" title="Network" href={`${base}network/`}>
+      <SectionIntro number="03" title="Network" href={sitePath("network/")}>
         <p>
-          One hundred and thirty-eight named characters appear across the seventy-three
-          episodes. This section maps their co-presence — who appears alongside whom,
-          how often, and in which structural positions — to reveal the shifting social
-          geometry of the novel, from the dense clusters of Part&nbsp;I to the scattered
-          constellations of Part&nbsp;IV.
+          A co-presence map of named characters across episodes. The first
+          version uses public-safe exports from the F06 character atlas.
         </p>
       </SectionIntro>
     </div>
 
     <div class="reveal">
-      <SectionIntro number="04" title="Strands" href={`${base}strands/`}>
+      <SectionIntro number="04" title="Strands" href={sitePath("strands/")}>
         <p>
-          Beyond characters and episodes, the novel organises itself along narrative
-          strands — recurring plotlines, thematic threads, and motif systems that weave
-          through the text. This section is still being consolidated; it will present
-          strand geometry, handoff points, and motif intensity once the underlying
-          data contracts are finalised.
+          A holding page for motifs, handoffs, and longer narrative lines.
+          This section remains scaffolded until the 2H export contract is
+          stable.
         </p>
       </SectionIntro>
     </div>
@@ -88,31 +87,14 @@ const base = import.meta.env.BASE_URL;
 
   <Section id="data" narrow={true}>
     <div class="data-aside reveal">
-      <p class="eyebrow">In the data</p>
-      <p class="data-note">
-        73 episodes, four parts, ~333,000 words. The sparkline below shows each
-        episode's word count left to right, grouped by part. Notice Part&nbsp;III's
-        expansion — thirty-two episodes, the widest field of structural variation
-        in the novel.
-      </p>
-      <StructuralPreview />
-    </div>
-  </Section>
-
-  <Section id="method" narrow={true}>
-    <div class="method-block reveal">
-      <p class="eyebrow">On method</p>
-      <h2>Computational reading, kept answerable to form.</h2>
-      <p>
-        The Zone is built from structured computational analysis of the text, combined
-        with close editorial reading. Character networks are derived from episode-level
-        co-presence counts; dissolution metrics track Slothrop's name, aliases, and
-        co-character density; strand geometry maps plotline continuity and motif
-        recurrence. All visualisations draw on public-safe exports from a larger
-        research pipeline,<sup class="fnref"><a href="#notes">2</a></sup> and the
-        interpretive layer is kept deliberately restrained — the aim is legibility,
-        not argument.
-      </p>
+      <div class="figure">
+        <StructuralPreview />
+        <p class="figure-label">Fig.&thinsp;1.&ensp;Episode word counts, left to right, grouped by part.</p>
+        <p class="figure-caption">
+          The longest episode is 3.11; Part&nbsp;III carries the widest range of
+          episode lengths.
+        </p>
+      </div>
     </div>
   </Section>
 
@@ -120,13 +102,13 @@ const base = import.meta.env.BASE_URL;
     <div class="notes-block reveal">
       <p class="eyebrow">Notes</p>
       <ol class="notes-list">
-        <li>Episode boundaries follow the conventional section breaks marked by the
-          square-bracket numbering in most editions. Word counts are derived from a
-          normalised plain-text transcription.</li>
-        <li>The research pipeline and its full analytical outputs remain in a private
-          repository. Only explicitly public-safe, stripped exports are used on this
-          site. See <a href="https://github.com/dinghaoluo/the_zone_site">the source
-          repository</a> for the provenance log.</li>
+        <li>Episode boundaries follow the conventional section breaks in most
+          editions. Word counts are derived from a normalised plain-text
+          transcription.</li>
+        <li>Only stripped, public-safe exports are used in this repository.
+          The source-text corpora and proof layers remain private. See
+          <a href="https://github.com/dinghaoluo/the_zone_site">the source
+          repository</a> for the provenance log.<sup class="fnref"><a href="#notes">2</a></sup></li>
       </ol>
     </div>
   </Section>
@@ -137,7 +119,7 @@ const base = import.meta.env.BASE_URL;
 <style>
   .hero {
     position: relative;
-    padding: var(--space-3xl) 0;
+    padding: var(--space-2xl) 0 var(--space-xl);
     overflow: hidden;
   }
 
@@ -150,46 +132,50 @@ const base = import.meta.env.BASE_URL;
     max-width: var(--max-width-narrow);
   }
 
-  .hero-kicker {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-text-dim);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: var(--space-xl);
-  }
-
   .hero h1 {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
     line-height: 1;
     letter-spacing: -0.01em;
     color: var(--color-text);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
   }
 
   .hero-subtitle {
     font-family: var(--font-heading);
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
     font-weight: 400;
-    line-height: 1.6;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-intro {
+    font-size: var(--text-base);
+    line-height: 1.85;
     color: var(--color-text-secondary);
     max-width: 34rem;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
   }
 
   .hero-links {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     line-height: 1.8;
   }
 
   .hero-links a {
+    color: var(--color-text-secondary);
+    transition: color 0.2s ease;
+  }
+
+  .hero-links a:hover {
     color: var(--color-accent);
   }
 
-  .hero-or {
+  .hero-sep {
     color: var(--color-text-dim);
-    margin: 0 0.3em;
+    margin: 0 0.35em;
   }
 
   .section-label {
@@ -210,23 +196,20 @@ const base = import.meta.env.BASE_URL;
     border-bottom: 1px solid var(--color-rule);
   }
 
-  .data-note {
+  .figure-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    letter-spacing: 0.03em;
+    margin-top: var(--space-md);
+  }
+
+  .figure-caption {
     font-size: var(--text-sm);
     line-height: 1.8;
     color: var(--color-text-secondary);
-    margin: var(--space-md) 0 var(--space-lg);
-    max-width: 36rem;
-  }
-
-  .method-block h2 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    margin: var(--space-lg) 0 var(--space-md);
-  }
-
-  .method-block p:last-child {
-    font-size: var(--text-base);
-    line-height: 1.85;
-    color: var(--color-text-secondary);
+    margin-top: var(--space-xs);
+    max-width: 34rem;
   }
 
   .notes-block {
@@ -256,7 +239,7 @@ const base = import.meta.env.BASE_URL;
 
   @media (max-width: 640px) {
     .hero {
-      padding: var(--space-2xl) 0;
+      padding: var(--space-xl) 0;
     }
   }
 </style>

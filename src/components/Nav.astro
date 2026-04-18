@@ -1,12 +1,13 @@
 ---
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sitePath = (path: string) => `${base}/${path.replace(/^\//, '')}`;
 const pathname = Astro.url.pathname;
 
 const links = [
-  { href: `${base}episodes/`, label: "Episodes" },
-  { href: `${base}dissolution/`, label: "Dissolution" },
-  { href: `${base}network/`, label: "Network" },
-  { href: `${base}strands/`, label: "Strands" },
+  { href: sitePath("episodes/"), label: "Episodes" },
+  { href: sitePath("dissolution/"), label: "Dissolution" },
+  { href: sitePath("network/"), label: "Network" },
+  { href: sitePath("strands/"), label: "Strands" },
 ];
 
 function isActive(href: string): boolean {
@@ -16,7 +17,7 @@ function isActive(href: string): boolean {
 
 <nav class="nav" aria-label="Primary">
   <div class="nav-inner container">
-    <a class="nav-brand" href={base}>The Zone</a>
+    <a class="nav-brand" href={`${base}/`}>The Zone</a>
     <ul class="nav-links" role="list">
       {links.map(({ href, label }) => (
         <li>

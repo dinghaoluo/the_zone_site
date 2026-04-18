@@ -37,6 +37,7 @@ Each entry records the source, destination, and justification for the import.
 
 ## Boundary Notes
 
-- No new upstream assets were copied in this editorial refinement pass.
+- No new upstream assets were copied in this editorial refinement pass (2026-04-17).
+- No new upstream assets were copied in the design/content polish pass (2026-04-17).
 - The compact sparkline still uses manually encoded episode word-count values derived earlier from inspection of `episode_metadata_public.csv`, not a copied dataset.
 - No quotations were copied or used.
