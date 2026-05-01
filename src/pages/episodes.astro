@@ -19,14 +19,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <div class="page-lede">
         <p>
           <em>Gravity's Rainbow</em> is treated here as a sequence of seventy-three
-          formal units. The first plate shows their order, part structure, word
-          count, and paragraph count; later routes will attach characters,
-          dissolution, and strands.
+          formal units. This first layer shows formal scale and rhythm: order,
+          part structure, word count, and paragraph count.
         </p>
         <p>
           The aim is not a table of contents. It is a reading map: the book as a
           temporal score, with expansion, compression, and part boundaries visible
-          before any interpretive layer is added.
+          before the next interpretive layer attaches selected episodes to plot
+          progression and motifs.
         </p>
       </div>
     </div>
@@ -42,8 +42,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <figcaption class="plate-caption">
         Every mark is one episode in reading order. Height carries word count;
         interior ticks carry paragraph structure. The density view shifts the
-        emphasis from scale to paragraph rhythm, making short but sharply divided
-        sections easier to see.
+        emphasis from scale to paragraph rhythm, making compact but sharply
+        divided sections easier to see.
       </figcaption>
     </div>
   </section>
@@ -68,12 +68,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
     <div class="container">
       <figcaption class="plate-caption">
-        Part-level structure summarised from the same public-safe metadata.
-        The scale column compares total word mass while the fine ticks preserve
-        the internal sequence of episodes within each part.
+        Part-level structure summarised from the same public-safe metadata. The
+        movement trace preserves episode order within each part while the lower
+        rule compares total word mass.
       </figcaption>
     </div>
   </section>
+
+  <Section narrow={true}>
+    <div class="anchor-block reveal visible">
+      <p class="eyebrow">Episode anchors</p>
+      <p>
+        This pass deliberately stops at structural metadata. A later public-safe
+        layer can attach selected long, short, or dense episodes to concise plot
+        and motif glosses written for the site, without importing raw text,
+        quotations, or private evidence fields.
+      </p>
+    </div>
+  </Section>
 
   <Section narrow={true}>
     <div class="notes-block reveal visible">
@@ -128,7 +140,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   }
 
   .plate-container {
-    max-width: min(94vw, 76rem);
+    max-width: min(98vw, 96rem);
     margin: 0 auto;
     padding: 0 var(--space-lg);
   }
@@ -153,8 +165,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     max-width: var(--max-width-narrow);
   }
 
+  .anchor-block {
+    padding-top: var(--space-md);
+  }
+
+  .anchor-block p:not(.eyebrow) {
+    font-size: var(--text-base);
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
+    max-width: var(--max-width-narrow);
+  }
+
   .notes-block {
     padding-top: var(--space-md);
+  }
+
+  @media (max-width: 48rem) {
+    .plate-container {
+      max-width: 100vw;
+      padding: 0 var(--space-md);
+    }
   }
 
   .notes-list {

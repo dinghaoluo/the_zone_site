@@ -5,18 +5,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <div class="part-plate" id="episode-part-structure">
   <header class="plate-head">
     <span class="plate-num">Plate II</span>
-    <h3 class="plate-title">Part structure</h3>
+    <h3 class="plate-title">Four movements</h3>
   </header>
+  <p class="plate-intro">
+    The same seventy-three marks are gathered by part, so Plate I's score can be
+    read as four unequal movements rather than one undifferentiated run.
+  </p>
 
   <div class="part-table" data-base={base}>
     <div class="part-header" role="row">
       <span>Part</span>
-      <span>Scale</span>
+      <span>Movement trace</span>
       <span>Episodes</span>
-      <span>Words</span>
-      <span>Mean</span>
-      <span>Longest</span>
-      <span>W/P</span>
+      <span>Total words</span>
+      <span>Mean words</span>
+      <span>Longest episode</span>
+      <span>Words / paragraph</span>
     </div>
     <div id="part-structure-rows" class="part-rows"></div>
     <div id="part-structure-note" class="part-note"></div>
@@ -123,6 +127,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         row.setAttribute('role', 'row');
 
         const wordPct = summary.totalWords / maxWords * 100;
+        const wordShare = summary.totalWords / totalWords * 100;
         const tickMarks = summary.rows.map((episode) => {
           const left = (episode.episode_in_part - 0.5) / summary.episodeCount * 100;
           const height = 28 + episode.word_count / summary.longest.word_count * 52;
@@ -134,50 +139,59 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <span class="part-mark" style="background:${summary.colour}"></span>
             <span class="part-num">${partRoman.get(summary.part)}</span>
             <span class="part-title">${summary.title}</span>
+            <span class="part-subline">${summary.episodeCount} episodes / ${formatOne(wordShare)}% of words</span>
           </div>
-          <div class="part-scale">
+          <div class="part-scale" data-label="Movement trace">
             <span class="scale-rule">
               <span class="scale-fill" style="width:${wordPct}%;background:${summary.colour}"></span>
               ${tickMarks}
             </span>
           </div>
-          <div class="part-number">${summary.episodeCount}</div>
-          <div class="part-number">${formatInt(summary.totalWords)}</div>
-          <div class="part-number">${formatInt(Math.round(summary.meanWords))}</div>
-          <div class="part-longest">
-            <span>${summary.longest.episode_id}</span>
-            <span>${formatInt(summary.longest.word_count)}</span>
+          <div class="part-number" data-label="Episodes"><span>${summary.episodeCount}</span></div>
+          <div class="part-number" data-label="Total words"><span>${formatInt(summary.totalWords)}</span></div>
+          <div class="part-number" data-label="Mean words"><span>${formatInt(Math.round(summary.meanWords))}</span></div>
+          <div class="part-longest" data-label="Longest episode">
+            <span class="longest-id">${summary.longest.episode_id}</span>
+            <span class="longest-value">${formatInt(summary.longest.word_count)} words</span>
           </div>
-          <div class="part-number">${formatOne(summary.wordsPerParagraph)}</div>
+          <div class="part-number" data-label="Words / paragraph"><span>${formatOne(summary.wordsPerParagraph)}</span></div>
         `;
         rowsEl.appendChild(row);
       }
 
       const longestOverall = d3.greatest(episodes, (d) => d.word_count)!;
-      noteEl.textContent = `${totalEpisodes} episodes / ${formatInt(totalWords)} words in this structural export. Longest unit: ${longestOverall.episode_id} at ${formatInt(longestOverall.word_count)} words.`;
+      noteEl.textContent = `Read with Plate I: the horizontal trace preserves episode order within each part, while the lower rule compares total word mass. ${totalEpisodes} episodes / ${formatInt(totalWords)} words in this structural export. Longest unit: ${longestOverall.episode_id} at ${formatInt(longestOverall.word_count)} words.`;
     })
     .catch(showLoadError);
 </script>
 
 <style>
   .plate-head {
-    margin-bottom: var(--space-lg);
+    margin-bottom: 0.75rem;
   }
 
   .plate-num {
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--color-accent);
     text-transform: uppercase;
   }
 
   .plate-title {
     font-family: var(--font-heading);
-    font-size: 1.35rem;
+    font-size: 1.6rem;
     font-weight: 400;
     font-style: italic;
     color: var(--color-text);
     margin-top: 0.2rem;
+  }
+
+  .plate-intro {
+    max-width: 46rem;
+    margin: 0 0 var(--space-lg);
+    color: var(--color-text-secondary);
+    font-size: 0.975rem;
+    line-height: 1.75;
   }
 
   .part-table {
@@ -186,13 +200,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .part-header {
     display: grid;
-    grid-template-columns: minmax(13rem, 1.4fr) minmax(12rem, 1.3fr) 5rem 6rem 5rem 7rem 4rem;
-    gap: 0.9rem;
+    grid-template-columns: minmax(15rem, 1.35fr) minmax(15rem, 1.35fr) 5.5rem 7rem 6.5rem 8rem 7rem;
+    gap: 1rem;
     align-items: end;
     padding: 0.65rem 0;
     border-bottom: 1px solid var(--color-border);
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: var(--color-text-dim);
     text-transform: uppercase;
   }
@@ -203,17 +217,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .part-rows :global(.part-row) {
     display: grid;
-    grid-template-columns: minmax(13rem, 1.4fr) minmax(12rem, 1.3fr) 5rem 6rem 5rem 7rem 4rem;
-    gap: 0.9rem;
+    grid-template-columns: minmax(15rem, 1.35fr) minmax(15rem, 1.35fr) 5.5rem 7rem 6.5rem 8rem 7rem;
+    gap: 1rem;
     align-items: center;
-    min-height: 5rem;
-    padding: 1rem 0;
+    min-height: 5.75rem;
+    padding: 1.15rem 0;
     border-bottom: 1px solid var(--color-border-subtle);
   }
 
   .part-rows :global(.part-label) {
     display: grid;
-    grid-template-columns: 3px 2rem 1fr;
+    grid-template-columns: 3px 2.2rem 1fr;
     gap: 0.65rem;
     align-items: baseline;
     min-width: 0;
@@ -227,21 +241,30 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .part-rows :global(.part-num) {
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-style: italic;
     color: var(--color-text-secondary);
   }
 
   .part-rows :global(.part-title) {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: var(--color-text-secondary);
     line-height: 1.4;
     min-width: 0;
   }
 
+  .part-rows :global(.part-subline) {
+    grid-column: 3;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    line-height: 1.45;
+    margin-top: 0.1rem;
+  }
+
   .part-rows :global(.part-scale) {
-    height: 3rem;
+    height: 3.4rem;
     display: flex;
     align-items: center;
   }
@@ -250,7 +273,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     position: relative;
     display: block;
     width: 100%;
-    height: 2.4rem;
+    height: 2.75rem;
     border-bottom: 1px solid var(--color-border);
   }
 
@@ -272,7 +295,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .part-rows :global(.part-number),
   .part-rows :global(.part-longest) {
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--color-text-secondary);
     text-align: right;
     line-height: 1.45;
@@ -282,7 +305,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     display: block;
   }
 
-  .part-rows :global(.part-longest span:first-child) {
+  .part-rows :global(.part-longest .longest-id) {
     color: var(--color-accent);
   }
 
@@ -294,24 +317,57 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     max-width: var(--max-width-narrow);
   }
 
-  @media (max-width: 58rem) {
+  @media (max-width: 74rem) {
     .part-header {
       display: none;
     }
 
     .part-rows :global(.part-row) {
       grid-template-columns: 1fr;
-      gap: 0.65rem;
+      gap: 0.75rem;
       min-height: 0;
+      padding: 1.35rem 0;
     }
 
     .part-rows :global(.part-scale) {
       order: 2;
+      display: grid;
+      grid-template-columns: minmax(8rem, 0.45fr) 1fr;
+      gap: var(--space-md);
+      height: auto;
+      align-items: center;
+    }
+
+    .part-rows :global(.part-scale)::before,
+    .part-rows :global(.part-number)::before,
+    .part-rows :global(.part-longest)::before {
+      content: attr(data-label);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--color-text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     .part-rows :global(.part-number),
     .part-rows :global(.part-longest) {
+      display: grid;
+      grid-template-columns: minmax(8rem, 0.45fr) 1fr;
+      gap: var(--space-md);
       text-align: left;
+      align-items: baseline;
+    }
+
+    .part-rows :global(.part-number span),
+    .part-rows :global(.part-longest .longest-id),
+    .part-rows :global(.part-longest .longest-value),
+    .part-rows :global(.scale-rule) {
+      grid-column: 2;
+    }
+
+    .part-rows :global(.part-longest .longest-value) {
+      color: var(--color-text-dim);
+      margin-top: -0.65rem;
     }
   }
 </style>
