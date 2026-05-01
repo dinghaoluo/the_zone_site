@@ -1,63 +1,111 @@
-# Next Site Integration — /network
+# Next Site Integration Roadmap
 
-The next implementation cycle targets the `/network` route only.
+This document records the current integration state after the April 2026
+restart. It replaces the earlier `/network` handoff prompt, which described a
+future static-figure pass that has already been completed and surpassed.
+
+Do not treat the old `/network` static-figure instructions as active. The
+current benchmark is the interactive `/network` route in `src/pages/network.astro`.
 
 ---
 
-## Scope
+## Current Route Status
 
-- Copy Phase-A assets from the analysis repo (2D data + 2D figures)
-- Fill the `/network` page with static figure references and short original prose
-- Update `data/provenance.md` with each import
-- Verify the build passes (`npm run build`)
-- Stop after `/network`. Do not touch other routes in this cycle.
+### `/network` - completed benchmark
 
-## Assets to copy (Phase A)
+Status: integrated as interactive D3 editorial plates.
 
-### Data
+- Uses `NetworkAtlas.astro` for the primary co-presence atlas.
+- Uses `NetworkArchitecture.astro` for community, centrality, and dyad views.
+- Fetches public-safe 2D data from `public/data/step_2d/`.
+- Keeps the original F05/F06 SVG/PNG/PDF files as downloadable reference assets.
+- Sets the visual standard for future routes: web-native plates, wide figure
+  breakout, dark editorial field, restrained labels, and short prose bridges.
 
-| File | Source | Destination |
-| ---- | ------ | ----------- |
-| `master_network_layout_nodes_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` |
-| `master_network_layout_edges_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` |
-| `master_network_layout_public.json` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` |
+Do not rework `/network` as a static SVG embed. Future changes should be small
+refinements or follow-on visual components that preserve the current plate
+language.
 
-### Figures
+### `/episodes` - first pass implemented
 
-| Figure | Source | Destination |
-| ------ | ------ | ----------- |
-| F05 network architecture flagship | `02_analysis/step_2d_character_network/figures/F05_network_architecture_flagship.{svg,png,pdf}` | `public/figures/step_2d/` |
-| F06 master character network atlas | `02_analysis/step_2d_character_network/figures/F06_master_character_network_atlas.{svg,png,pdf}` | `public/figures/step_2d/` |
+Status: first-pass implemented using the public-safe episode metadata export.
 
-## Pre-copy verification
+Current public-safe input:
 
-Before copying each file:
+- `05_publication/public_safe/data/episode_metadata_public.csv`
+  to `public/data/base/episode_metadata_public.csv`
 
-1. Confirm it appears in `docs/PUBLIC_ASSET_MANIFEST.md`
-2. Confirm it does not match any pattern in `docs/RIGHTS_BOUNDARY.md`
-3. For CSVs: check that no column header matches a forbidden token
-4. Destination is inside this repo (`the_zone_site/`)
-5. A new provenance entry will be appended to `data/provenance.md`
+Current implementation:
 
-## Page integration
+- `EpisodeSequencePlate.astro` shows all seventy-three episodes as a horizontal
+  reading score with length and density views.
+- `EpisodePartStructure.astro` summarises the four parts with aligned
+  statistical rows.
+- No 2B figures were copied in the first pass.
 
-Update `src/pages/network.astro`:
+Optional approved 2B figure assets remain available for a later, route-specific
+copy/provenance pass only if the page needs them:
 
-- Keep the existing eyebrow / heading / lede convention
-- Add one or both 2D figures as static `<img>` references from `/the_zone_site/figures/step_2d/`
-- Add short bridging prose (no novel quotations)
-- Do not introduce scrollytelling or interactivity in this cycle
-- Do not rebuild the page scaffolding
+  - `F10_cast_weather_system.{svg,png,pdf}`
+  - `F11_arrival_cascade.{svg,png,pdf}`
 
-## What not to do
+Before any future copy, verify against both:
 
-- Do not touch `/`, `/episodes`, `/dissolution`, or `/strands`
-- Do not copy assets from other phases (2B, 2E, 2H)
-- Do not traverse `02_analysis/` for unlisted data
-- Do not introduce a Python build step
-- Do not symlink into the analysis repo
-- Do not add interactive hovercards with narrative detail
+- `docs/PUBLIC_ASSET_MANIFEST.md`
+- `L:/projects/the_zone/05_publication/site_handoff/allowed_asset_manifest.md`
 
-## After this cycle
+Then inspect CSV headers for forbidden fields and append provenance entries in
+`data/provenance.md`.
 
-Once `/network` is stable and deployed, the next cycle will target `/episodes` with Phase-B assets (episode metadata CSV, optional 2B F10/F11 figures).
+Any later `/episodes` refinement should preserve the web-native plate structure
+and avoid turning the route into a cast dashboard.
+
+Next refinements for `/episodes`:
+
+- visual review across desktop and mobile
+- density-mode polish if the paragraph-density view needs further tuning
+- optional 2B F10/F11 companion pass only after explicit approval
+
+### `/dissolution` - later route
+
+Status: scaffolded. This is the next likely major route after `/episodes`
+stabilises.
+
+Likely public-safe inputs are the base 2E data exports and the approved 2E
+flagship figures listed in `docs/PUBLIC_ASSET_MANIFEST.md`:
+
+- `slothrop_dissolution_public.csv`
+- `slothrop_alias_by_episode_public.csv`
+- `slothrop_orbit_by_episode_public.csv`
+- `F11_slothrop_dissolution_field.{svg,png,pdf}`
+- `F12_slothrop_to_rocket_transfer.{svg,png,pdf}`
+
+The private 2E quote-support panel remains forbidden unless a separate curated
+quotation layer is explicitly approved.
+
+### `/strands` - scaffold only
+
+Status: scaffolded. Keep as a marker until the 2H public-safe export contract
+is stable enough for site integration.
+
+The upstream public-safe manifest lists stripped 2H geometry, matrices, and
+event graph exports, but the route should not be implemented opportunistically.
+Wait for a route-specific pass that confirms the intended public argument,
+field safety, and visual design.
+
+---
+
+## Standing Integration Rules
+
+- Write only inside `L:/projects/the_zone_site`.
+- Treat `L:/projects/the_zone` as read-only upstream.
+- Copy only explicitly public-safe exports or separately approved curated short
+  quotation material.
+- Never copy corpora, normalized text corpora, snippet-bearing files, proof
+  layers, notebooks, archived pages, or bulk quote banks.
+- Update `data/provenance.md` for every imported asset.
+- Integrate one route at a time.
+- Preserve the figure-first editorial visual system established by `/network`.
+- Prefer web-native Astro/D3 plates over embedded static analysis figures.
+- Keep prose short, original, and free of novel quotations unless a curated
+  quotation layer is separately approved.

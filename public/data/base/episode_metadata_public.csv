@@ -1,0 +1,74 @@
+global_index,episode_id,part,part_title,episode_in_part,word_count,paragraph_count
+1,1.01,1,Beyond the Zero,1,2078,30
+2,1.02,1,Beyond the Zero,2,4004,54
+3,1.03,1,Beyond the Zero,3,1322,10
+4,1.04,1,Beyond the Zero,4,4164,61
+5,1.05,1,Beyond the Zero,5,3365,54
+6,1.06,1,Beyond the Zero,6,2095,40
+7,1.07,1,Beyond the Zero,7,2401,45
+8,1.08,1,Beyond the Zero,8,2508,49
+9,1.09,1,Beyond the Zero,9,3178,55
+10,1.10,1,Beyond the Zero,10,4564,94
+11,1.11,1,Beyond the Zero,11,624,8
+12,1.12,1,Beyond the Zero,12,4828,42
+13,1.13,1,Beyond the Zero,13,4054,70
+14,1.14,1,Beyond the Zero,14,10113,64
+15,1.15,1,Beyond the Zero,15,2836,44
+16,1.16,1,Beyond the Zero,16,7530,57
+17,1.17,1,Beyond the Zero,17,3987,26
+18,1.18,1,Beyond the Zero,18,4335,40
+19,1.19,1,Beyond the Zero,19,6311,77
+20,1.20,1,Beyond the Zero,20,2898,36
+21,1.21,1,Beyond the Zero,21,1565,46
+22,2.01,2,Un Perm' au Casino Hermann Goering,1,3542,81
+23,2.02,2,Un Perm' au Casino Hermann Goering,2,7003,186
+24,2.03,2,Un Perm' au Casino Hermann Goering,3,9223,176
+25,2.04,2,Un Perm' au Casino Hermann Goering,4,4623,89
+26,2.05,2,Un Perm' au Casino Hermann Goering,5,3261,59
+27,2.06,2,Un Perm' au Casino Hermann Goering,6,2004,42
+28,2.07,2,Un Perm' au Casino Hermann Goering,7,9018,171
+29,2.08,2,Un Perm' au Casino Hermann Goering,8,3966,49
+30,3.01,3,In the Zone,1,5718,156
+31,3.02,3,In the Zone,2,8354,164
+32,3.03,3,In the Zone,3,6749,85
+33,3.04,3,In the Zone,4,3129,73
+34,3.05,3,In the Zone,5,10251,111
+35,3.06,3,In the Zone,6,5199,122
+36,3.07,3,In the Zone,7,5178,74
+37,3.08,3,In the Zone,8,2992,51
+38,3.09,3,In the Zone,9,861,12
+39,3.10,3,In the Zone,10,2414,21
+40,3.11,3,In the Zone,11,16777,196
+41,3.12,3,In the Zone,12,6657,108
+42,3.13,3,In the Zone,13,3893,55
+43,3.14,3,In the Zone,14,5067,91
+44,3.15,3,In the Zone,15,2147,26
+45,3.16,3,In the Zone,16,3996,92
+46,3.17,3,In the Zone,17,3018,27
+47,3.18,3,In the Zone,18,1559,11
+48,3.19,3,In the Zone,19,5772,155
+49,3.20,3,In the Zone,20,5575,123
+50,3.21,3,In the Zone,21,1482,19
+51,3.22,3,In the Zone,22,6260,160
+52,3.23,3,In the Zone,23,724,9
+53,3.24,3,In the Zone,24,4859,89
+54,3.25,3,In the Zone,25,3818,50
+55,3.26,3,In the Zone,26,2660,52
+56,3.27,3,In the Zone,27,1449,34
+57,3.28,3,In the Zone,28,4464,72
+58,3.29,3,In the Zone,29,1549,13
+59,3.30,3,In the Zone,30,4884,54
+60,3.31,3,In the Zone,31,8140,194
+61,3.32,3,In the Zone,32,2947,35
+62,4.01,4,The Counterforce,1,3391,40
+63,4.02,4,The Counterforce,2,6077,115
+64,4.03,4,The Counterforce,3,7076,75
+65,4.04,4,The Counterforce,4,3341,61
+66,4.05,4,The Counterforce,5,4811,55
+67,4.06,4,The Counterforce,6,11649,159
+68,4.07,4,The Counterforce,7,2358,69
+69,4.08,4,The Counterforce,8,4936,91
+70,4.09,4,The Counterforce,9,3372,37
+71,4.10,4,The Counterforce,10,4084,60
+72,4.11,4,The Counterforce,11,780,8
+73,4.12,4,The Counterforce,12,11552,170

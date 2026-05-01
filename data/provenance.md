@@ -77,6 +77,16 @@ Each entry records the source, destination, and justification for the import.
 - **Supports**: /network route — full 130-node character atlas with community colouring, sized by weighted degree
 - **Justification**: approved reader-facing figure; draws only on public-safe structural data; no source text
 
+## Phase B — /episodes integration (2026-05-01)
+
+### Imported: `episode_metadata_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/episode_metadata_public.csv`
+- Destination: `L:/projects/the_zone_site/public/data/base/episode_metadata_public.csv`
+- Imported: 2026-05-01
+- Supports: /episodes route — 73 episode units with part, order, word count, and paragraph count
+- Justification: public-safe export; contains only episode IDs, part labels, order, word counts, and paragraph counts; no source text, snippets, quotations, descriptions, evidence fields, or notes
+
 ## Boundary Notes
 
 - No new upstream assets were copied in this editorial refinement pass (2026-04-17).

@@ -1,0 +1,317 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="part-plate" id="episode-part-structure">
+  <header class="plate-head">
+    <span class="plate-num">Plate II</span>
+    <h3 class="plate-title">Part structure</h3>
+  </header>
+
+  <div class="part-table" data-base={base}>
+    <div class="part-header" role="row">
+      <span>Part</span>
+      <span>Scale</span>
+      <span>Episodes</span>
+      <span>Words</span>
+      <span>Mean</span>
+      <span>Longest</span>
+      <span>W/P</span>
+    </div>
+    <div id="part-structure-rows" class="part-rows"></div>
+    <div id="part-structure-note" class="part-note"></div>
+  </div>
+</div>
+
+<script>
+  import * as d3 from 'd3';
+
+  type Episode = {
+    global_index: number;
+    episode_id: string;
+    part: number;
+    part_title: string;
+    episode_in_part: number;
+    word_count: number;
+    paragraph_count: number;
+  };
+
+  const table = document.querySelector('.part-table') as HTMLElement;
+  const rowsEl = document.getElementById('part-structure-rows') as HTMLElement;
+  const noteEl = document.getElementById('part-structure-note') as HTMLElement;
+  const base = table.dataset.base || '';
+
+  const formatInt = d3.format(',');
+  const formatOne = d3.format('.1f');
+  const partColours = new Map<number, string>([
+    [1, 'var(--color-part-1)'],
+    [2, 'var(--color-part-2)'],
+    [3, 'var(--color-part-3)'],
+    [4, 'var(--color-part-4)'],
+  ]);
+  const partRoman = new Map<number, string>([
+    [1, 'I'],
+    [2, 'II'],
+    [3, 'III'],
+    [4, 'IV'],
+  ]);
+
+  noteEl.textContent = 'Episode metadata is being loaded.';
+
+  function showLoadError(error: unknown) {
+    console.error('Episode part structure failed to load', error);
+    rowsEl.innerHTML = '';
+    noteEl.textContent = 'The episode metadata could not be loaded. The public-safe CSV may be missing or unreadable.';
+  }
+
+  fetch(`${base}/data/base/episode_metadata_public.csv`)
+    .then((r) => {
+      if (!r.ok) throw new Error(`HTTP ${r.status} while loading episode metadata`);
+      return r.text();
+    })
+    .then((text) => {
+      const episodes = d3.csvParse(text, (d) => ({
+        global_index: +d.global_index!,
+        episode_id: d.episode_id!,
+        part: +d.part!,
+        part_title: d.part_title!,
+        episode_in_part: +d.episode_in_part!,
+        word_count: +d.word_count!,
+        paragraph_count: +d.paragraph_count!,
+      })) as Episode[];
+
+      if (
+        episodes.length === 0 ||
+        episodes.some((d) =>
+          !Number.isFinite(d.global_index) ||
+          !Number.isFinite(d.part) ||
+          !Number.isFinite(d.word_count) ||
+          !Number.isFinite(d.paragraph_count)
+        )
+      ) {
+        throw new Error('Episode metadata did not match the expected structural fields');
+      }
+
+      const summaries = d3.groups(episodes, (d) => d.part)
+        .map(([part, rows]) => {
+          const totalWords = d3.sum(rows, (d) => d.word_count);
+          const totalParagraphs = d3.sum(rows, (d) => d.paragraph_count);
+          const longest = d3.greatest(rows, (d) => d.word_count)!;
+          return {
+            part,
+            title: rows[0].part_title,
+            rows,
+            episodeCount: rows.length,
+            totalWords,
+            totalParagraphs,
+            meanWords: totalWords / rows.length,
+            medianWords: d3.median(rows, (d) => d.word_count) || 0,
+            longest,
+            wordsPerParagraph: totalWords / totalParagraphs,
+            colour: partColours.get(part) || 'var(--color-text-dim)',
+          };
+        })
+        .sort((a, b) => a.part - b.part);
+
+      const maxWords = d3.max(summaries, (d) => d.totalWords)!;
+      const totalWords = d3.sum(summaries, (d) => d.totalWords);
+      const totalEpisodes = d3.sum(summaries, (d) => d.episodeCount);
+
+      for (const summary of summaries) {
+        const row = document.createElement('div');
+        row.className = 'part-row';
+        row.setAttribute('role', 'row');
+
+        const wordPct = summary.totalWords / maxWords * 100;
+        const tickMarks = summary.rows.map((episode) => {
+          const left = (episode.episode_in_part - 0.5) / summary.episodeCount * 100;
+          const height = 28 + episode.word_count / summary.longest.word_count * 52;
+          return `<span class="episode-tick" style="left:${left}%;height:${height}%;background:${summary.colour}"></span>`;
+        }).join('');
+
+        row.innerHTML = `
+          <div class="part-label">
+            <span class="part-mark" style="background:${summary.colour}"></span>
+            <span class="part-num">${partRoman.get(summary.part)}</span>
+            <span class="part-title">${summary.title}</span>
+          </div>
+          <div class="part-scale">
+            <span class="scale-rule">
+              <span class="scale-fill" style="width:${wordPct}%;background:${summary.colour}"></span>
+              ${tickMarks}
+            </span>
+          </div>
+          <div class="part-number">${summary.episodeCount}</div>
+          <div class="part-number">${formatInt(summary.totalWords)}</div>
+          <div class="part-number">${formatInt(Math.round(summary.meanWords))}</div>
+          <div class="part-longest">
+            <span>${summary.longest.episode_id}</span>
+            <span>${formatInt(summary.longest.word_count)}</span>
+          </div>
+          <div class="part-number">${formatOne(summary.wordsPerParagraph)}</div>
+        `;
+        rowsEl.appendChild(row);
+      }
+
+      const longestOverall = d3.greatest(episodes, (d) => d.word_count)!;
+      noteEl.textContent = `${totalEpisodes} episodes / ${formatInt(totalWords)} words in this structural export. Longest unit: ${longestOverall.episode_id} at ${formatInt(longestOverall.word_count)} words.`;
+    })
+    .catch(showLoadError);
+</script>
+
+<style>
+  .plate-head {
+    margin-bottom: var(--space-lg);
+  }
+
+  .plate-num {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+  }
+
+  .plate-title {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-text);
+    margin-top: 0.2rem;
+  }
+
+  .part-table {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .part-header {
+    display: grid;
+    grid-template-columns: minmax(13rem, 1.4fr) minmax(12rem, 1.3fr) 5rem 6rem 5rem 7rem 4rem;
+    gap: 0.9rem;
+    align-items: end;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+  }
+
+  .part-header span:nth-child(n + 3) {
+    text-align: right;
+  }
+
+  .part-rows :global(.part-row) {
+    display: grid;
+    grid-template-columns: minmax(13rem, 1.4fr) minmax(12rem, 1.3fr) 5rem 6rem 5rem 7rem 4rem;
+    gap: 0.9rem;
+    align-items: center;
+    min-height: 5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .part-rows :global(.part-label) {
+    display: grid;
+    grid-template-columns: 3px 2rem 1fr;
+    gap: 0.65rem;
+    align-items: baseline;
+    min-width: 0;
+  }
+
+  .part-rows :global(.part-mark) {
+    align-self: stretch;
+    min-height: 2.2rem;
+    border-radius: 1px;
+  }
+
+  .part-rows :global(.part-num) {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--color-text-secondary);
+  }
+
+  .part-rows :global(.part-title) {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    min-width: 0;
+  }
+
+  .part-rows :global(.part-scale) {
+    height: 3rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .part-rows :global(.scale-rule) {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 2.4rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .part-rows :global(.scale-fill) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 0.38rem;
+    opacity: 0.55;
+  }
+
+  .part-rows :global(.episode-tick) {
+    position: absolute;
+    bottom: 0.42rem;
+    width: 1px;
+    opacity: 0.55;
+  }
+
+  .part-rows :global(.part-number),
+  .part-rows :global(.part-longest) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    text-align: right;
+    line-height: 1.45;
+  }
+
+  .part-rows :global(.part-longest span) {
+    display: block;
+  }
+
+  .part-rows :global(.part-longest span:first-child) {
+    color: var(--color-accent);
+  }
+
+  .part-note {
+    padding-top: var(--space-md);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text-dim);
+    max-width: var(--max-width-narrow);
+  }
+
+  @media (max-width: 58rem) {
+    .part-header {
+      display: none;
+    }
+
+    .part-rows :global(.part-row) {
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      min-height: 0;
+    }
+
+    .part-rows :global(.part-scale) {
+      order: 2;
+    }
+
+    .part-rows :global(.part-number),
+    .part-rows :global(.part-longest) {
+      text-align: left;
+    }
+  }
+</style>
