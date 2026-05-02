@@ -5,6 +5,7 @@ import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
 import EpisodeSequencePlate from "../components/EpisodeSequencePlate.astro";
 import EpisodePartStructure from "../components/EpisodePartStructure.astro";
+import EpisodeAnchorsIndex from "../components/EpisodeAnchorsIndex.astro";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -25,8 +26,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <p>
           The aim is not a table of contents. It is a reading map: the book as a
           temporal score, with expansion, compression, and part boundaries visible
-          before the next interpretive layer attaches selected episodes to plot
-          progression and motifs.
+          before selected public anchors attach formal rhythm to plot progression
+          and motifs.
         </p>
       </div>
     </div>
@@ -79,11 +80,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="anchor-block reveal visible">
       <p class="eyebrow">Episode anchors</p>
       <p>
-        This pass deliberately stops at structural metadata. A later public-safe
-        layer can attach selected long, short, or dense episodes to concise plot
-        and motif glosses written for the site, without importing raw text,
-        quotations, or private evidence fields.
+        The anchor layer adds a small set of public interpretive labels to the
+        structural score. Where a short quotation has been manually approved, it
+        appears as secondary evidence beneath the site commentary.
       </p>
+      <EpisodeAnchorsIndex />
     </div>
   </Section>
 
@@ -101,6 +102,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           The imported CSV is logged in <code>data/provenance.md</code>. It is
           served from
           <a href={`${base}/data/base/episode_metadata_public.csv`}>public/data/base/episode_metadata_public.csv</a>.
+        </li>
+        <li>
+          The anchor and quote layers are served from
+          <a href={`${base}/data/base/episode_anchors_public.csv`}>public/data/base/episode_anchors_public.csv</a>
+          and
+          <a href={`${base}/data/base/episode_anchor_quotes_public.csv`}>public/data/base/episode_anchor_quotes_public.csv</a>.
+          The quote layer is sparse, manually approved, and contains no context
+          windows or bulk source text.
         </li>
       </ol>
     </div>

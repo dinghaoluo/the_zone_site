@@ -87,9 +87,25 @@ Each entry records the source, destination, and justification for the import.
 - Supports: /episodes route — 73 episode units with part, order, word count, and paragraph count
 - Justification: public-safe export; contains only episode IDs, part labels, order, word counts, and paragraph counts; no source text, snippets, quotations, descriptions, evidence fields, or notes
 
+### Imported: `episode_anchors_public.csv`
+
+- Source: `C:/Users/Dinghao Luo/Downloads/episode_anchors_public_draft.csv`
+- Destination: `L:/projects/the_zone_site/public/data/base/episode_anchors_public.csv`
+- Imported: 2026-05-01
+- Supports: /episodes route — selected episode anchors with labels, anchor types, original interpretive summaries, motif tags, display priority, and quote status
+- Justification: curated public layer; contains original interpretive summaries and labels only; no source text, quotations, snippets, excerpts, context windows, evidence fields, or raw/normalised corpus material
+
+### Imported: `episode_anchor_quotes_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/site_handoff/episode_anchor_quotes_APPROVED_PUBLIC.csv`
+- Destination: `L:/projects/the_zone_site/public/data/base/episode_anchor_quotes_public.csv`
+- Imported: 2026-05-01
+- Supports: /episodes route — sparse manually approved short quotes for selected episode anchors
+- Justification: curated public quotation layer; contains eight short manually approved quotes, maximum 19 words; no context windows, source-line context, raw paragraph text, rejected candidates, or bulk quote bank; quotes are tied to /episodes commentary and visualisation
+
 ## Boundary Notes
 
 - No new upstream assets were copied in this editorial refinement pass (2026-04-17).
 - No new upstream assets were copied in the design/content polish pass (2026-04-17).
 - The compact sparkline still uses manually encoded episode word-count values derived earlier from inspection of `episode_metadata_public.csv`, not a copied dataset.
-- No quotations were copied or used.
+- No quotations were copied or used before the approved `/episodes` anchor quote layer. The current quote layer is intentionally sparse, short, manually approved, and logged above.

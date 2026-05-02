@@ -1,0 +1,286 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="anchor-index" data-base={base}>
+  <div class="anchor-index-head">
+    <span>Selected anchors</span>
+    <span id="anchor-index-count">Loading</span>
+  </div>
+  <div id="anchor-index-list" class="anchor-index-list"></div>
+  <p id="anchor-index-note" class="anchor-index-note">
+    Anchor and quote layers are being loaded.
+  </p>
+</div>
+
+<script>
+  import * as d3 from 'd3';
+
+  type Anchor = {
+    episode_id: string;
+    anchor_label: string;
+    anchor_type: string;
+    plot_anchor: string;
+    interpretive_note: string;
+    motif_tags: string;
+    display_priority: number;
+    quote_status: string;
+  };
+
+  type AnchorQuote = {
+    episode_id: string;
+    anchor_label: string;
+    approved_quote: string;
+    quote_word_count: number;
+    recommended_public_location: string;
+    why_this_quote_helps: string;
+    source_pointer_private: string;
+    public_note: string;
+  };
+
+  const root = document.querySelector('.anchor-index') as HTMLElement;
+  const listEl = document.getElementById('anchor-index-list') as HTMLElement;
+  const countEl = document.getElementById('anchor-index-count') as HTMLElement;
+  const noteEl = document.getElementById('anchor-index-note') as HTMLElement;
+  const base = root.dataset.base || '';
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    }[char] || char));
+  }
+
+  function episodeSortKey(id: string) {
+    const [part, episode] = id.split('.').map((value) => Number.parseInt(value, 10));
+    return part * 100 + episode;
+  }
+
+  function tagsMarkup(tags: string) {
+    return tags
+      .split(';')
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+      .map((tag) => `<span>${escapeHtml(tag)}</span>`)
+      .join('');
+  }
+
+  function showLoadError(error: unknown) {
+    console.error('Episode anchors index failed to load', error);
+    countEl.textContent = 'Unavailable';
+    listEl.innerHTML = '';
+    noteEl.textContent = 'The public anchor layer could not be loaded. The CSV may be missing or unreadable.';
+  }
+
+  function fetchText(path: string, label: string) {
+    return fetch(path).then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status} while loading ${label}`);
+      return response.text();
+    });
+  }
+
+  Promise.all([
+    fetchText(`${base}/data/base/episode_anchors_public.csv`, 'episode anchors'),
+    fetchText(`${base}/data/base/episode_anchor_quotes_public.csv`, 'episode anchor quotes'),
+  ])
+    .then(([anchorText, quoteText]) => {
+      const anchors = d3.csvParse(anchorText, (d) => ({
+        episode_id: d.episode_id!,
+        anchor_label: d.anchor_label!,
+        anchor_type: d.anchor_type!,
+        plot_anchor: d.plot_anchor!,
+        interpretive_note: d.interpretive_note!,
+        motif_tags: d.motif_tags || '',
+        display_priority: +(d.display_priority || 0),
+        quote_status: d.quote_status || '',
+      })) as Anchor[];
+
+      const quotes = d3.csvParse(quoteText, (d) => ({
+        episode_id: d.episode_id!,
+        anchor_label: d.anchor_label!,
+        approved_quote: d.approved_quote!,
+        quote_word_count: +(d.quote_word_count || 0),
+        recommended_public_location: d.recommended_public_location!,
+        why_this_quote_helps: d.why_this_quote_helps!,
+        source_pointer_private: d.source_pointer_private!,
+        public_note: d.public_note!,
+      })) as AnchorQuote[];
+
+      if (
+        anchors.length === 0 ||
+        quotes.some((quote) => !Number.isFinite(quote.quote_word_count) || quote.quote_word_count > 25)
+      ) {
+        throw new Error('Episode anchor layer did not match the expected public schema');
+      }
+
+      const quoteByEpisode = new Map(quotes.map((quote) => [quote.episode_id, quote]));
+      anchors.sort((a, b) => episodeSortKey(a.episode_id) - episodeSortKey(b.episode_id));
+
+      countEl.textContent = `${anchors.length} anchors / ${quotes.length} quotes`;
+      noteEl.textContent = 'Quotes are short approved excerpts only; no source context windows are included.';
+
+      listEl.innerHTML = anchors.map((anchor) => {
+        const quote = quoteByEpisode.get(anchor.episode_id);
+        const quoteHtml = quote ? `
+          <div class="anchor-quote">
+            <span class="quote-label">Approved quote</span>
+            <q>${escapeHtml(quote.approved_quote)}</q>
+            <p>${escapeHtml(quote.public_note)}</p>
+          </div>
+        ` : '';
+
+        return `
+          <article class="anchor-row ${quote ? 'has-quote' : ''}">
+            <div class="anchor-id">
+              <span>${escapeHtml(anchor.episode_id)}</span>
+              <em>${escapeHtml(anchor.anchor_type)}</em>
+            </div>
+            <div class="anchor-copy">
+              <h4>${escapeHtml(anchor.anchor_label)}</h4>
+              <p>${escapeHtml(anchor.plot_anchor)}</p>
+              <p class="anchor-note">${escapeHtml(anchor.interpretive_note)}</p>
+              <div class="anchor-tags">${tagsMarkup(anchor.motif_tags)}</div>
+              ${quoteHtml}
+            </div>
+          </article>
+        `;
+      }).join('');
+    })
+    .catch(showLoadError);
+</script>
+
+<style>
+  .anchor-index {
+    margin-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .anchor-index-head {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+  }
+
+  .anchor-index-list :global(.anchor-row) {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: var(--space-xl);
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .anchor-index-list :global(.anchor-row.has-quote) {
+    border-bottom-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border-subtle));
+  }
+
+  .anchor-index-list :global(.anchor-id span) {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  .anchor-index-list :global(.anchor-id em) {
+    display: block;
+    margin-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-style: normal;
+    line-height: 1.45;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+  }
+
+  .anchor-index-list :global(.anchor-copy h4) {
+    margin: 0 0 0.45rem;
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--color-text);
+  }
+
+  .anchor-index-list :global(.anchor-copy p) {
+    max-width: none;
+    margin: 0 0 0.45rem;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+  }
+
+  .anchor-index-list :global(.anchor-copy .anchor-note) {
+    color: var(--color-text-dim);
+  }
+
+  .anchor-index-list :global(.anchor-tags) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.55rem;
+    margin-top: 0.75rem;
+  }
+
+  .anchor-index-list :global(.anchor-tags span) {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+  }
+
+  .anchor-index-list :global(.anchor-quote) {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .anchor-index-list :global(.quote-label) {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-accent-dim);
+    text-transform: uppercase;
+  }
+
+  .anchor-index-list :global(.anchor-quote q) {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+  }
+
+  .anchor-index-list :global(.anchor-quote p) {
+    margin-top: 0.45rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+  }
+
+  .anchor-index-note {
+    margin-top: var(--space-md);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-text-dim);
+  }
+
+  @media (max-width: 42rem) {
+    .anchor-index-list :global(.anchor-row) {
+      grid-template-columns: 1fr;
+      gap: var(--space-sm);
+    }
+
+    .anchor-index-head {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>
