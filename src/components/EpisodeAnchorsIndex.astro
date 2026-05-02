@@ -34,7 +34,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     quote_word_count: number;
     recommended_public_location: string;
     why_this_quote_helps: string;
-    source_pointer_private: string;
     public_note: string;
   };
 
@@ -105,7 +104,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         quote_word_count: +(d.quote_word_count || 0),
         recommended_public_location: d.recommended_public_location!,
         why_this_quote_helps: d.why_this_quote_helps!,
-        source_pointer_private: d.source_pointer_private!,
         public_note: d.public_note!,
       })) as AnchorQuote[];
 

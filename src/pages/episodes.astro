@@ -20,14 +20,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <div class="page-lede">
         <p>
           <em>Gravity's Rainbow</em> is treated here as a sequence of seventy-three
-          formal units. This first layer shows formal scale and rhythm: order,
-          part structure, word count, and paragraph count.
+          formal units. The score shows how plot machinery gathers, stalls, and
+          disperses across the four parts: not a table of contents, but a map of
+          narrative pressure.
         </p>
         <p>
-          The aim is not a table of contents. It is a reading map: the book as a
-          temporal score, with expansion, compression, and part boundaries visible
-          before selected public anchors attach formal rhythm to plot progression
-          and motifs.
+          Uneven scale matters because the novel does not distribute attention
+          evenly. Blicero and Gottfried, Roger and Jessica, Slothrop, Pökler,
+          Tchitcherine, Byron, and the final descent do not simply occupy
+          episodes; they change the tempo of reading around the Rocket.
         </p>
       </div>
     </div>
@@ -42,9 +43,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="container">
       <figcaption class="plate-caption">
         Every mark is one episode in reading order. Height carries word count;
-        interior ticks carry paragraph structure. The density view shifts the
-        emphasis from scale to paragraph rhythm, making compact but sharply
-        divided sections easier to see.
+        interior ticks carry paragraph structure; baseline marks identify public
+        anchors. The plate makes visible where the book expands into systems,
+        where it cuts into quick fragments, and where the Rocket moves from
+        object to apparatus.
       </figcaption>
     </div>
   </section>
@@ -52,11 +54,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <Section narrow={true}>
     <div class="prose-block reveal visible">
       <p>
-        The sequence is uneven by design. Part III contains the widest spread,
-        including the longest episode and several abrupt compressions. Part IV is
-        shorter in episode count but ends with two large late movements. The
-        plate makes those changes legible as structure before it asks what they
-        mean.
+        Part III is the hinge. Its expansion changes the reader's experience from
+        pursuit through wartime plots into navigation through the Zone, where
+        Slothrop's line begins to scatter and other systems take over. The late
+        book then turns that dispersal into ritual, media, infrastructure, and
+        terminal descent.
       </p>
     </div>
   </Section>
@@ -70,8 +72,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="container">
       <figcaption class="plate-caption">
         Part-level structure summarised from the same public-safe metadata. The
-        movement trace preserves episode order within each part while the lower
-        rule compares total word mass.
+        movement trace preserves episode order within each part, showing how the
+        novel shifts from London machinery to casino pursuit, Zone expansion,
+        and final convergence.
       </figcaption>
     </div>
   </section>
@@ -80,9 +83,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="anchor-block reveal visible">
       <p class="eyebrow">Episode anchors</p>
       <p>
-        The anchor layer adds a small set of public interpretive labels to the
-        structural score. Where a short quotation has been manually approved, it
-        appears as secondary evidence beneath the site commentary.
+        The anchor layer names selected pressure points in the score: plot
+        pivots, system revelations, counter-quests, comic infrastructure, and
+        the final convergence of Rocket, ritual, cinema, and apocalypse. Where a
+        short quotation has been manually approved, it remains secondary to the
+        site's commentary.
       </p>
       <EpisodeAnchorsIndex />
     </div>
@@ -108,8 +113,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <a href={`${base}/data/base/episode_anchors_public.csv`}>public/data/base/episode_anchors_public.csv</a>
           and
           <a href={`${base}/data/base/episode_anchor_quotes_public.csv`}>public/data/base/episode_anchor_quotes_public.csv</a>.
-          The quote layer is sparse, manually approved, and contains no context
-          windows or bulk source text.
+          The quote layer is sparse, manually approved, and contains no private
+          source pointers, context windows, or bulk source text.
         </li>
       </ol>
     </div>

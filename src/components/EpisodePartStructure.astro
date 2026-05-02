@@ -9,7 +9,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </header>
   <p class="plate-intro">
     The same seventy-three marks are gathered by part, so Plate I's score can be
-    read as four unequal movements rather than one undifferentiated run.
+    read as four unequal movements: wartime machinery, pursuit, Zone expansion,
+    and late convergence.
   </p>
 
   <div class="part-table" data-base={base}>
@@ -160,7 +161,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
 
       const longestOverall = d3.greatest(episodes, (d) => d.word_count)!;
-      noteEl.textContent = `Read with Plate I: the horizontal trace preserves episode order within each part, while the lower rule compares total word mass. ${totalEpisodes} episodes / ${formatInt(totalWords)} words in this structural export. Longest unit: ${longestOverall.episode_id} at ${formatInt(longestOverall.word_count)} words.`;
+      noteEl.textContent = `Read with Plate I: the horizontal trace preserves episode order within each part, while the lower rule compares total word mass. ${totalEpisodes} episodes / ${formatInt(totalWords)} words in this structural export. The longest unit, ${longestOverall.episode_id}, is where technical obedience, family damage, and Rocket history concentrate rather than simply where the book gets long.`;
     })
     .catch(showLoadError);
 </script>

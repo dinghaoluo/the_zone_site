@@ -92,16 +92,16 @@ Each entry records the source, destination, and justification for the import.
 - Source: `C:/Users/Dinghao Luo/Downloads/episode_anchors_public_draft.csv`
 - Destination: `L:/projects/the_zone_site/public/data/base/episode_anchors_public.csv`
 - Imported: 2026-05-01
-- Supports: /episodes route — selected episode anchors with labels, anchor types, original interpretive summaries, motif tags, display priority, and quote status
-- Justification: curated public layer; contains original interpretive summaries and labels only; no source text, quotations, snippets, excerpts, context windows, evidence fields, or raw/normalised corpus material
+- Supports: /episodes route — selected episode anchors with labels, anchor types, original interpretive summaries, motif tags, display priority, and meaningful quote status
+- Justification: curated public layer; contains original interpretive summaries and labels only; no source text, quotations, snippets, excerpts, context windows, evidence fields, or raw/normalised corpus material. `quote_status` is limited to `approved` or `none`.
 
 ### Imported: `episode_anchor_quotes_public.csv`
 
 - Source: `L:/projects/the_zone/05_publication/site_handoff/episode_anchor_quotes_APPROVED_PUBLIC.csv`
 - Destination: `L:/projects/the_zone_site/public/data/base/episode_anchor_quotes_public.csv`
 - Imported: 2026-05-01
-- Supports: /episodes route — sparse manually approved short quotes for selected episode anchors
-- Justification: curated public quotation layer; contains eight short manually approved quotes, maximum 19 words; no context windows, source-line context, raw paragraph text, rejected candidates, or bulk quote bank; quotes are tied to /episodes commentary and visualisation
+- Supports: /episodes route — sparse manually approved short quotes and public explanatory notes for selected episode anchors
+- Justification: curated public quotation layer; contains eight short manually approved quotes, maximum 19 words; no private source pointers, context windows, source-line context, raw paragraph text, rejected candidates, or bulk quote bank; quotes are tied to /episodes commentary and visualisation
 
 ## Boundary Notes
 
