@@ -2,204 +2,370 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
-import Section from "../components/Section.astro";
-import NetworkAtlas from "../components/NetworkAtlas.astro";
-import NetworkArchitecture from "../components/NetworkArchitecture.astro";
+
+import nodeText from "../../public/data/step_2d/master_network_layout_nodes_public.csv?raw";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+/* ── Parse node CSV (handles quoted fields) ──────────────── */
+function parseCsvLine(line: string): string[] {
+  const cols: string[] = [];
+  let cur = '';
+  let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuote = !inQuote; continue; }
+    if (ch === ',' && !inQuote) { cols.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  cols.push(cur);
+  return cols;
+}
+
+type NodeRow = {
+  id: string;
+  short_name: string;
+  community_label: string;
+  community_colour: string;
+  weighted_degree: number;
+  degree: number;
+  betweenness: number;
+  total_mentions: number;
+  episode_count: number;
+};
+
+const nodeLines = nodeText.trim().split('\n').slice(1);
+const nodes: NodeRow[] = nodeLines.map(line => {
+  const c = parseCsvLine(line);
+  return {
+    id: c[0],
+    short_name: c[1],
+    community_label: c[5],
+    community_colour: c[6],
+    weighted_degree: parseFloat(c[7]) || 0,
+    degree: parseInt(c[8]) || 0,
+    betweenness: parseFloat(c[9]) || 0,
+    total_mentions: parseInt(c[12]) || 0,
+    episode_count: parseInt(c[13]) || 0,
+  };
+});
+
+/* ── Network statistics ──────────────────────────────────── */
+const totalNodes = nodes.length;
+const totalEdges = 1959;
+
+const communityMap = new Map<string, { colour: string; count: number }>();
+for (const n of nodes) {
+  if (!communityMap.has(n.community_label)) {
+    communityMap.set(n.community_label, { colour: n.community_colour, count: 0 });
+  }
+  communityMap.get(n.community_label)!.count++;
+}
+const totalCommunities = communityMap.size;
+
+const byDegree = [...nodes].sort((a, b) => b.degree - a.degree);
+const topNode = byDegree[0];
+
+const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
 ---
 
-<Layout title="Network" description="A co-presence map of named characters across the seventy-three episodes.">
+<Layout title="Character Network" description="A co-presence map of one hundred and thirty named characters across the seventy-three episodes of Gravity's Rainbow.">
   <Nav slot="nav" />
 
-  <Section>
-    <div class="page-head reveal visible">
-      <p class="eyebrow">03</p>
-      <h1>Character co-presence</h1>
-      <div class="page-lede">
+  <main class="network-page">
+    <!-- A. PAGE HEADER -->
+    <section class="page-header">
+      <h1 class="page-title reveal">character co&#8209;presence</h1>
+      <p class="page-subtitle reveal">
+        A map of one hundred and thirty named characters across the
+        seventy-three episodes: who shares structural space with whom,
+        how often, and where the communities form.
+      </p>
+    </section>
+
+    <!-- B. FRAMING PROSE -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
         <p>
-          One hundred and thirty named characters appear across the seventy-three
-          episodes. This page maps their co-presence — which characters share
-          episodes, how often they recur, and where communities form — using
-          public-safe exports from the 2D character network analysis.
+          Co-occurrence is not interaction. Two characters sharing an episode
+          does not mean they meet, speak, or act together. What the network
+          shows is structural proximity: characters the novel places in the
+          same formal unit, weighted by how often that placement recurs. The
+          resulting map is a social geometry of the text, not a social
+          network of the world inside it.
         </p>
         <p>
-          Co-occurrence is not interaction. Two characters sharing an episode does
-          not mean they meet, speak, or act together. What the network shows is
-          structural proximity: characters the novel places in the same formal
-          unit, weighted by how often that placement recurs.
+          The data below draws on episode-level co-presence counts exported as
+          public-safe CSVs. Edge weights use association strength (a
+          normalised co-occurrence measure) rather than raw counts.
+          Community detection uses the Louvain algorithm. Both figures reproduce
+          the analysis repository&rsquo;s approved reader-facing plates.
         </p>
       </div>
-    </div>
-  </Section>
+    </section>
 
-  <section class="plate-break reveal visible">
-    <div class="plate-container">
-      <figure class="network-figure">
-        <NetworkAtlas />
-      </figure>
-    </div>
-    <div class="container">
+    <!-- C. F05 PLATE — NETWORK ARCHITECTURE -->
+    <figure class="fig-plate reveal">
+      <img
+        src={`${base}/figures/step_2d/F05_network_architecture_flagship.png`}
+        alt="Three views of the co-presence network's structural properties: degree distribution, community structure, and bridge analysis"
+        loading="lazy"
+      />
       <figcaption class="plate-caption">
-        Each node is a named character; edges connect characters who share at
-        least one episode. Node size reflects weighted degree. Colour marks
-        community assignment. Use the view controls to isolate Slothrop's
-        bridge role, explore individual communities, or view the full network.
+        Three views of the co-presence network&rsquo;s structural properties.
+        The figure argues that the novel&rsquo;s social geometry is distributed
+        rather than hub-and-spoke: while Slothrop is the highest-degree node,
+        the network retains coherence if he is removed, held together by
+        secondary bridge characters across communities.
       </figcaption>
-    </div>
-  </section>
+    </figure>
 
-  <Section narrow={true}>
-    <div class="prose-block reveal visible">
-      <p>
-        The atlas is dominated by Slothrop, who touches forty-six of the
-        seventy-three episodes and links to all five communities. His
-        betweenness centrality (0.83) reflects his structural role as a bridge
-        across the novel's social space. The next most central characters —
-        Pointsman and Roger Mexico in the London Counterforce cluster,
-        Blicero and Enzian in the Rocket System — remain well connected
-        to Slothrop's neighbourhood.
-      </p>
-      <p>
-        Community detection finds five groups. The London Counterforce cluster
-        (Pointsman, Roger, Jessica, Pirate) is dense and tightly bounded. The
-        Rocket System cluster (Blicero, Enzian, Tchitcherine, Gottfried) is
-        sparser but stretches further. The Quest and Transition group
-        gathers Slothrop's recurring co-presences across the middle episodes.
-      </p>
-    </div>
-  </Section>
+    <!-- D. COMMUNITIES AND BRIDGES -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
+        <h2 class="section-heading">Communities and bridges</h2>
+        <p>
+          Community detection finds five groups. The
+          <strong style={`color: ${communityMap.get('London Counterforce')?.colour}`}>London Counterforce</strong>
+          cluster (Pointsman, Roger Mexico, Jessica Swanlake, Pirate
+          Prentice) is dense and tightly bounded, anchored in Parts 1 and
+          4. The
+          <strong style={`color: ${communityMap.get('Rocket System')?.colour}`}>Rocket System</strong>
+          cluster (Blicero, Enzian, Tchitcherine, Gottfried) is
+          sparser but stretches further, tracking the rocket&rsquo;s reach into
+          the later episodes. The large
+          <strong style={`color: ${communityMap.get('Quest & Transition')?.colour}`}>Quest &amp; Transition</strong>
+          group gathers Slothrop&rsquo;s recurring co-presences across the middle
+          episodes: a community defined less by internal cohesion than by
+          a shared orbit around the novel&rsquo;s most connected character.
+        </p>
+        <p>
+          Two smaller clusters emerge at the margins. The
+          <strong style={`color: ${communityMap.get('Pökler Island')?.colour}`}>P&ouml;kler Island</strong>
+          group collects the characters bound to Franz P&ouml;kler&rsquo;s
+          industrial-scientific orbit (Jamf, Mondaugen, the figures of
+          Nordhausen and Peenem&uuml;nde). The
+          <strong style={`color: ${communityMap.get('Late Afterlives')?.colour}`}>Late Afterlives</strong>
+          cluster gathers a handful of characters who appear only in the final
+          episodes, structurally isolated from the novel&rsquo;s earlier social
+          fabric.
+        </p>
+        <p>
+          The bridge structure confirms what the braid analysis suggests.
+          Slothrop&rsquo;s betweenness centrality (0.83) places him at the
+          crossing-point between communities: the character whose removal
+          would most fragment the network&rsquo;s connectivity. But Pointsman
+          (0.24) and Roger Mexico (0.13) bridge the London cluster to the rest;
+          Blicero (0.13) and Enzian (0.12) bridge the Rocket System outward.
+          The novel distributes its connective load across several characters,
+          not just one.
+        </p>
+      </div>
+    </section>
 
-  <section class="plate-break reveal visible">
-    <div class="plate-container">
-      <figure class="network-figure">
-        <NetworkArchitecture />
-      </figure>
-    </div>
-    <div class="container">
+    <!-- E. F06 PLATE — CHARACTER ATLAS -->
+    <figure class="fig-plate reveal">
+      <img
+        src={`${base}/figures/step_2d/F06_master_character_network_atlas.png`}
+        alt="Full 130-node character atlas with community colouring, sized by weighted degree"
+        loading="lazy"
+      />
       <figcaption class="plate-caption">
-        Three views of the co-presence network's structural properties.
-        The figure argues that the novel's social geometry is distributed rather
-        than hub-and-spoke: while Slothrop is the highest-degree node, the
-        network retains coherence if he is removed, held together by secondary
-        bridge characters across communities.
+        The full character atlas. Each node is a named character; size reflects
+        weighted degree (the sum of association strengths across all shared
+        episodes). Colour marks community assignment. The layout is
+        force-directed, placing densely connected characters closer together.
       </figcaption>
-    </div>
-  </section>
+    </figure>
 
-  <Section narrow={true}>
-    <div class="notes-block reveal visible">
-      <p class="eyebrow">Notes</p>
-      <ol class="notes-list">
-        <li>
-          The network is built from episode-level co-occurrence counts exported
-          as public-safe CSVs. Edge weights use association strength (a
-          normalised co-occurrence measure) rather than raw counts. Community
-          detection uses the Louvain algorithm.
-        </li>
-        <li>
-          Both plates draw only on the public-safe data layer. The underlying
-          node and edge tables are available in the
-          <a href="https://github.com/dinghaoluo/the_zone_site">source
-          repository</a> under <code>public/data/step_2d/</code>.
-          Static reference versions of the original figures are available for download:
-          <a href={`${base}/figures/step_2d/F06_master_character_network_atlas.svg`}>atlas (SVG)</a>,
-          <a href={`${base}/figures/step_2d/F05_network_architecture_flagship.svg`}>architecture (SVG)</a>.
-        </li>
-      </ol>
-    </div>
-  </Section>
+    <!-- F. NETWORK IN NUMBERS -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
+        <h2 class="section-heading">The network in numbers</h2>
+        <p>
+          The co-presence network connects {totalNodes} named characters through
+          {totalEdges.toLocaleString()} edges, grouped into {totalCommunities}&nbsp;communities.
+          {topNode.short_name} holds the highest degree
+          at&nbsp;{topNode.degree}, co-present with all but nine of the
+          novel&rsquo;s named characters, and the highest betweenness
+          centrality at&nbsp;{topNode.betweenness.toFixed(2)}, reflecting his
+          structural role as a bridge across every community.
+        </p>
+        <p>
+          The next tier ({byDegree[1].short_name}
+          at&nbsp;{byDegree[1].degree},
+          {byDegree[2].short_name} at&nbsp;{byDegree[2].degree},
+          {byDegree[3].short_name} at&nbsp;{byDegree[3].degree},
+          {byDegree[4].short_name} at&nbsp;{byDegree[4].degree}) are
+          well-connected but span fewer communities. The network&rsquo;s density
+          is moderate: most characters share episodes with many others, but the
+          strongest associations cluster tightly within communities rather than
+          reaching across them.
+        </p>
+        <p>
+          The community sizes are unequal. Quest &amp; Transition holds
+          {communityMap.get('Quest & Transition')?.count} of the {totalNodes}&nbsp;characters,
+          inflated by Slothrop&rsquo;s wide reach. London Counterforce
+          ({communityMap.get('London Counterforce')?.count}) and Rocket System
+          ({communityMap.get('Rocket System')?.count}) are large but bounded. P&ouml;kler Island
+          ({communityMap.get('Pökler Island')?.count}) is a recognisable sub-plot cluster.
+          Late Afterlives ({communityMap.get('Late Afterlives')?.count}) is a structural
+          residual: the characters the algorithm cannot place elsewhere.
+        </p>
+      </div>
+    </section>
+
+    <!-- G. CLOSING FRAME -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
+        <h2 class="section-heading">A distributed architecture</h2>
+        <p>
+          The network&rsquo;s most important structural feature is what it
+          lacks: a single point of failure. Slothrop is the most connected and
+          most central character, but the network does not collapse without him.
+          The London Counterforce cluster remains internally coherent; the
+          Rocket System retains its own bridge characters. What dissolves is not
+          the social fabric of the novel but Slothrop&rsquo;s position within
+          it: a finding that converges with the dissolution analysis from
+          a completely independent angle.
+        </p>
+        <p>
+          The architecture is distributed rather than centralised. The novel
+          builds its social space the same way it builds its narrative space:
+          through overlapping local densities rather than global hierarchy.
+          Communities touch at bridge characters, not at a single hub. The Zone
+          is not a world with a centre; it is a world where every
+          apparent centre turns out to be a crossing-point to somewhere else.
+        </p>
+      </div>
+    </section>
+
+    <!-- RETURN LINK -->
+    <section class="reading-col">
+      <div class="return-links reveal">
+        <a class="return-link" href={`${base}/braid/`}>Return to braid &rarr;</a>
+      </div>
+    </section>
+  </main>
 
   <Footer slot="footer" />
 </Layout>
 
 <style>
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  .network-page {
+    padding-bottom: var(--space-2xl);
+  }
+
+  /* A. Page header */
+  .page-header {
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    color: var(--color-text);
     margin-bottom: var(--space-lg);
+    line-height: 1.3;
   }
 
-  h1 {
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    margin-bottom: var(--space-xl);
-  }
-
-  .page-lede {
-    max-width: var(--max-width-narrow);
-  }
-
-  .page-lede p {
-    font-size: var(--text-base);
+  .page-subtitle {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
     line-height: 1.85;
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-md);
+    font-style: italic;
   }
 
-  /* --- Plate breakout --- */
-  .plate-break {
-    padding: var(--space-2xl) 0;
-  }
-
-  .plate-container {
-    max-width: min(92vw, 70rem);
-    margin: 0 auto;
+  /* Reading column */
+  .reading-col {
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-inline: auto;
     padding: 0 var(--space-lg);
   }
 
-  .network-figure {
-    margin: 0;
+  .prose-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .prose-section p {
+    font-size: var(--text-base);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .prose-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    color: var(--color-text);
+    margin-bottom: var(--space-xl);
+    line-height: 1.4;
+  }
+
+  /* Figure plates */
+  .fig-plate {
+    max-width: min(90vw, 64rem);
+    margin: var(--space-2xl) auto;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .fig-plate img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
   }
 
   .plate-caption {
-    margin-top: var(--space-lg);
-    font-size: 0.9375rem;
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
     line-height: 1.75;
     color: var(--color-text-dim);
-    max-width: var(--max-width-narrow);
   }
 
-  /* --- Prose --- */
-  .prose-block p {
-    font-size: var(--text-base);
-    line-height: 1.85;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-md);
-    max-width: var(--max-width-narrow);
+  /* Return link */
+  .return-links {
+    padding: var(--space-2xl) 0;
+    border-top: 1px solid var(--color-rule);
   }
 
-  /* --- Notes --- */
-  .notes-block {
-    padding-top: var(--space-md);
-  }
-
-  .notes-list {
-    margin-top: var(--space-lg);
-    padding-left: 1.5em;
-    list-style: decimal;
-  }
-
-  .notes-list li {
-    font-size: var(--text-sm);
-    line-height: 1.8;
+  .return-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
     color: var(--color-text-dim);
-    margin-bottom: var(--space-md);
+    transition: color 0.2s ease;
   }
 
-  .notes-list li a {
-    color: var(--color-accent-dim);
-  }
-
-  .notes-list li a:hover {
+  .return-link:hover {
     color: var(--color-accent);
   }
 
-  .notes-list code {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-    color: var(--color-text-secondary);
+  @media (max-width: 768px) {
+    .page-header {
+      padding: var(--space-lg) var(--space-md) var(--space-xl);
+    }
+
+    .reading-col {
+      padding: 0 var(--space-md);
+    }
+
+    .fig-plate {
+      margin-left: calc(-1 * var(--space-md));
+      margin-right: calc(-1 * var(--space-md));
+      max-width: calc(100% + var(--space-md) * 2);
+      transform: none;
+    }
   }
 </style>

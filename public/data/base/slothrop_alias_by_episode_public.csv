@@ -1,0 +1,72 @@
+part_index,episode_index,episode_id,episode_label,surface_form,alias_group,mention_count,share_within_slothrop_mentions,is_canonical_surface,confidence_flag
+1,3,1.03,Part 1 Episode 3 (1.03),Slothrop,canonical_surname,7,0.8750,yes,registry_default_surname_mapping
+1,3,1.03,Part 1 Episode 3 (1.03),Lt. Tyrone Slothrop,canonical_titled_name,1,0.1250,yes,direct_titled_name
+1,4,1.04,Part 1 Episode 4 (1.04),Slothrop,canonical_surname,41,0.9762,yes,registry_default_surname_mapping
+1,4,1.04,Part 1 Episode 4 (1.04),Tyrone Slothrop,canonical_full_name,1,0.0238,yes,direct_full_name
+1,8,1.08,Part 1 Episode 8 (1.08),Slothrop,canonical_surname,6,1.0000,yes,registry_default_surname_mapping
+1,10,1.10,Part 1 Episode 10 (1.10),Slothrop,canonical_surname,32,0.9412,yes,registry_default_surname_mapping
+1,10,1.10,Part 1 Episode 10 (1.10),Lt. Tyrone Slothrop,canonical_titled_name,1,0.0294,yes,direct_titled_name
+1,10,1.10,Part 1 Episode 10 (1.10),Tyrone Slothrop,canonical_full_name,1,0.0294,yes,direct_full_name
+1,12,1.12,Part 1 Episode 12 (1.12),Slothrop,canonical_surname,4,1.0000,yes,registry_default_surname_mapping
+1,13,1.13,Part 1 Episode 13 (1.13),Slothrop,canonical_surname,14,1.0000,yes,registry_default_surname_mapping
+1,15,1.15,Part 1 Episode 15 (1.15),Slothrop,canonical_surname,16,1.0000,yes,registry_default_surname_mapping
+1,17,1.17,Part 1 Episode 17 (1.17),Slothrop,canonical_surname,5,1.0000,yes,registry_default_surname_mapping
+2,22,2.01,Part 2 Episode 1 (2.01),Slothrop,canonical_surname,46,1.0000,yes,registry_default_surname_mapping
+2,23,2.02,Part 2 Episode 2 (2.02),Slothrop,canonical_surname,74,0.9867,yes,registry_default_surname_mapping
+2,23,2.02,Part 2 Episode 2 (2.02),Tyrone Slothrop,canonical_full_name,1,0.0133,yes,direct_full_name
+2,24,2.03,Part 2 Episode 3 (2.03),Slothrop,canonical_surname,62,1.0000,yes,registry_default_surname_mapping
+2,25,2.04,Part 2 Episode 4 (2.04),Slothrop,canonical_surname,2,1.0000,yes,registry_default_surname_mapping
+2,26,2.05,Part 2 Episode 5 (2.05),Slothrop,canonical_surname,25,1.0000,yes,registry_default_surname_mapping
+2,27,2.06,Part 2 Episode 6 (2.06),Slothrop,canonical_surname,20,1.0000,yes,registry_default_surname_mapping
+2,28,2.07,Part 2 Episode 7 (2.07),Slothrop,canonical_surname,61,0.9683,yes,registry_default_surname_mapping
+2,28,2.07,Part 2 Episode 7 (2.07),Ian Scuffling,alternate_identity,2,0.0317,no,registry_alias_distinctive
+2,29,2.08,Part 2 Episode 8 (2.08),Slothrop,canonical_surname,9,1.0000,yes,registry_default_surname_mapping
+3,30,3.01,Part 3 Episode 1 (3.01),Slothrop,canonical_surname,45,0.8824,yes,registry_default_surname_mapping
+3,30,3.01,Part 3 Episode 1 (3.01),Ian Scuffling,alternate_identity,3,0.0588,no,registry_alias_distinctive
+3,30,3.01,Part 3 Episode 1 (3.01),Schwarzknabe,alternate_identity,3,0.0588,no,registry_alias_distinctive
+3,31,3.02,Part 3 Episode 2 (3.02),Slothrop,canonical_surname,54,0.9474,yes,registry_default_surname_mapping
+3,31,3.02,Part 3 Episode 2 (3.02),Ian Scuffling,alternate_identity,3,0.0526,no,registry_alias_distinctive
+3,33,3.04,Part 3 Episode 4 (3.04),Slothrop,canonical_surname,40,1.0000,yes,registry_default_surname_mapping
+3,35,3.06,Part 3 Episode 6 (3.06),Slothrop,canonical_surname,45,0.8036,yes,registry_default_surname_mapping
+3,35,3.06,Part 3 Episode 6 (3.06),Rocketman,alternate_identity,11,0.1964,no,registry_alias_distinctive
+3,36,3.07,Part 3 Episode 7 (3.07),Slothrop,canonical_surname,53,0.8030,yes,registry_default_surname_mapping
+3,36,3.07,Part 3 Episode 7 (3.07),Rocketman,alternate_identity,13,0.1970,no,registry_alias_distinctive
+3,38,3.09,Part 3 Episode 9 (3.09),Slothrop,canonical_surname,9,1.0000,yes,registry_default_surname_mapping
+3,39,3.10,Part 3 Episode 10 (3.10),Slothrop,canonical_surname,19,0.9500,yes,registry_default_surname_mapping
+3,39,3.10,Part 3 Episode 10 (3.10),Rocketman,alternate_identity,1,0.0500,no,registry_alias_distinctive
+3,41,3.12,Part 3 Episode 12 (3.12),Slothrop,canonical_surname,44,0.9362,yes,registry_default_surname_mapping
+3,41,3.12,Part 3 Episode 12 (3.12),Rocketman,alternate_identity,3,0.0638,no,registry_alias_distinctive
+3,43,3.14,Part 3 Episode 14 (3.14),Slothrop,canonical_surname,35,0.9211,yes,registry_default_surname_mapping
+3,43,3.14,Part 3 Episode 14 (3.14),Rocketman,alternate_identity,3,0.0789,no,registry_alias_distinctive
+3,44,3.15,Part 3 Episode 15 (3.15),Slothrop,canonical_surname,14,1.0000,yes,registry_default_surname_mapping
+3,45,3.16,Part 3 Episode 16 (3.16),Slothrop,canonical_surname,15,1.0000,yes,registry_default_surname_mapping
+3,46,3.17,Part 3 Episode 17 (3.17),Slothrop,canonical_surname,1,1.0000,yes,registry_default_surname_mapping
+3,47,3.18,Part 3 Episode 18 (3.18),Slothrop,canonical_surname,5,1.0000,yes,registry_default_surname_mapping
+3,48,3.19,Part 3 Episode 19 (3.19),Slothrop,canonical_surname,42,1.0000,yes,registry_default_surname_mapping
+3,49,3.20,Part 3 Episode 20 (3.20),Slothrop,canonical_surname,46,0.9388,yes,registry_default_surname_mapping
+3,49,3.20,Part 3 Episode 20 (3.20),Rocketman,alternate_identity,3,0.0612,no,registry_alias_distinctive
+3,51,3.22,Part 3 Episode 22 (3.22),Slothrop,canonical_surname,26,1.0000,yes,registry_default_surname_mapping
+3,54,3.25,Part 3 Episode 25 (3.25),Slothrop,canonical_surname,22,0.9565,yes,registry_default_surname_mapping
+3,54,3.25,Part 3 Episode 25 (3.25),Tyrone Slothrop,canonical_full_name,1,0.0435,yes,direct_full_name
+3,55,3.26,Part 3 Episode 26 (3.26),Slothrop,canonical_surname,17,1.0000,yes,registry_default_surname_mapping
+3,57,3.28,Part 3 Episode 28 (3.28),Slothrop,canonical_surname,50,0.9804,yes,registry_default_surname_mapping
+3,57,3.28,Part 3 Episode 28 (3.28),Tyrone Slothrop,canonical_full_name,1,0.0196,yes,direct_full_name
+3,58,3.29,Part 3 Episode 29 (3.29),Slothrop,canonical_surname,1,1.0000,yes,registry_default_surname_mapping
+3,59,3.30,Part 3 Episode 30 (3.30),Slothrop,canonical_surname,1,0.5000,yes,registry_default_surname_mapping
+3,59,3.30,Part 3 Episode 30 (3.30),Tyrone Slothrop,canonical_full_name,1,0.5000,yes,direct_full_name
+3,60,3.31,Part 3 Episode 31 (3.31),Slothrop,canonical_surname,25,0.7576,yes,registry_default_surname_mapping
+3,60,3.31,Part 3 Episode 31 (3.31),Rocketman,alternate_identity,7,0.2121,no,registry_alias_distinctive
+3,60,3.31,Part 3 Episode 31 (3.31),Tyrone Slothrop,canonical_full_name,1,0.0303,yes,direct_full_name
+3,61,3.32,Part 3 Episode 32 (3.32),Slothrop,canonical_surname,2,1.0000,yes,registry_default_surname_mapping
+4,62,4.01,Part 4 Episode 1 (4.01),Slothrop,canonical_surname,10,0.8333,yes,registry_default_surname_mapping
+4,62,4.01,Part 4 Episode 1 (4.01),Rocketman,alternate_identity,1,0.0833,no,registry_alias_distinctive
+4,62,4.01,Part 4 Episode 1 (4.01),Tyrone Slothrop,canonical_full_name,1,0.0833,yes,direct_full_name
+4,63,4.02,Part 4 Episode 2 (4.02),Slothrop,canonical_surname,10,1.0000,yes,registry_default_surname_mapping
+4,65,4.04,Part 4 Episode 4 (4.04),Slothrop,canonical_surname,9,1.0000,yes,registry_default_surname_mapping
+4,66,4.05,Part 4 Episode 5 (4.05),Slothrop,canonical_surname,1,1.0000,yes,registry_default_surname_mapping
+4,67,4.06,Part 4 Episode 6 (4.06),Slothrop,canonical_surname,30,0.9677,yes,registry_default_surname_mapping
+4,67,4.06,Part 4 Episode 6 (4.06),Tyrone Slothrop,canonical_full_name,1,0.0323,yes,direct_full_name
+4,69,4.08,Part 4 Episode 8 (4.08),Slothrop,canonical_surname,1,1.0000,yes,registry_default_surname_mapping
+4,73,4.12,Part 4 Episode 12 (4.12),Slothrop,canonical_surname,13,0.8125,yes,registry_default_surname_mapping
+4,73,4.12,Part 4 Episode 12 (4.12),Rocketman,alternate_identity,2,0.1250,no,registry_alias_distinctive
+4,73,4.12,Part 4 Episode 12 (4.12),Tyrone Slothrop,canonical_full_name,1,0.0625,yes,direct_full_name

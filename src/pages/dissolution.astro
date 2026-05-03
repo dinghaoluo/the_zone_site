@@ -2,53 +2,523 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
-import Section from "../components/Section.astro";
+
+import aliasText from "../../public/data/base/slothrop_alias_by_episode_public.csv?raw";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+/* ── Parse alias CSV ──────────────────────────────────────── */
+type AliasRow = {
+  episode_id: string;
+  surface_form: string;
+  alias_group: string;
+  share: number;
+  is_canonical: boolean;
+};
+
+const aliasRows: AliasRow[] = [];
+for (const line of aliasText.trim().split('\n').slice(1)) {
+  const cols = line.split(',');
+  aliasRows.push({
+    episode_id: cols[2],
+    surface_form: cols[4],
+    alias_group: cols[5],
+    share: parseFloat(cols[7]) || 0,
+    is_canonical: cols[8] === 'yes',
+  });
+}
+
+/* ── Group by episode, keep only those with alias diversity ─ */
+type EpAlias = {
+  episode_id: string;
+  segments: { form: string; share: number; colour: string }[];
+  hasAlias: boolean;
+};
+
+const ALIAS_COLOURS: Record<string, string> = {
+  'Rocketman': '#c4a35a',
+  'Ian Scuffling': '#6B8E6B',
+  'Schwarzknabe': '#4A8B8B',
+};
+const CANONICAL_COLOUR = '#4A90D9';
+const OTHER_ALIAS_COLOUR = '#6a6860';
+
+const byEp = new Map();
+for (const r of aliasRows) {
+  if (!byEp.has(r.episode_id)) byEp.set(r.episode_id, []);
+  byEp.get(r.episode_id).push(r);
+}
+
+const aliasEpisodes: EpAlias[] = [];
+for (const [eid, rows] of byEp) {
+  const hasAlias = rows.some((r: AliasRow) => !r.is_canonical);
+  const segments = rows.map((r: AliasRow) => {
+    let colour = CANONICAL_COLOUR;
+    if (!r.is_canonical) {
+      colour = ALIAS_COLOURS[r.surface_form] || OTHER_ALIAS_COLOUR;
+    }
+    return { form: r.surface_form, share: r.share, colour };
+  });
+  segments.sort((a: any, b: any) => (a.colour === CANONICAL_COLOUR ? -1 : 1));
+  aliasEpisodes.push({ episode_id: eid, segments, hasAlias });
+}
+
+/* ── Build SVG geometry for alias timeline ────────────────── */
+const TIMELINE_BAR_H = 6;
+const TIMELINE_ROW_H = 16;
+const TIMELINE_LABEL_W = 36;
+const TIMELINE_BAR_W = 260;
+const timelineH = aliasEpisodes.length * TIMELINE_ROW_H + 8;
+const timelineW = TIMELINE_LABEL_W + TIMELINE_BAR_W + 4;
+
+type BarSeg = { x: number; w: number; colour: string; form: string };
+type TimelineRow = { y: number; eid: string; hasAlias: boolean; segs: BarSeg[] };
+
+const timelineRows: TimelineRow[] = aliasEpisodes.map((ep, i) => {
+  const y = 4 + i * TIMELINE_ROW_H;
+  let x = TIMELINE_LABEL_W;
+  const segs: BarSeg[] = ep.segments.map(s => {
+    const w = s.share * TIMELINE_BAR_W;
+    const seg = { x, w, colour: s.colour, form: s.form };
+    x += w;
+    return seg;
+  });
+  return { y, eid: ep.episode_id, hasAlias: ep.hasAlias, segs };
+});
+
+/* ── Part labels for annotation ───────────────────────────── */
+const partStarts: { label: string; y: number }[] = [];
+let lastPart = '';
+for (const row of timelineRows) {
+  const part = row.eid.split('.')[0];
+  if (part !== lastPart) {
+    partStarts.push({ label: 'Part ' + part, y: row.y });
+    lastPart = part;
+  }
+}
 ---
 
-<Layout title="Dissolution" description="Following Slothrop through names, aliases, appearances, and absences.">
+<Layout title="Slothrop's Dissolution" description="A deep-dive into the novel's longest plotline: Slothrop's structural dissolution from maximum presence to distributed trace.">
   <Nav slot="nav" />
 
-  <Section>
-    <div class="page-head reveal visible">
-      <p class="eyebrow">02</p>
-      <h1>Slothrop, thinning</h1>
-      <div class="page-lede">
+  <main class="dissolution">
+    <!-- A. PAGE HEADER -->
+    <section class="page-header">
+      <a class="back-link" href={`${base}/braid/`}>&larr; Back to the braid</a>
+      <h1 class="page-title reveal">slothrop&rsquo;s dissolution</h1>
+      <p class="page-subtitle reveal">
+        A deep-dive into the novel&rsquo;s longest plotline and its structural
+        paradox: the thread that governs the most episodes is the thread
+        that narrates its own disappearance.
+      </p>
+    </section>
+
+    <!-- B. FRAMING PROSE -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
         <p>
-          This section follows Slothrop through names, aliases, appearances,
-          companions, and absences. The point is not to decide when he
-          "disappears", but to show how unevenly the book distributes his
-          disappearance.
+          Tyrone Slothrop is present in more episodes than any other character in
+          <em>Gravity&rsquo;s Rainbow</em>, and yet his plotline&rsquo;s defining
+          structural event is not a climax but a dispersal. From Part 1&rsquo;s
+          rocket-body correlation through Part 2&rsquo;s compromised pursuit to
+          Part 3&rsquo;s long dissolution into aliases, costumes, and Puritan
+          genealogy, the arc moves from maximum institutional attention to
+          near-total structural absence. By Part 4, the protagonist appears only
+          as trace: a scattering that registers not as dramatic crisis but as
+          settled theological condition.
+        </p>
+        <p>
+          What the data below makes visible is the shape of that disappearance.
+          Not a sudden vanishing but a structural diminuendo: presence
+          density declining, alias diversity rising, the orbit of co-characters
+          thinning and rotating, until the name &lsquo;Slothrop&rsquo; becomes one
+          surface among several, and then barely present at all.
         </p>
       </div>
-    </div>
-  </Section>
+    </section>
+
+    <!-- C. F11 PLATE — DISSOLUTION FIELD -->
+    <figure class="fig-plate reveal">
+      <img
+        src={`${base}/figures/step_2e/F11_slothrop_dissolution_field.png`}
+        alt="Slothrop's textual presence across seventy-three episodes: mention density above, alias diversity and canonical share below"
+        loading="lazy"
+      />
+      <figcaption class="plate-caption">
+        Slothrop&rsquo;s textual presence across seventy-three episodes. The upper
+        field tracks mention density; the lower tracks alias diversity and
+        canonical share. The crossing point (where aliases begin to rival
+        the canonical name) marks the structural onset of dissolution,
+        not a single moment but a zone of transition stretching across Part 3.
+      </figcaption>
+    </figure>
+
+    <!-- D. THE THREE PHASES -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
+        <h2 class="section-heading">The three phases</h2>
+        <p>
+          The dissolution unfolds in three structural phases.
+        </p>
+        <p>
+          In Part 1, Slothrop is hyper-present: high mention density, zero alias
+          diversity, a stable orbit of institutional handlers (Tantivy, Katje,
+          Pointsman&rsquo;s apparatus). The name &lsquo;Slothrop&rsquo; accounts for
+          every reference to him. He is legible, observed, experimentally
+          controlled: a body fully captured by the novel&rsquo;s
+          institutional frame.
+        </p>
+        <p>
+          Part 2 sustains the density but shifts the orbit. Slothrop pursues
+          across the Riviera, his co-characters rotating from London handlers to
+          Zone contacts. Alias diversity remains low; Ian Scuffling appears
+          in 2.07 as the first alternate identity, but the canonical name still
+          dominates. The pursuit is compromised but the protagonist is still
+          structurally coherent.
+        </p>
+        <p>
+          Part 3 is the long collapse. At 3.06, the Rocketman costume appears and
+          alias diversity spikes: identity becoming performance rather than
+          pursuit. By 3.21, the scattering function governs, and the data shows
+          it: canonical share drops as Schwarzknabe, Rocketman, and other surface
+          forms compete with &lsquo;Slothrop&rsquo; for textual presence. The orbit
+          disperses; co-characters rotate rapidly, no single companion
+          persists. By 3.31, the braid has thinned to a single strand at
+          half-strength, carried only by comedy and pop-song.
+        </p>
+      </div>
+    </section>
+
+    <!-- E. ALIAS TIMELINE -->
+    <section class="reading-col">
+      <div class="alias-timeline reveal">
+        <h2 class="section-heading">Identity fragmentation</h2>
+        <p class="timeline-note">
+          Each bar represents one episode where Slothrop is named. Blue is the
+          canonical surname; other colours mark aliases as they appear and grow.
+        </p>
+
+        <div class="timeline-legend">
+          <span class="legend-item">
+            <span class="legend-swatch" style={`background: ${CANONICAL_COLOUR}`}></span>
+            Slothrop
+          </span>
+          <span class="legend-item">
+            <span class="legend-swatch" style={`background: ${ALIAS_COLOURS['Rocketman']}`}></span>
+            Rocketman
+          </span>
+          <span class="legend-item">
+            <span class="legend-swatch" style={`background: ${ALIAS_COLOURS['Ian Scuffling']}`}></span>
+            Ian Scuffling
+          </span>
+          <span class="legend-item">
+            <span class="legend-swatch" style={`background: ${ALIAS_COLOURS['Schwarzknabe']}`}></span>
+            Schwarzknabe
+          </span>
+        </div>
+
+        <div class="timeline-svg-wrap">
+          <svg
+            class="timeline-svg"
+            viewBox={`0 0 ${timelineW} ${timelineH}`}
+            preserveAspectRatio="xMinYMin meet"
+            role="img"
+            aria-label="Alias timeline: stacked bars showing Slothrop's identity fragmentation across episodes"
+          >
+            {/* Part boundary annotations */}
+            {partStarts.map(ps => (
+              <text
+                x={TIMELINE_LABEL_W + TIMELINE_BAR_W + 2}
+                y={ps.y + TIMELINE_BAR_H}
+                class="timeline-part-label"
+                fill="var(--color-text-dim)"
+              >
+                {ps.label}
+              </text>
+            ))}
+
+            {/* Rows */}
+            {timelineRows.map(row => (
+              <g class:list={['timeline-row', { 'has-alias': row.hasAlias }]}>
+                {/* Episode ID label */}
+                <text
+                  x={TIMELINE_LABEL_W - 4}
+                  y={row.y + TIMELINE_BAR_H}
+                  text-anchor="end"
+                  class="timeline-ep-label"
+                  fill={row.hasAlias ? 'var(--color-text-secondary)' : 'var(--color-text-dim)'}
+                >
+                  {row.eid}
+                </text>
+
+                {/* Stacked bar segments */}
+                {row.segs.map(seg => (
+                  <rect
+                    x={seg.x}
+                    y={row.y}
+                    width={Math.max(seg.w, 0.5)}
+                    height={TIMELINE_BAR_H}
+                    rx="1"
+                    fill={seg.colour}
+                    opacity={row.hasAlias ? 0.85 : 0.35}
+                  >
+                    <title>{seg.form}</title>
+                  </rect>
+                ))}
+              </g>
+            ))}
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- F. F12 PLATE — ROCKET TRANSFER -->
+    <figure class="fig-plate reveal">
+      <img
+        src={`${base}/figures/step_2e/F12_slothrop_to_rocket_transfer.png`}
+        alt="Structural transfer from person-centric to rocket-centric narrative across the novel"
+        loading="lazy"
+      />
+      <figcaption class="plate-caption">
+        The structural transfer from person-centric to rocket-centric narrative.
+        As Slothrop&rsquo;s presence thins through Part 3, the rocket (and
+        the plotlines attached to it: Blicero&rsquo;s 00000, Enzian&rsquo;s
+        00001) absorbs the structural weight the protagonist releases.
+        The novel&rsquo;s centre of gravity shifts from a body to a trajectory.
+      </figcaption>
+    </figure>
+
+    <!-- G. THE THEOLOGICAL TERMINUS -->
+    <section class="reading-col">
+      <div class="prose-section reveal">
+        <h2 class="section-heading">The theological terminus</h2>
+        <p>
+          Part 4 resolves the dissolution as theology rather than drama. Slothrop
+          appears at background intensity in most of the final twelve episodes;
+          his scattering a settled condition, no longer an event. The
+          single exception is 4.06, where mention density surges alongside the
+          novel&rsquo;s highest intensity of elect-preterite theology: a terminal
+          statement that reframes the scattered protagonist within the deepest
+          register of Puritan damnation. The preterite body cannot be saved, only
+          scattered.
+        </p>
+        <p>
+          In 4.12, Slothrop&rsquo;s line registers at moderate intensity:
+          one thread among four converging in the Orpheus Theatre&rsquo;s frozen
+          descent. The protagonist who began as the novel&rsquo;s most observed
+          body ends as the novel&rsquo;s most distributed trace, present
+          everywhere and nowhere, scattered across the text like the fragments
+          of a hymn no one can quite remember.
+        </p>
+      </div>
+    </section>
+
+    <!-- RETURN LINK -->
+    <section class="reading-col">
+      <div class="return-links reveal">
+        <a class="return-link" href={`${base}/braid/`}>Return to braid &rarr;</a>
+      </div>
+    </section>
+  </main>
 
   <Footer slot="footer" />
 </Layout>
 
 <style>
-  .eyebrow {
+  .dissolution {
+    padding-bottom: var(--space-2xl);
+  }
+
+  /* A. Page header */
+  .page-header {
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-inline: auto;
+    padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+  }
+
+  .back-link {
+    display: inline-block;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-xl);
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
     color: var(--color-accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin-bottom: var(--space-lg);
+    line-height: 1.3;
+  }
+
+  .page-subtitle {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  /* Reading column */
+  .reading-col {
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-inline: auto;
+    padding: 0 var(--space-lg);
+  }
+
+  .prose-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .prose-section p {
+    font-size: var(--text-base);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
     margin-bottom: var(--space-lg);
   }
 
-  h1 {
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  .prose-section p:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    color: var(--color-text);
     margin-bottom: var(--space-xl);
+    line-height: 1.4;
   }
 
-  .page-lede {
-    max-width: var(--max-width-narrow);
+  /* Figure plates */
+  .fig-plate {
+    max-width: min(90vw, 64rem);
+    margin: var(--space-2xl) auto;
+    margin-left: 50%;
+    transform: translateX(-50%);
   }
 
-  .page-lede p {
-    font-size: var(--text-base);
-    line-height: 1.85;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-md);
+  .fig-plate img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+  }
+
+  .plate-caption {
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    line-height: 1.75;
+    color: var(--color-text-dim);
+  }
+
+  /* E. Alias timeline */
+  .alias-timeline {
+    padding: var(--space-xl) 0 var(--space-2xl);
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .timeline-note {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-lg);
+  }
+
+  .timeline-legend {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-lg);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-dim);
+  }
+
+  .legend-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 6px;
+    border-radius: 1px;
+  }
+
+  .timeline-svg-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .timeline-svg {
+    display: block;
+    width: 100%;
+    max-width: 36rem;
+    height: auto;
+  }
+
+  .timeline-ep-label {
+    font-size: 3.5px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+
+  .timeline-part-label {
+    font-size: 3px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Return link */
+  .return-links {
+    padding: var(--space-2xl) 0;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .return-link {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    color: var(--color-text-dim);
+    transition: color 0.2s ease;
+  }
+
+  .return-link:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      padding: var(--space-lg) var(--space-md) var(--space-xl);
+    }
+
+    .reading-col {
+      padding: 0 var(--space-md);
+    }
+
+    .fig-plate {
+      margin-left: calc(-1 * var(--space-md));
+      margin-right: calc(-1 * var(--space-md));
+      max-width: calc(100% + var(--space-md) * 2);
+      transform: none;
+    }
+
+    .timeline-svg {
+      width: max(100%, 320px);
+    }
   }
 </style>

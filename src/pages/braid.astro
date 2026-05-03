@@ -9,6 +9,7 @@ import quotesText from "../data/episode_anchor_quotes_APPROVED_PUBLIC.csv?raw";
 import modalText from "../../public/data/step_3a/phase_3a_modal_intensity_matrix_public.csv?raw";
 import recurrenceText from "../../public/data/step_3a/phase_3a_recurrence_intensity_matrix_public.csv?raw";
 import plotlineArcsRaw from "../data/plotline_arc_descriptions.json";
+import braidMatrixText from "../../public/data/step_3a/phase_3a_braid_intensity_matrix_public.csv?raw";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -89,6 +90,32 @@ const RL: any = {
 
 const HINGES = new Set(["1.01","1.04","1.14","2.01","3.01","3.11","3.22","3.29","4.05","4.12"]);
 
+const HINGE_COMMENTARIES: Record<string, string> = {
+  "1.01": "The novel opens by establishing its modal atmosphere before committing to any plotline. The screaming across the sky, Pirate’s dream of evacuation, the rocket’s physics as governing figure: these are not character introductions but threshold conditions. Every subsequent episode enters through what this one sets.",
+  "1.04": "Slothrop’s sexual map coincides with V-2 impact sites, and from this coincidence the entire pursuit unfolds. Without the correlation that locks into place here, neither Pointsman’s programme nor Slothrop’s quest has an object. This is the braid’s first structural commitment: a body that desires and a body that is measured, discovered to be the same body.",
+  "1.14": "Blicero, Katje, and Gottfried arrive fully formed in a single episode at maximum intensity. The fairy-tale script, the erotic command structure, the 00000 rocket as terminal parabola: all present from their first appearance. What this episode establishes, Part 4 will fulfil; it is the longest-range structural commitment in the novel.",
+  "2.01": "The novel pivots from London’s institutional compression to the Riviera’s operational games. Slothrop converts from observed body to active pursuer; Pointsman’s apparatus converts from revelation to operational pursuit. The braid’s geometry shifts accordingly: from institutional density to pursuit-driven linearity.",
+  "3.01": "Part 3’s immense middle section opens with Slothrop in maximum pursuit mode, crossing into the Zone. The stripped-back modal palette signals what is coming: the Zone dissolves the institutional frames that made pursuit legible. This episode launches the scattering it does not yet name.",
+  "3.11": "One of the novel’s two most structurally dense episodes. Pökler arrives at Dora/Mittelwerk; individual engineering memory confronts the camp infrastructure it served. Four historical-recurrence registers activate simultaneously. Technical complicity is not adjacent to atrocity here; it is structurally identical with it. The novel’s ethical argument is most exposed at this node.",
+  "3.22": "The Schwarzkommando revelation reaches full structural legibility. Colonial genocide and species extinction peak; the counter-text’s messianic search is articulated against the Final Zero’s self-extinction doctrine. The colonial-historical line achieves the weight it will carry into Part 4’s convergence.",
+  "3.29": "Pökler’s plotline reaches its terminal mourning at maximum intensity. The Corporate City-state passage names the fantasy-template that Peenemünde and Mittelwerke realised: film as blueprint for technocratic complicity. The P04 line closes here; it will not appear in Part 4. Family loss has become inseparable from rocket production, and the complicity is irrevocable.",
+  "4.05": "The 00000 launch: Gottfried sealed inside the Imipolex shroud, Blicero’s fairy-tale script fulfilled. ‘Of course it happened. Of course it didn’t happen.’ The sacrificial event is simultaneously fact and unintegratable; the novel’s central epistemological paradox enacted as structural climax. Everything that 1.14 established is delivered here.",
+  "4.12": "The novel’s terminal episode, matched with 3.11 at peak structural density. Four plotlines converge: Blicero’s sacrifice, Enzian’s counter-text, Slothrop’s scattering, the film-body recurrence. The Orpheus Theatre fuses rocket, audience, and text into a single suspended instant. The descent never quite arrives. The braid holds.",
+};
+
+const HINGE_ATMOSPHERE: Record<string, string> = {
+  "1.01": "Science and theology saturate the novel’s threshold simultaneously: Pavlovian conditioning and Puritan damnation as twin frameworks for the body under the rocket’s arc.",
+  "1.04": "Science-control and sexuality-domination fuse at the correlation’s source. The body that desires and the body that is measured are discovered to be the same body.",
+  "1.14": "Sexuality-domination and rocket-terminal at maximum, alongside species-extinction recurrence. The fairy-tale’s erotic cruelty scaled to planetary extermination logic.",
+  "2.01": "Paranoia-conspiracy peaks as Slothrop senses the apparatus; corporate-military web at full density as the Riviera’s operational structure reveals itself. The shift from passive observation to active pursuit is also a shift from institutional to paranoid epistemology.",
+  "3.01": "Corporate-military web in stripped form. The Zone’s dissolved geography requires no paranoia; power operates openly as debris, infrastructure, and ruin.",
+  "3.11": "Forced labour, Holocaust adjacency, technocratic continuation, and colonial genocide activate simultaneously. The novel’s four historical debts concentrated in a single structural node. Film-body mode makes the camp visible as projected image.",
+  "3.22": "Colonial genocide and species extinction at peak. The theological register sounds alongside them: the Schwarzkommando’s survival is framed as soteriological question, not merely political.",
+  "3.29": "Corporate-military and film-body at maximum. The Metropolis fantasy as technocratic blueprint; cinema providing the ideology that industry enacts.",
+  "4.05": "Rocket-terminal, sexuality-domination, and theology peak simultaneously. The launch is sacrificial consummation: the Oven’s warmth not as threat but as desired terminus.",
+  "4.12": "Terminal-rocket-afterlife, corporate-military, and sexuality-domination at triple maximum. The Orpheus Theatre collapses all modal registers into one frozen instant; the novel ends not in resolution but in the permanent present tense of the approaching descent.",
+};
+
 const STRAND_LABELS = [
   { id: "P01", short: "Slothrop" },
   { id: "P02", short: "Blicero" },
@@ -99,6 +126,66 @@ const STRAND_LABELS = [
   { id: "P07", short: "Tchitcherine" },
   { id: "P08", short: "Film/Body" },
 ];
+
+/* ── Braid SVG geometry (build-time) ─────────────────────── */
+const STRAND_COLORS: Record<string, string> = {
+  P01: '#4A90D9', P02: '#D94A4A', P03: '#D9A84A', P04: '#8B6914',
+  P05: '#6B8E6B', P06: '#7B68AE', P07: '#4A8B8B', P08: '#B85C8B',
+};
+const PLOTLINE_KEYS = ['P01','P02','P03','P04','P05','P06','P07','P08'];
+const braidMatrix = parseCSV(braidMatrixText);
+const EPISODE_IDS = Array.from(braidMatrix.keys());
+
+const COL_W = 10;
+const COL_GAP = 2;
+const ROW_H = 11;
+const LABEL_W = 30;
+const PAD_TOP = 4;
+const TOTAL_W = LABEL_W + EPISODE_IDS.length * (COL_W + COL_GAP);
+const TOTAL_H = PAD_TOP + PLOTLINE_KEYS.length * ROW_H + 4;
+
+const INTENSITY_OPACITY = [0.04, 0.22, 0.52, 1.0];
+const INTENSITY_HEIGHT  = [2, 4, 6, 8];
+
+const partBoundaries: number[] = [];
+const PART_BOUNDS = [
+  { after: '1.21', before: '2.01' },
+  { after: '2.08', before: '3.01' },
+  { after: '3.32', before: '4.01' },
+];
+for (const b of PART_BOUNDS) {
+  const ai = EPISODE_IDS.indexOf(b.after);
+  const bi = EPISODE_IDS.indexOf(b.before);
+  if (ai >= 0 && bi >= 0) {
+    partBoundaries.push(LABEL_W + ai * (COL_W + COL_GAP) + COL_W + COL_GAP / 2);
+  }
+}
+
+interface BraidCell { x: number; y: number; w: number; h: number; opacity: number; fill: string; }
+interface BraidCol { epId: string; x: number; isHinge: boolean; }
+
+const braidCells: BraidCell[] = [];
+const braidCols: BraidCol[] = [];
+
+for (let ci = 0; ci < EPISODE_IDS.length; ci++) {
+  const eid = EPISODE_IDS[ci];
+  const row = braidMatrix.get(eid) || {};
+  const x = LABEL_W + ci * (COL_W + COL_GAP);
+  braidCols.push({ epId: eid, x, isHinge: HINGES.has(eid) });
+
+  for (let ri = 0; ri < PLOTLINE_KEYS.length; ri++) {
+    const pk = PLOTLINE_KEYS[ri];
+    const val = row[pk] || 0;
+    if (val === 0) continue;
+    const cellH = INTENSITY_HEIGHT[val];
+    const cy = PAD_TOP + ri * ROW_H + (ROW_H - cellH) / 2;
+    braidCells.push({
+      x: x + 1, y: cy, w: COL_W - 2, h: cellH,
+      opacity: INTENSITY_OPACITY[val],
+      fill: STRAND_COLORS[pk],
+    });
+  }
+}
 
 const plotlineArcs = (plotlineArcsRaw as any[]).map((a: any) => ({
   id: a.plotline_id,
@@ -111,6 +198,7 @@ type Ep = {
   synopsis: string; strands: string;
   quotes: { quote: string; note: string }[];
   atmosphere: string; registers: string;
+  hingeCommentary: string; hingeAtmosphere: string;
 };
 
 const episodes: Ep[] = unifiedData.map((u: any) => {
@@ -141,6 +229,8 @@ const episodes: Ep[] = unifiedData.map((u: any) => {
     quotes: quotesMap.get(u.episode_id) || [],
     atmosphere: modes.length ? 'Atmosphere: ' + modes.join(', ') + '.' : '',
     registers: regs.length ? 'Historical registers: ' + regs.join(', ') + '.' : '',
+    hingeCommentary: HINGE_COMMENTARIES[u.episode_id] || '',
+    hingeAtmosphere: HINGE_ATMOSPHERE[u.episode_id] || '',
   };
 });
 
@@ -157,23 +247,105 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   <main class="braid">
     <section class="braid-intro">
       <p class="intro-text reveal">
-        <em>Gravity&rsquo;s Rainbow</em> is a braid. Eight plotlines &mdash; pursuit,
-        sacrifice, counter-text, complicity, control, love, counter-line, and
-        image &mdash; weave through seventy-three episodes across four parts,
-        thickening where they govern structure, thinning where they yield. What
+        <em>Gravity&rsquo;s Rainbow</em> is a braid. Eight plotlines weave
+        through seventy-three episodes across four parts, thickening where they
+        govern structure, thinning where they yield: pursuit, sacrifice,
+        counter-text, complicity, control, love, counter-line, and image. What
         follows is the novel read as that braid: each episode placed in
         sequence, its active strands named, its structural work made visible.
-        Scroll as you would read.
+        Scroll as one would read.
       </p>
     </section>
 
     <div class="braid-scroll">
       <div class="braid-header" id="braid-header">
-        <div class="braid-header-inner">
-          <img
-            src={`${base}/figures/step_3a/F01_plotline_braid.png`}
-            alt="Eight plotlines braiding across seventy-three episodes"
-          />
+        <div class="braid-viz-wrap">
+          <svg
+            class="braid-viz"
+            viewBox={`0 0 ${TOTAL_W} ${TOTAL_H}`}
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Interactive braid: eight plotlines across seventy-three episodes"
+          >
+            {/* Strand labels (left edge) */}
+            {PLOTLINE_KEYS.map((pk, ri) => (
+              <text
+                class="braid-label"
+                x={LABEL_W - 3}
+                y={PAD_TOP + ri * ROW_H + ROW_H / 2 + 1}
+                text-anchor="end"
+                fill={STRAND_COLORS[pk]}
+                data-strand={pk}
+                style="cursor:pointer"
+              >
+                {pk}
+              </text>
+            ))}
+
+            {/* Hinge column highlights */}
+            {braidCols.filter(c => c.isHinge).map(c => (
+              <rect
+                x={c.x}
+                y={0}
+                width={COL_W}
+                height={TOTAL_H}
+                fill="var(--color-accent)"
+                opacity="0.06"
+                rx="1"
+              />
+            ))}
+
+            {/* Part boundary lines */}
+            {partBoundaries.map(bx => (
+              <line
+                x1={bx} y1={0} x2={bx} y2={TOTAL_H}
+                stroke="var(--color-text-dim)"
+                stroke-width="0.8"
+                stroke-dasharray="2,2"
+                opacity="0.5"
+              />
+            ))}
+
+            {/* Intensity cells */}
+            {braidCells.map(cell => (
+              <rect
+                x={cell.x}
+                y={cell.y}
+                width={cell.w}
+                height={cell.h}
+                rx="1.5"
+                fill={cell.fill}
+                opacity={cell.opacity}
+              />
+            ))}
+
+            {/* Clickable episode columns (transparent hit areas) */}
+            {braidCols.map(c => (
+              <rect
+                class="braid-col-hit"
+                x={c.x}
+                y={0}
+                width={COL_W}
+                height={TOTAL_H}
+                fill="transparent"
+                data-ep={c.epId}
+                style="cursor:pointer"
+              />
+            ))}
+
+            {/* Scroll cursor (moves via JS) */}
+            <rect
+              class="braid-cursor"
+              id="braid-cursor"
+              x={LABEL_W}
+              y={0}
+              width={COL_W}
+              height={TOTAL_H}
+              fill="var(--color-accent)"
+              opacity="0"
+              rx="1"
+            />
+          </svg>
         </div>
         <nav class="strand-nav" aria-label="Plotline arcs">
           {STRAND_LABELS.map(s => (
@@ -204,6 +376,12 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
               {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
             <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.hingeCommentary && (
+              <div class="hinge-commentary">
+                <span class="hinge-commentary-label">Why this is a hinge</span>
+                <p>{ep.hingeCommentary}</p>
+              </div>
+            )}
             {ep.strands && <p class="ep-meta">{ep.strands}</p>}
             {ep.quotes.map((q: { quote: string; note: string }) => (
               <blockquote class="pull-quote">
@@ -211,7 +389,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 <cite>{q.note}</cite>
               </blockquote>
             ))}
-            {ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>}
+            {ep.hingeAtmosphere ? (
+              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            ) : (
+              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            )}
             {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
           </article>
         ))}
@@ -219,8 +401,8 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
         <div class="part-transition reveal">
           <p>
             Part 1 ends with all eight strands established but unevenly
-            weighted &mdash; Slothrop&rsquo;s pursuit and the White Visitation&rsquo;s control
-            machinery dominate, while Enzian&rsquo;s counter-text and Tchitcherine&rsquo;s
+            weighted. Slothrop&rsquo;s pursuit and the White Visitation&rsquo;s control
+            machinery dominate; Enzian&rsquo;s counter-text and Tchitcherine&rsquo;s
             Soviet line remain subterranean. Part 2 compresses to eight episodes
             and shifts the structural engine: Slothrop moves south into the
             Zone&rsquo;s threshold, Pointsman&rsquo;s apparatus strains toward its
@@ -237,6 +419,12 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
               {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
             <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.hingeCommentary && (
+              <div class="hinge-commentary">
+                <span class="hinge-commentary-label">Why this is a hinge</span>
+                <p>{ep.hingeCommentary}</p>
+              </div>
+            )}
             {ep.strands && <p class="ep-meta">{ep.strands}</p>}
             {ep.quotes.map((q: { quote: string; note: string }) => (
               <blockquote class="pull-quote">
@@ -244,20 +432,25 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 <cite>{q.note}</cite>
               </blockquote>
             ))}
-            {ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>}
+            {ep.hingeAtmosphere ? (
+              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            ) : (
+              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            )}
             {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
           </article>
         ))}
 
         <div class="part-transition reveal">
           <p>
-            Part 3 is the explosion. Thirty-two episodes &mdash; nearly half the
-            novel &mdash; scatter across the Zone&rsquo;s dissolved geography. Slothrop
-            fragments into aliases; Enzian&rsquo;s Schwarzkommando and Tchitcherine&rsquo;s
-            counter-line claim structural weight they never had before; the
-            film-body-image strand surges through the Anubis sequence; and five
-            plotlines compete for architectural command where Part 1 gave that
-            authority to one or two. The braid doesn&rsquo;t loosen &mdash; it multiplies.
+            Part 3 is the explosion. Thirty-two episodes scatter across the
+            Zone&rsquo;s dissolved geography: nearly half the novel. Slothrop
+            fragments into aliases; Enzian&rsquo;s Schwarzkommando and
+            Tchitcherine&rsquo;s counter-line claim structural weight they never had
+            before; the film-body-image strand surges through the Anubis
+            sequence; five plotlines compete for architectural command where
+            Part 1 gave that authority to one or two. The braid does not
+            loosen. It multiplies.
           </p>
         </div>
 
@@ -283,6 +476,12 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
               {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
             <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.hingeCommentary && (
+              <div class="hinge-commentary">
+                <span class="hinge-commentary-label">Why this is a hinge</span>
+                <p>{ep.hingeCommentary}</p>
+              </div>
+            )}
             {ep.strands && <p class="ep-meta">{ep.strands}</p>}
             {ep.quotes.map((q: { quote: string; note: string }) => (
               <blockquote class="pull-quote">
@@ -290,7 +489,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 <cite>{q.note}</cite>
               </blockquote>
             ))}
-            {ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>}
+            {ep.hingeAtmosphere ? (
+              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            ) : (
+              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            )}
             {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
           </article>
         ))}
@@ -316,6 +519,12 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
               {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
             <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.hingeCommentary && (
+              <div class="hinge-commentary">
+                <span class="hinge-commentary-label">Why this is a hinge</span>
+                <p>{ep.hingeCommentary}</p>
+              </div>
+            )}
             {ep.strands && <p class="ep-meta">{ep.strands}</p>}
             {ep.quotes.map((q: { quote: string; note: string }) => (
               <blockquote class="pull-quote">
@@ -323,7 +532,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 <cite>{q.note}</cite>
               </blockquote>
             ))}
-            {ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>}
+            {ep.hingeAtmosphere ? (
+              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            ) : (
+              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            )}
             {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
           </article>
         ))}
@@ -333,7 +546,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             Twelve episodes. Everything that scattered in Part 3 now converges
             or extinguishes. Blicero&rsquo;s 00000 and Enzian&rsquo;s 00001 reach maximum
             intensity simultaneously. The Counterforce fails, then mourns.
-            Slothrop scatters beyond recovery into theological trace. And the
+            Slothrop scatters beyond recovery into theological trace. The
             Orpheus Theatre fuses rocket, film, and congregation into a single
             suspended instant.
           </p>
@@ -359,6 +572,12 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
               {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
             <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.hingeCommentary && (
+              <div class="hinge-commentary">
+                <span class="hinge-commentary-label">Why this is a hinge</span>
+                <p>{ep.hingeCommentary}</p>
+              </div>
+            )}
             {ep.strands && <p class="ep-meta">{ep.strands}</p>}
             {ep.quotes.map((q: { quote: string; note: string }) => (
               <blockquote class="pull-quote">
@@ -366,7 +585,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 <cite>{q.note}</cite>
               </blockquote>
             ))}
-            {ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>}
+            {ep.hingeAtmosphere ? (
+              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            ) : (
+              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            )}
             {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
           </article>
         ))}
@@ -385,6 +608,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
           {arc.paragraphs.map((p: string) => (
             <p>{p}</p>
           ))}
+          {arc.id === 'P01' && (
+            <p class="arc-deepdive">
+              <a href={`${base}/dissolution/`}>Deep-dive: Slothrop&rsquo;s dissolution &rarr;</a>
+            </p>
+          )}
         </div>
       </div>
     </aside>
@@ -394,19 +622,44 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 </Layout>
 
 <script>
-  // Scroll tracking
   const panels = document.querySelectorAll('.ep-panel');
   const fill = document.getElementById('scroll-fill');
   const partLabel = document.getElementById('scroll-part-label');
+  const braidSvg = document.querySelector('.braid-viz') as SVGElement | null;
+  const cursor = document.getElementById('braid-cursor') as SVGRectElement | null;
   const total = panels.length;
-  let lastVisible = 0;
+  let lastVisible = -1;
   let currentPart = '1';
 
+  // Build episode-id → column-index lookup from hit areas
+  const colHits = document.querySelectorAll('.braid-col-hit');
+  const epIdToIdx = new Map();
+  colHits.forEach((el, i) => {
+    const eid = (el as SVGElement).dataset.ep;
+    if (eid) epIdToIdx.set(eid, i);
+  });
+
+  function updateCursor(idx: number) {
+    if (!cursor || !braidSvg || idx < 0) return;
+    const hit = colHits[idx] as SVGRectElement | undefined;
+    if (!hit) return;
+    cursor.setAttribute('x', hit.getAttribute('x') || '0');
+    cursor.setAttribute('opacity', '0.18');
+    braidSvg.classList.add('cursor-active');
+  }
+
+  function clearCursor() {
+    if (cursor) cursor.setAttribute('opacity', '0');
+    braidSvg?.classList.remove('cursor-active');
+  }
+
+  // Scroll tracking — forward
   const scrollObs = new IntersectionObserver((entries) => {
+    let changed = false;
     entries.forEach(e => {
       if (e.isIntersecting) {
         const idx = Array.from(panels).indexOf(e.target as Element);
-        if (idx > lastVisible) lastVisible = idx;
+        if (idx > lastVisible) { lastVisible = idx; changed = true; }
         const part = (e.target as HTMLElement).dataset.part || '1';
         if (part !== currentPart) {
           currentPart = part;
@@ -414,15 +667,15 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
         }
       }
     });
-    if (fill) {
-      const pct = ((lastVisible + 1) / total) * 100;
-      fill.style.width = pct + '%';
+    if (changed) {
+      if (fill) fill.style.width = ((lastVisible + 1) / total) * 100 + '%';
+      updateCursor(lastVisible);
     }
   }, { threshold: 0.3 });
 
   panels.forEach(p => scrollObs.observe(p));
 
-  // Also track scroll backward
+  // Scroll tracking — backward
   const scrollObsBack = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (!e.isIntersecting) {
@@ -436,6 +689,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             if (partLabel) partLabel.textContent = 'Part ' + part;
           }
           if (fill) fill.style.width = ((lastVisible + 1) / total) * 100 + '%';
+          updateCursor(lastVisible);
         }
       }
     });
@@ -443,16 +697,42 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 
   panels.forEach(p => scrollObsBack.observe(p));
 
-  // Plotline arc slide-out
+  // Clear cursor when non-episode elements (transitions, plates) are in view
+  const nonEpElements = document.querySelectorAll('.part-transition, .fig-plate');
+  const nonEpObs = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        clearCursor();
+        return;
+      }
+    }
+  }, { threshold: 0.5 });
+  nonEpElements.forEach(el => nonEpObs.observe(el));
+
+  // Click episode column → scroll to panel + flash
+  colHits.forEach(el => {
+    el.addEventListener('click', () => {
+      const eid = (el as SVGElement).dataset.ep;
+      if (!eid) return;
+      const target = document.getElementById('ep-' + eid);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.classList.add('flash');
+        setTimeout(() => target.classList.remove('flash'), 900);
+      }
+    });
+  });
+
+  // Click strand label → open slide-out (reuse existing mechanism)
   const overlay = document.getElementById('arc-overlay');
   const strandBtns = document.querySelectorAll('.strand-btn');
-  let openPanel: HTMLElement | null = null;
+  let openPanelEl: HTMLElement | null = null;
 
   function closeArc() {
-    if (openPanel) {
-      openPanel.classList.remove('open');
-      openPanel.setAttribute('aria-hidden', 'true');
-      openPanel = null;
+    if (openPanelEl) {
+      openPanelEl.classList.remove('open');
+      openPanelEl.setAttribute('aria-hidden', 'true');
+      openPanelEl = null;
     }
     overlay?.classList.remove('visible');
     overlay?.setAttribute('aria-hidden', 'true');
@@ -462,7 +742,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     closeArc();
     const panel = document.getElementById('arc-' + id);
     if (panel) {
-      openPanel = panel;
+      openPanelEl = panel;
       panel.classList.add('open');
       panel.setAttribute('aria-hidden', 'false');
       overlay?.classList.add('visible');
@@ -477,6 +757,14 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     });
   });
 
+  // SVG strand labels also open slide-outs
+  document.querySelectorAll('.braid-label').forEach(lbl => {
+    lbl.addEventListener('click', () => {
+      const id = (lbl as SVGElement).dataset.strand;
+      if (id) openArc(id);
+    });
+  });
+
   overlay?.addEventListener('click', closeArc);
 
   document.querySelectorAll('.arc-close').forEach(btn => {
@@ -484,7 +772,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && openPanel) closeArc();
+    if (e.key === 'Escape' && openPanelEl) closeArc();
   });
 </script>
 
@@ -516,15 +804,53 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     margin: 0 auto;
   }
 
-  .braid-header-inner {
-    overflow: hidden;
+  /* Braid visualization */
+  .braid-viz-wrap {
+    overflow-x: visible;
     border-radius: 2px;
   }
 
-  .braid-header-inner img {
-    width: 100%;
-    height: auto;
+  .braid-viz {
     display: block;
+    width: 100%;
+    height: 96px;
+    transition: opacity 0.3s ease;
+  }
+
+  .braid-viz.cursor-active rect:not(.braid-cursor):not(.braid-col-hit) {
+    transition: opacity 0.3s ease;
+  }
+
+  .braid-label {
+    font-size: 3.2px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .braid-label:hover {
+    opacity: 0.8;
+  }
+
+  .braid-col-hit:hover {
+    fill: var(--color-accent) !important;
+    opacity: 0.08 !important;
+  }
+
+  .braid-cursor {
+    pointer-events: none;
+    transition: x 0.2s ease, opacity 0.3s ease;
+  }
+
+  /* Flash animation for scroll target */
+  @keyframes panel-flash {
+    0% { border-left-color: var(--color-accent); }
+    100% { border-left-color: transparent; }
+  }
+
+  .ep-panel.flash {
+    animation: panel-flash 0.9s ease-out;
+    border-left: 2px solid var(--color-accent);
   }
 
   /* Strand navigation */
@@ -678,6 +1004,34 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     margin-bottom: var(--space-md);
   }
 
+  .hinge-commentary {
+    margin-bottom: var(--space-lg);
+    padding-left: var(--space-md);
+    border-left: 1px solid var(--color-accent-dim);
+  }
+
+  .hinge-commentary-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-dim);
+    margin-bottom: var(--space-sm);
+  }
+
+  .hinge-commentary p {
+    font-size: var(--text-base);
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .hinge-atmosphere {
+    line-height: 1.75;
+    color: var(--color-text-dim);
+  }
+
   .ep-meta {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
@@ -827,6 +1181,24 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     margin-bottom: var(--space-lg);
   }
 
+  .arc-deepdive {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .arc-deepdive a {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    color: var(--color-accent-dim);
+    transition: color 0.2s ease;
+  }
+
+  .arc-deepdive a:hover {
+    color: var(--color-accent);
+  }
+
   @media (max-width: 768px) {
     .braid-header {
       position: relative;
@@ -835,6 +1207,22 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 
     .braid-header::after {
       display: none;
+    }
+
+    .braid-viz-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      mask-image: linear-gradient(to right, transparent 0, black 4px, black calc(100% - 12px), transparent 100%);
+    }
+
+    .braid-viz {
+      width: max(100%, 600px);
+      height: 80px;
+    }
+
+    .braid-label {
+      position: sticky;
+      left: 0;
     }
 
     .hinge {

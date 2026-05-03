@@ -207,3 +207,45 @@ Each entry records the source, destination, and justification for the import.
 - Imported: 2026-05-02
 - Supports: /braid route — historical recurrence dot-plot plate
 - Justification: approved reader-facing figure; draws only on public-safe structural data; no source text
+
+## Phase D — /dissolution integration (2026-05-03)
+
+### Imported: `F11_slothrop_dissolution_field.png`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2e_slothrop_dissolution/figures/F11_slothrop_dissolution_field.png`
+- Destination: `public/figures/step_2e/F11_slothrop_dissolution_field.png`
+- Imported: 2026-05-03
+- Supports: /dissolution route — Slothrop textual presence field (mention density, alias diversity, canonical share)
+- Justification: approved reader-facing figure; draws only on public-safe structural data; no source text
+
+### Imported: `F12_slothrop_to_rocket_transfer.png`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2e_slothrop_dissolution/figures/F12_slothrop_to_rocket_transfer.png`
+- Destination: `public/figures/step_2e/F12_slothrop_to_rocket_transfer.png`
+- Imported: 2026-05-03
+- Supports: /dissolution route — structural transfer from person-centric to rocket-centric narrative
+- Justification: approved reader-facing figure; draws only on public-safe structural data; no source text
+
+### Imported: `slothrop_dissolution_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/slothrop_dissolution_public.csv`
+- Destination: `public/data/base/slothrop_dissolution_public.csv`
+- Imported: 2026-05-03
+- Supports: /dissolution route — 73-episode Slothrop presence metrics (mention density, canonical share, alias diversity, orbit statistics)
+- Justification: public-safe export; contains only episode IDs, numeric counts, shares, and character names; no source text, quotations, or evidence fields
+
+### Imported: `slothrop_alias_by_episode_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/slothrop_alias_by_episode_public.csv`
+- Destination: `public/data/base/slothrop_alias_by_episode_public.csv`
+- Imported: 2026-05-03
+- Supports: /dissolution route — per-episode surface form breakdown (canonical vs. alias mentions with shares)
+- Justification: public-safe export; contains only episode IDs, surface form labels, numeric counts, and shares; no source text or quotations
+
+### Imported: `slothrop_orbit_by_episode_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/slothrop_orbit_by_episode_public.csv`
+- Destination: `public/data/base/slothrop_orbit_by_episode_public.csv`
+- Imported: 2026-05-03
+- Supports: /dissolution route (future orbit visualization) — per-episode co-character orbit with mention counts and share
+- Justification: public-safe export; contains only episode IDs, character names, co-mention counts, and orbit shares; no source text or quotations
