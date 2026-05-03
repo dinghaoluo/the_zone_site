@@ -1,0 +1,915 @@
+[
+  {
+    "plotline_id": "P01_slothrop_rocket_pursuit_scattering",
+    "display_name": "Slothrop / Rocket Pursuit / Scattering",
+    "episodes": [
+      {
+        "episode_id": "1.03",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "1.04",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.08",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "1.10",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.12",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "1.13",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "1.15",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.17",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "1.21",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "2.01",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.02",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.03",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.04",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.05",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.06",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.07",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.08",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.01",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.02",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.04",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.06",
+        "intensity": 3,
+        "function": "transforms"
+      },
+      {
+        "episode_id": "3.07",
+        "intensity": 3,
+        "function": "transforms"
+      },
+      {
+        "episode_id": "3.09",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.10",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.12",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.14",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.15",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.16",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.17",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.18",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.19",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.20",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.21",
+        "intensity": 2,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.22",
+        "intensity": 2,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.25",
+        "intensity": 2,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.26",
+        "intensity": 3,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.28",
+        "intensity": 3,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.29",
+        "intensity": 1,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.30",
+        "intensity": 1,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.31",
+        "intensity": 2,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "3.32",
+        "intensity": 1,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "4.01",
+        "intensity": 1,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "4.02",
+        "intensity": 1,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "4.04",
+        "intensity": 1,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "4.06",
+        "intensity": 3,
+        "function": "scatters"
+      },
+      {
+        "episode_id": "4.12",
+        "intensity": 2,
+        "function": "scatters"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "1.03",
+      "last_episode": "4.12",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "1.04",
+        "1.10",
+        "1.15",
+        "2.01",
+        "2.02",
+        "2.03",
+        "2.05",
+        "2.06",
+        "2.07",
+        "3.01",
+        "3.02",
+        "3.04",
+        "3.06",
+        "3.07",
+        "3.10",
+        "3.12",
+        "3.19",
+        "3.20",
+        "3.26",
+        "3.28",
+        "4.06"
+      ],
+      "episode_count": 46,
+      "part_distribution": {
+        "1": 9,
+        "2": 8,
+        "3": 24,
+        "4": 5
+      },
+      "intensity_mean": 2.1
+    }
+  },
+  {
+    "plotline_id": "P02_blicero_katje_gottfried_00000",
+    "display_name": "Blicero / Katje / Gottfried / 00000",
+    "episodes": [
+      {
+        "episode_id": "1.14",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "2.01",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "2.02",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "2.04",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.11",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.16",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.17",
+        "intensity": 3,
+        "function": "converges"
+      },
+      {
+        "episode_id": "3.21",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "4.04",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "4.05",
+        "intensity": 3,
+        "function": "sacrifices"
+      },
+      {
+        "episode_id": "4.09",
+        "intensity": 3,
+        "function": "sacrifices"
+      },
+      {
+        "episode_id": "4.10",
+        "intensity": 2,
+        "function": "sacrifices"
+      },
+      {
+        "episode_id": "4.11",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "4.12",
+        "intensity": 3,
+        "function": "sacrifices"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "1.14",
+      "last_episode": "4.12",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "1.14",
+        "3.17",
+        "4.05",
+        "4.09",
+        "4.12"
+      ],
+      "episode_count": 14,
+      "part_distribution": {
+        "1": 1,
+        "2": 3,
+        "3": 4,
+        "4": 6
+      },
+      "intensity_mean": 2.1
+    }
+  },
+  {
+    "plotline_id": "P03_enzian_schwarzkommando_00001",
+    "display_name": "Enzian / Schwarzkommando / 00001",
+    "episodes": [
+      {
+        "episode_id": "3.03",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "3.04",
+        "intensity": 2,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "3.05",
+        "intensity": 1,
+        "function": "survives"
+      },
+      {
+        "episode_id": "3.13",
+        "intensity": 2,
+        "function": "survives"
+      },
+      {
+        "episode_id": "3.21",
+        "intensity": 3,
+        "function": "survives"
+      },
+      {
+        "episode_id": "3.22",
+        "intensity": 3,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "3.26",
+        "intensity": 2,
+        "function": "survives"
+      },
+      {
+        "episode_id": "3.27",
+        "intensity": 2,
+        "function": "survives"
+      },
+      {
+        "episode_id": "4.04",
+        "intensity": 3,
+        "function": "converges"
+      },
+      {
+        "episode_id": "4.07",
+        "intensity": 1,
+        "function": "converges"
+      },
+      {
+        "episode_id": "4.10",
+        "intensity": 3,
+        "function": "converges"
+      },
+      {
+        "episode_id": "4.12",
+        "intensity": 3,
+        "function": "converges"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "3.03",
+      "last_episode": "4.12",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "3.03",
+        "3.21",
+        "3.22",
+        "4.04",
+        "4.10",
+        "4.12"
+      ],
+      "episode_count": 12,
+      "part_distribution": {
+        "1": 0,
+        "2": 0,
+        "3": 8,
+        "4": 4
+      },
+      "intensity_mean": 2.3
+    }
+  },
+  {
+    "plotline_id": "P04_pokler_leni_ilse_jamf_imipolex",
+    "display_name": "Pökler / Leni / Ilse / Jamf / Imipolex",
+    "episodes": [
+      {
+        "episode_id": "1.11",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.13",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "1.19",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.21",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "2.05",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "2.07",
+        "intensity": 3,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "3.11",
+        "intensity": 3,
+        "function": "mourns"
+      },
+      {
+        "episode_id": "3.13",
+        "intensity": 3,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "3.29",
+        "intensity": 3,
+        "function": "mourns"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "1.11",
+      "last_episode": "3.29",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "1.11",
+        "1.19",
+        "2.07",
+        "3.11",
+        "3.13",
+        "3.29"
+      ],
+      "episode_count": 9,
+      "part_distribution": {
+        "1": 4,
+        "2": 2,
+        "3": 3,
+        "4": 0
+      },
+      "intensity_mean": 2.7
+    }
+  },
+  {
+    "plotline_id": "P05_pointsman_white_visitation_control",
+    "display_name": "Pointsman / White Visitation / Control",
+    "episodes": [
+      {
+        "episode_id": "1.03",
+        "intensity": 2,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.04",
+        "intensity": 2,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.05",
+        "intensity": 1,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.06",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.07",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.08",
+        "intensity": 3,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.09",
+        "intensity": 1,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.10",
+        "intensity": 2,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.11",
+        "intensity": 1,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.12",
+        "intensity": 2,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.13",
+        "intensity": 2,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.17",
+        "intensity": 2,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.18",
+        "intensity": 2,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "1.20",
+        "intensity": 2,
+        "function": "reveals"
+      },
+      {
+        "episode_id": "2.01",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.02",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.03",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.04",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "2.08",
+        "intensity": 3,
+        "function": "fails"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "1.03",
+      "last_episode": "2.08",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "1.06",
+        "1.07",
+        "1.08",
+        "2.04",
+        "2.08"
+      ],
+      "episode_count": 19,
+      "part_distribution": {
+        "1": 14,
+        "2": 5,
+        "3": 0,
+        "4": 0
+      },
+      "intensity_mean": 2.1
+    }
+  },
+  {
+    "plotline_id": "P06_pirate_roger_jessica_counterforce",
+    "display_name": "Pirate / Roger / Jessica / Counterforce",
+    "episodes": [
+      {
+        "episode_id": "1.02",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.05",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.06",
+        "intensity": 2,
+        "function": "survives"
+      },
+      {
+        "episode_id": "1.09",
+        "intensity": 3,
+        "function": "establishes"
+      },
+      {
+        "episode_id": "1.16",
+        "intensity": 3,
+        "function": "survives"
+      },
+      {
+        "episode_id": "1.21",
+        "intensity": 1,
+        "function": "survives"
+      },
+      {
+        "episode_id": "3.23",
+        "intensity": 3,
+        "function": "survives"
+      },
+      {
+        "episode_id": "3.24",
+        "intensity": 3,
+        "function": "survives"
+      },
+      {
+        "episode_id": "4.01",
+        "intensity": 2,
+        "function": "fails"
+      },
+      {
+        "episode_id": "4.02",
+        "intensity": 3,
+        "function": "fails"
+      },
+      {
+        "episode_id": "4.03",
+        "intensity": 1,
+        "function": "fails"
+      },
+      {
+        "episode_id": "4.04",
+        "intensity": 1,
+        "function": "fails"
+      },
+      {
+        "episode_id": "4.06",
+        "intensity": 1,
+        "function": "fails"
+      },
+      {
+        "episode_id": "4.08",
+        "intensity": 3,
+        "function": "mourns"
+      },
+      {
+        "episode_id": "4.09",
+        "intensity": 2,
+        "function": "parodies"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "1.02",
+      "last_episode": "4.09",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "1.02",
+        "1.05",
+        "1.09",
+        "1.16",
+        "3.23",
+        "3.24",
+        "4.02",
+        "4.08"
+      ],
+      "episode_count": 15,
+      "part_distribution": {
+        "1": 6,
+        "2": 0,
+        "3": 2,
+        "4": 7
+      },
+      "intensity_mean": 2.3
+    }
+  },
+  {
+    "plotline_id": "P07_tchitcherine_geli_soviet_counterline",
+    "display_name": "Tchitcherine / Geli / Soviet Counterline",
+    "episodes": [
+      {
+        "episode_id": "3.04",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.05",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.09",
+        "intensity": 3,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.10",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.27",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "3.32",
+        "intensity": 2,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "4.07",
+        "intensity": 3,
+        "function": "transforms"
+      },
+      {
+        "episode_id": "4.09",
+        "intensity": 1,
+        "function": "pursues"
+      },
+      {
+        "episode_id": "4.11",
+        "intensity": 2,
+        "function": "pursues"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "3.04",
+      "last_episode": "4.11",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "3.05",
+        "3.09",
+        "4.07"
+      ],
+      "episode_count": 9,
+      "part_distribution": {
+        "1": 0,
+        "2": 0,
+        "3": 6,
+        "4": 3
+      },
+      "intensity_mean": 2.1
+    }
+  },
+  {
+    "plotline_id": "P08_film_body_image_greta_bianca_vongoll",
+    "display_name": "Film / Body / Image / Greta / Bianca / von Göll",
+    "episodes": [
+      {
+        "episode_id": "3.06",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.07",
+        "intensity": 2,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.08",
+        "intensity": 3,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.10",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.11",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.12",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.14",
+        "intensity": 3,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "3.15",
+        "intensity": 3,
+        "function": "transforms"
+      },
+      {
+        "episode_id": "3.16",
+        "intensity": 3,
+        "function": "transforms"
+      },
+      {
+        "episode_id": "3.17",
+        "intensity": 3,
+        "function": "transforms"
+      },
+      {
+        "episode_id": "3.18",
+        "intensity": 3,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "4.01",
+        "intensity": 1,
+        "function": "recurs"
+      },
+      {
+        "episode_id": "4.12",
+        "intensity": 2,
+        "function": "recurs"
+      }
+    ],
+    "arc_summary": {
+      "first_episode": "3.06",
+      "last_episode": "4.12",
+      "peak_intensity": 3,
+      "peak_episodes": [
+        "3.08",
+        "3.14",
+        "3.15",
+        "3.16",
+        "3.17",
+        "3.18"
+      ],
+      "episode_count": 13,
+      "part_distribution": {
+        "1": 0,
+        "2": 0,
+        "3": 11,
+        "4": 2
+      },
+      "intensity_mean": 2.2
+    }
+  }
+]

@@ -109,3 +109,101 @@ Each entry records the source, destination, and justification for the import.
 - No new upstream assets were copied in the design/content polish pass (2026-04-17).
 - The compact sparkline still uses manually encoded episode word-count values derived earlier from inspection of `episode_metadata_public.csv`, not a copied dataset.
 - No quotations were copied or used before the approved `/episodes` anchor quote layer. The current quote layer is intentionally sparse, short, manually approved, and logged above.
+
+## Phase C — /braid integration (2026-05-02)
+
+### Imported: `phase_3a_unified_episode_data_public.json`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/phase_3a_unified_episode_data_public.json`
+- Destination: `public/data/step_3a/phase_3a_unified_episode_data_public.json`
+- Imported: 2026-05-02
+- Supports: /braid route — 73-episode structural data with plotline intensities, modal registers, recurrence registers, and hinge flags
+- Justification: public-safe export; contains only episode IDs, numeric intensities, thread function labels, and summary statistics; no source text, quotations, or evidence fields
+
+### Imported: `phase_3a_braid_intensity_matrix_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/phase_3a_braid_intensity_matrix_public.csv`
+- Destination: `public/data/step_3a/phase_3a_braid_intensity_matrix_public.csv`
+- Imported: 2026-05-02
+- Supports: /braid route — flat plotline intensity matrix (73 rows × 8 plotlines, values 0–3)
+- Justification: public-safe export; numeric intensity values only; no prose fields
+
+### Imported: `phase_3a_modal_intensity_matrix_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/phase_3a_modal_intensity_matrix_public.csv`
+- Destination: `public/data/step_3a/phase_3a_modal_intensity_matrix_public.csv`
+- Imported: 2026-05-02
+- Supports: /braid route — flat modal intensity matrix (73 rows × 10 modes, values 0–3)
+- Justification: public-safe export; numeric intensity values only; no prose fields
+
+### Imported: `phase_3a_recurrence_intensity_matrix_public.csv`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/phase_3a_recurrence_intensity_matrix_public.csv`
+- Destination: `public/data/step_3a/phase_3a_recurrence_intensity_matrix_public.csv`
+- Imported: 2026-05-02
+- Supports: /braid route — flat recurrence intensity matrix (73 rows × 5 registers, values 0–3)
+- Justification: public-safe export; numeric intensity values only; no prose fields
+
+### Imported: `phase_3a_plotline_profiles_public.json`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/phase_3a_plotline_profiles_public.json`
+- Destination: `public/data/step_3a/phase_3a_plotline_profiles_public.json`
+- Imported: 2026-05-02
+- Supports: /braid route — per-plotline summary statistics (episode count, mean intensity, peak episodes)
+- Justification: public-safe export; structural metadata only; no prose, quotations, or evidence fields
+
+### Imported: `episode_synopses.json`
+
+- Source: `L:/projects/the_zone/05_publication/site_handoff/episode_synopses.json`
+- Destination: `src/data/episode_synopses.json`
+- Imported: 2026-05-02
+- Supports: /braid route — 73 analytical synopses (original interpretive prose, 2–4 sentences each)
+- Justification: original analytical prose written for the site; no source text, quotations, or normalised corpus material
+
+### Imported: `plotline_arc_descriptions.json`
+
+- Source: `L:/projects/the_zone/05_publication/site_handoff/plotline_arc_descriptions.json`
+- Destination: `src/data/plotline_arc_descriptions.json`
+- Imported: 2026-05-02
+- Supports: /braid route (future plotline navigation) — eight plotline arc descriptions (original analytical prose)
+- Justification: original analytical prose written for the site; no source text, quotations, or normalised corpus material
+
+### Imported: `episode_anchor_quotes_APPROVED_PUBLIC.csv`
+
+- Source: `L:/projects/the_zone/05_publication/site_handoff/episode_anchor_quotes_APPROVED_PUBLIC.csv`
+- Destination: `src/data/episode_anchor_quotes_APPROVED_PUBLIC.csv`
+- Imported: 2026-05-02
+- Supports: /braid route — sparse manually approved short quotations with public explanatory notes for episode pull-quotes
+- Justification: curated public quotation layer; contains short manually approved quotes (max 24 words); no private source pointers, context windows, or bulk quote bank
+
+### Imported: `F01_plotline_braid.png`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/figures/F01_plotline_braid.png`
+- Destination: `public/figures/step_3a/F01_plotline_braid.png`
+- Imported: 2026-05-02
+- Supports: /braid route — static navigational braid figure (sticky header plate)
+- Justification: approved reader-facing figure; draws only on public-safe structural data; no source text
+
+### Imported: `F02_terminal_convergence.png`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/figures/F02_terminal_convergence.png`
+- Destination: `public/figures/step_3a/F02_terminal_convergence.png`
+- Imported: 2026-05-02
+- Supports: /braid route — Part 4 convergence pattern plate
+- Justification: approved reader-facing figure; draws only on public-safe structural data; no source text
+
+### Imported: `F03_modal_atmosphere.png`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/figures/F03_modal_atmosphere.png`
+- Destination: `public/figures/step_3a/F03_modal_atmosphere.png`
+- Imported: 2026-05-02
+- Supports: /braid route — modal atmosphere heatmap plate
+- Justification: approved reader-facing figure; draws only on public-safe structural data; no source text
+
+### Imported: `F04_historical_recurrence.png`
+
+- Source: `L:/projects/the_zone/05_publication/public_safe/data/step_3a/figures/F04_historical_recurrence.png`
+- Destination: `public/figures/step_3a/F04_historical_recurrence.png`
+- Imported: 2026-05-02
+- Supports: /braid route — historical recurrence dot-plot plate
+- Justification: approved reader-facing figure; draws only on public-safe structural data; no source text

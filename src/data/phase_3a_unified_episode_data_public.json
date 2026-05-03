@@ -1,0 +1,2585 @@
+[
+  {
+    "episode_id": "1.01",
+    "global_index": 1,
+    "part": 1,
+    "plotlines": {},
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 0,
+      "max_plotline_intensity": 0,
+      "active_recurrence_count": 0,
+      "active_mode_count": 6,
+      "total_intensity": 7,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "1.02",
+    "global_index": 2,
+    "part": 1,
+    "plotlines": {
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 1
+      },
+      "M02_pop_song_comedy": {
+        "intensity": 3
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 10,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.03",
+    "global_index": 3,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.04",
+    "global_index": 4,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "establishes"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 6,
+      "total_intensity": 15,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "1.05",
+    "global_index": 5,
+    "part": 1,
+    "plotlines": {
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 1,
+        "function": "reveals"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.06",
+    "global_index": 6,
+    "part": 1,
+    "plotlines": {
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 3,
+        "function": "establishes"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 2,
+        "function": "survives"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 12,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.07",
+    "global_index": 7,
+    "part": 1,
+    "plotlines": {
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 10,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.08",
+    "global_index": 8,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 3,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 14,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.09",
+    "global_index": 9,
+    "part": 1,
+    "plotlines": {
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 1,
+        "function": "reveals"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 8,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.10",
+    "global_index": 10,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "establishes"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 13,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.11",
+    "global_index": 11,
+    "part": 1,
+    "plotlines": {
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 3,
+        "function": "establishes"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 1,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 8,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.12",
+    "global_index": 12,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 11,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.13",
+    "global_index": 13,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "recurs"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 12,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.14",
+    "global_index": 14,
+    "part": 1,
+    "plotlines": {
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {
+      "species_extinction": {
+        "intensity": 2
+      }
+    },
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 1,
+      "active_mode_count": 3,
+      "total_intensity": 12,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "1.15",
+    "global_index": 15,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.16",
+    "global_index": 16,
+    "part": 1,
+    "plotlines": {
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "survives"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 1
+      },
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 5,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.17",
+    "global_index": 17,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 12,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.18",
+    "global_index": 18,
+    "part": 1,
+    "plotlines": {
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M05_occult_divination": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.19",
+    "global_index": 19,
+    "part": 1,
+    "plotlines": {
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {
+      "forced_labour_industrial_body_processing": {
+        "intensity": 2
+      },
+      "holocaust_absence_or_adjacency": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 2
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 2,
+      "active_mode_count": 3,
+      "total_intensity": 13,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.20",
+    "global_index": 20,
+    "part": 1,
+    "plotlines": {
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "1.21",
+    "global_index": 21,
+    "part": 1,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 1,
+        "function": "survives"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M08_elect_preterite_theology": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 6,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.01",
+    "global_index": 22,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 1,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 12,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "2.02",
+    "global_index": 23,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 13,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.03",
+    "global_index": 24,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 2
+      },
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M05_occult_divination": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 5,
+      "total_intensity": 13,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.04",
+    "global_index": 25,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {
+      "postwar_technocratic_continuation": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 1,
+      "active_mode_count": 5,
+      "total_intensity": 19,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.05",
+    "global_index": 26,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 2,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.06",
+    "global_index": 27,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 1
+      },
+      "M05_occult_divination": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.07",
+    "global_index": 28,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 3,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "2.08",
+    "global_index": 29,
+    "part": 2,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "pursues"
+      },
+      "P05_pointsman_white_visitation_control": {
+        "intensity": 3,
+        "function": "fails"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 3
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 13,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.01",
+    "global_index": 30,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 6,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "3.02",
+    "global_index": 31,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {
+      "forced_labour_industrial_body_processing": {
+        "intensity": 2
+      },
+      "holocaust_absence_or_adjacency": {
+        "intensity": 1
+      },
+      "postwar_technocratic_continuation": {
+        "intensity": 2
+      }
+    },
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 3,
+      "active_mode_count": 2,
+      "total_intensity": 12,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.03",
+    "global_index": 32,
+    "part": 3,
+    "plotlines": {
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 3,
+        "function": "establishes"
+      }
+    },
+    "recurrence": {
+      "colonial_genocide": {
+        "intensity": 3
+      },
+      "postwar_technocratic_continuation": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 2,
+      "active_mode_count": 4,
+      "total_intensity": 11,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.04",
+    "global_index": 33,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 2,
+        "function": "establishes"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M05_occult_divination": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 11,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.05",
+    "global_index": 34,
+    "part": 3,
+    "plotlines": {
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 1,
+        "function": "survives"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M05_occult_divination": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 6,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.06",
+    "global_index": 35,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "transforms"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 2,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 1
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 5,
+      "total_intensity": 13,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.07",
+    "global_index": 36,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "transforms"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 2,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 10,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.08",
+    "global_index": 37,
+    "part": 3,
+    "plotlines": {
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 3,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 4,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.09",
+    "global_index": 38,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 5,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.10",
+    "global_index": 39,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 1,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.11",
+    "global_index": 40,
+    "part": 3,
+    "plotlines": {
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 3,
+        "function": "mourns"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 1,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {
+      "forced_labour_industrial_body_processing": {
+        "intensity": 3
+      },
+      "holocaust_absence_or_adjacency": {
+        "intensity": 1
+      },
+      "postwar_technocratic_continuation": {
+        "intensity": 3
+      }
+    },
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 3
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 3,
+      "active_mode_count": 4,
+      "total_intensity": 23,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "3.12",
+    "global_index": 41,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 1,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.13",
+    "global_index": 42,
+    "part": 3,
+    "plotlines": {
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 2,
+        "function": "survives"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 3,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {
+      "colonial_genocide": {
+        "intensity": 2
+      },
+      "forced_labour_industrial_body_processing": {
+        "intensity": 2
+      },
+      "holocaust_absence_or_adjacency": {
+        "intensity": 1
+      },
+      "postwar_technocratic_continuation": {
+        "intensity": 2
+      }
+    },
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 2
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 4,
+      "active_mode_count": 3,
+      "total_intensity": 18,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.14",
+    "global_index": 43,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "pursues"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 3,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.15",
+    "global_index": 44,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 3,
+        "function": "transforms"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M01_science_control": {
+        "intensity": 1
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.16",
+    "global_index": 45,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 1,
+        "function": "recurs"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 3,
+        "function": "transforms"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 10,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.17",
+    "global_index": 46,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 3,
+        "function": "converges"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 3,
+        "function": "transforms"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 14,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.18",
+    "global_index": 47,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "pursues"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 3,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.19",
+    "global_index": 48,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 8,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.20",
+    "global_index": 49,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 5,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.21",
+    "global_index": 50,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "scatters"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 1,
+        "function": "recurs"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 3,
+        "function": "survives"
+      }
+    },
+    "recurrence": {
+      "colonial_genocide": {
+        "intensity": 3
+      },
+      "species_extinction": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 2,
+      "active_mode_count": 1,
+      "total_intensity": 11,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.22",
+    "global_index": 51,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "scatters"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 3,
+        "function": "reveals"
+      }
+    },
+    "recurrence": {
+      "colonial_genocide": {
+        "intensity": 3
+      },
+      "species_extinction": {
+        "intensity": 2
+      }
+    },
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M05_occult_divination": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 2,
+      "active_mode_count": 5,
+      "total_intensity": 18,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "3.23",
+    "global_index": 52,
+    "part": 3,
+    "plotlines": {
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "survives"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 5,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.24",
+    "global_index": 53,
+    "part": 3,
+    "plotlines": {
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "survives"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 8,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.25",
+    "global_index": 54,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "scatters"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M04_language_allusion": {
+        "intensity": 3
+      },
+      "M05_occult_divination": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.26",
+    "global_index": 55,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "scatters"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 2,
+        "function": "survives"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.27",
+    "global_index": 56,
+    "part": 3,
+    "plotlines": {
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 2,
+        "function": "survives"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 6,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.28",
+    "global_index": 57,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "scatters"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 8,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.29",
+    "global_index": 58,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "scatters"
+      },
+      "P04_pokler_leni_ilse_jamf_imipolex": {
+        "intensity": 3,
+        "function": "mourns"
+      }
+    },
+    "recurrence": {
+      "forced_labour_industrial_body_processing": {
+        "intensity": 1
+      },
+      "holocaust_absence_or_adjacency": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 2,
+      "active_mode_count": 2,
+      "total_intensity": 10,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "3.30",
+    "global_index": 59,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "scatters"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M05_occult_divination": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 1,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 6,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.31",
+    "global_index": 60,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "scatters"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 1,
+      "total_intensity": 4,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "3.32",
+    "global_index": 61,
+    "part": 3,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "scatters"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 1
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 5,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.01",
+    "global_index": 62,
+    "part": 4,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "scatters"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 2,
+        "function": "fails"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 1,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M03_film_media_performance": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 9,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.02",
+    "global_index": 63,
+    "part": 4,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "scatters"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "fails"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 3
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 11,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.03",
+    "global_index": 64,
+    "part": 4,
+    "plotlines": {
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 1,
+        "function": "fails"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      },
+      "M10_waste_residue_body_grotesque": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 1,
+      "active_recurrence_count": 0,
+      "active_mode_count": 3,
+      "total_intensity": 6,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.04",
+    "global_index": 65,
+    "part": 4,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 1,
+        "function": "scatters"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 3,
+        "function": "converges"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 1,
+        "function": "fails"
+      }
+    },
+    "recurrence": {
+      "colonial_genocide": {
+        "intensity": 3
+      }
+    },
+    "modes": {
+      "M09_sexuality_domination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 4,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 1,
+      "active_mode_count": 1,
+      "total_intensity": 12,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.05",
+    "global_index": 66,
+    "part": 4,
+    "plotlines": {
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 3,
+        "function": "sacrifices"
+      }
+    },
+    "recurrence": {
+      "postwar_technocratic_continuation": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 3
+      },
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 3
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 1,
+      "active_mode_count": 3,
+      "total_intensity": 13,
+      "is_hinge": true
+    }
+  },
+  {
+    "episode_id": "4.06",
+    "global_index": 67,
+    "part": 4,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 3,
+        "function": "scatters"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 1,
+        "function": "fails"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 3
+      },
+      "M09_sexuality_domination": {
+        "intensity": 1
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 11,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.07",
+    "global_index": 68,
+    "part": 4,
+    "plotlines": {
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 1,
+        "function": "converges"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 3,
+        "function": "transforms"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M05_occult_divination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 7,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.08",
+    "global_index": 69,
+    "part": 4,
+    "plotlines": {
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 3,
+        "function": "mourns"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M08_elect_preterite_theology": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 1,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 4,
+      "total_intensity": 10,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.09",
+    "global_index": 70,
+    "part": 4,
+    "plotlines": {
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 3,
+        "function": "sacrifices"
+      },
+      "P06_pirate_roger_jessica_counterforce": {
+        "intensity": 2,
+        "function": "parodies"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 1,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M02_pop_song_comedy": {
+        "intensity": 2
+      },
+      "M04_language_allusion": {
+        "intensity": 1
+      },
+      "M05_occult_divination": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 3,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 0,
+      "active_mode_count": 5,
+      "total_intensity": 16,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.10",
+    "global_index": 71,
+    "part": 4,
+    "plotlines": {
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 2,
+        "function": "sacrifices"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 3,
+        "function": "converges"
+      }
+    },
+    "recurrence": {
+      "colonial_genocide": {
+        "intensity": 3
+      },
+      "postwar_technocratic_continuation": {
+        "intensity": 1
+      }
+    },
+    "modes": {
+      "M06_corporate_military_web": {
+        "intensity": 2
+      },
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 3
+      },
+      "M09_sexuality_domination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 2,
+      "active_mode_count": 3,
+      "total_intensity": 16,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.11",
+    "global_index": 72,
+    "part": 4,
+    "plotlines": {
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 2,
+        "function": "recurs"
+      },
+      "P07_tchitcherine_geli_soviet_counterline": {
+        "intensity": 2,
+        "function": "pursues"
+      }
+    },
+    "recurrence": {},
+    "modes": {
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 2
+      },
+      "M09_sexuality_domination": {
+        "intensity": 2
+      }
+    },
+    "summary": {
+      "active_plotline_count": 2,
+      "max_plotline_intensity": 2,
+      "active_recurrence_count": 0,
+      "active_mode_count": 2,
+      "total_intensity": 8,
+      "is_hinge": false
+    }
+  },
+  {
+    "episode_id": "4.12",
+    "global_index": 73,
+    "part": 4,
+    "plotlines": {
+      "P01_slothrop_rocket_pursuit_scattering": {
+        "intensity": 2,
+        "function": "scatters"
+      },
+      "P02_blicero_katje_gottfried_00000": {
+        "intensity": 3,
+        "function": "sacrifices"
+      },
+      "P03_enzian_schwarzkommando_00001": {
+        "intensity": 3,
+        "function": "converges"
+      },
+      "P08_film_body_image_greta_bianca_vongoll": {
+        "intensity": 2,
+        "function": "recurs"
+      }
+    },
+    "recurrence": {
+      "postwar_technocratic_continuation": {
+        "intensity": 2
+      }
+    },
+    "modes": {
+      "M03_film_media_performance": {
+        "intensity": 2
+      },
+      "M06_corporate_military_web": {
+        "intensity": 3
+      },
+      "M07_terminal_rocket_afterlife_descent": {
+        "intensity": 3
+      },
+      "M09_sexuality_domination": {
+        "intensity": 3
+      }
+    },
+    "summary": {
+      "active_plotline_count": 4,
+      "max_plotline_intensity": 3,
+      "active_recurrence_count": 1,
+      "active_mode_count": 4,
+      "total_intensity": 23,
+      "is_hinge": true
+    }
+  }
+]

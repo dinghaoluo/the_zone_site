@@ -1,53 +1,19 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
-import Section from "../components/Section.astro";
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const target = `${base}/braid/`;
 ---
 
-<Layout title="Strands" description="Motifs, handoffs, and longer narrative lines — still being consolidated.">
-  <Nav slot="nav" />
-
-  <Section>
-    <div class="page-head reveal visible">
-      <p class="eyebrow">04</p>
-      <h1>Strands</h1>
-      <div class="page-lede">
-        <p>
-          This page is intentionally unfinished. The underlying 2H work is still
-          being consolidated into a public-safe export, so this route remains a
-          marker rather than a premature visualisation.
-        </p>
-      </div>
-    </div>
-  </Section>
-
-  <Footer slot="footer" />
-</Layout>
-
-<style>
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: var(--space-lg);
-  }
-
-  h1 {
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    margin-bottom: var(--space-xl);
-  }
-
-  .page-lede {
-    max-width: var(--max-width-narrow);
-  }
-
-  .page-lede p {
-    font-size: var(--text-base);
-    line-height: 1.85;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--space-md);
-  }
-</style>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting…</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>The Braid</a>.</p>
+    <script define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+  </body>
+</html>
