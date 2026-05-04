@@ -14,38 +14,55 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Reforma 2018";
+  src: url("/the_zone_site/fonts/reforma2018-gris-ro.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Reforma 2018";
+  src: url("/the_zone_site/fonts/reforma2018-gris-italica-ro.ttf") format("truetype");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Reforma 2018";
+  src: url("/the_zone_site/fonts/reforma2018-negra-ro.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Reforma 2018";
+  src: url("/the_zone_site/fonts/reforma2018-negra-italica-ro.ttf") format("truetype");
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
-  --color-bg: #0b0b0f;
-  --color-surface: #111116;
-  --color-border: #1e1e28;
-  --color-border-subtle: #18181f;
-  --color-rule: #1a1a24;
-
-  --color-text: #d4d2c8;
-  --color-text-secondary: #918f83;
-  --color-text-dim: #5c5a50;
-
-  --color-accent: #c4a35a;
-  --color-accent-hover: #d4b36a;
-  --color-accent-dim: #8a7340;
-
-  --color-part-1: #6b8caa;
-  --color-part-2: #8a7ba5;
-  --color-part-3: #7da07d;
-  --color-part-4: #b07070;
-
   --font-display: "Major Mono Display", monospace;
   --font-heading: "Cormorant Garamond", "Georgia", serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-prose: "Reforma 2018", "Georgia", "Times New Roman", serif;
+  --font-body: "JetBrains Mono", "Fira Code", monospace;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
+  --text-prose: 1.18rem;
+  --lh-prose: 1.85;
+
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 2rem;
+  --text-xl: 1.3125rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
 
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -59,6 +76,116 @@
   --max-width-narrow: 40rem;
 }
 
+:root, [data-theme="dark"] {
+  --color-bg: #0b0b0f;
+  --color-surface: #111116;
+  --color-border: #1e1e28;
+  --color-border-subtle: #18181f;
+  --color-rule: #1a1a24;
+  --color-nav-bg: rgba(11, 11, 15, 0.82);
+
+  --color-text: #d4d2c8;
+  --color-text-secondary: #a09e92;
+  --color-text-dim: #787668;
+
+  --color-accent: #c4a35a;
+  --color-accent-hover: #d4b36a;
+  --color-accent-dim: #8a7340;
+
+  --color-part-1: #6b8caa;
+  --color-part-2: #8a7ba5;
+  --color-part-3: #7da07d;
+  --color-part-4: #b07070;
+
+  --strand-slothrop: #5A9DE0;
+  --strand-blicero: #E06060;
+  --strand-enzian: #E0B050;
+  --strand-pokler: #C09030;
+  --strand-pointsman: #7AAE7A;
+  --strand-counterforce: #9080C0;
+  --strand-tchitcherine: #60AAAA;
+  --strand-film: #D070A0;
+
+  --diss-slothrop: #4A90D9;
+  --diss-alias: #c4a35a;
+  --diss-orbit-top: #6B8E6B;
+  --diss-orbit-other: #4A8B8B;
+
+  --mode-science: #60AACC;
+  --mode-comedy: #E0B050;
+  --mode-film: #D070A0;
+  --mode-language: #9080C0;
+  --mode-occult: #7AAE7A;
+  --mode-corporate: #C09030;
+  --mode-rocket: #E06060;
+  --mode-theology: #5A9DE0;
+  --mode-sexuality: #AA6090;
+  --mode-waste: #60AAAA;
+
+  --rec-species: #C05050;
+  --rec-colonial: #E06060;
+  --rec-holocaust: #D0A050;
+  --rec-labour: #AA7040;
+  --rec-technocratic: #808080;
+
+  --hover-highlight: rgba(255, 255, 255, 0.015);
+}
+
+[data-theme="light"] {
+  --color-bg: #f0ece4;
+  --color-surface: #e8e4db;
+  --color-border: #ccc8be;
+  --color-border-subtle: #d8d4ca;
+  --color-rule: #d0ccc2;
+  --color-nav-bg: rgba(240, 236, 228, 0.82);
+
+  --color-text: #2a2824;
+  --color-text-secondary: #4a4840;
+  --color-text-dim: #6a6860;
+
+  --color-accent: #8a7340;
+  --color-accent-hover: #6a5530;
+  --color-accent-dim: #a89060;
+
+  --color-part-1: #4a6a88;
+  --color-part-2: #6a5b85;
+  --color-part-3: #5a805a;
+  --color-part-4: #904a4a;
+
+  --strand-slothrop: #3670B0;
+  --strand-blicero: #C04040;
+  --strand-enzian: #A08020;
+  --strand-pokler: #8A6518;
+  --strand-pointsman: #4A8A4A;
+  --strand-counterforce: #6A5AA0;
+  --strand-tchitcherine: #3A8080;
+  --strand-film: #B04878;
+
+  --diss-slothrop: #2E6CA8;
+  --diss-alias: #8A6518;
+  --diss-orbit-top: #3A7A3A;
+  --diss-orbit-other: #2A7070;
+
+  --mode-science: #3888AA;
+  --mode-comedy: #A08020;
+  --mode-film: #B04878;
+  --mode-language: #6A5AA0;
+  --mode-occult: #4A8A4A;
+  --mode-corporate: #8A6518;
+  --mode-rocket: #C04040;
+  --mode-theology: #2E6CA8;
+  --mode-sexuality: #884060;
+  --mode-waste: #3A8080;
+
+  --rec-species: #A03030;
+  --rec-colonial: #C04040;
+  --rec-holocaust: #A08020;
+  --rec-labour: #885020;
+  --rec-technocratic: #606060;
+
+  --hover-highlight: rgba(0, 0, 0, 0.03);
+}
+
 *,
 *::before,
 *::after {
@@ -68,7 +195,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 15.5px;
   scroll-behavior: smooth;
 }
 
@@ -76,10 +203,11 @@ body {
   font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.75;
+  line-height: 1.7;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -123,13 +251,11 @@ em {
 
 .reveal {
   opacity: 0;
-  transform: translateY(1rem);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.7s ease;
 }
 
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
 }
 
 sup.fnref {

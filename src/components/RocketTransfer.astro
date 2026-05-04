@@ -1,0 +1,414 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<div class="plate" id="plate-rocket-transfer">
+  <header class="plate-head">
+    <span class="plate-num">Plate II</span>
+    <h3 class="plate-title">The transfer</h3>
+  </header>
+
+  <div class="transfer-layout">
+    <div id="transfer-canvas" class="transfer-canvas" data-base={base}></div>
+    <aside class="transfer-rail" id="transfer-rail">
+      <div id="transfer-note" class="transfer-note"></div>
+      <div class="transfer-key" id="transfer-key">
+        <div class="key-head">Traces</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  import * as d3 from 'd3';
+
+  const canvas = document.getElementById('transfer-canvas')!;
+  const noteEl = document.getElementById('transfer-note')!;
+  const keyEl = document.getElementById('transfer-key')!;
+  const base = canvas.dataset.base || '';
+
+  const W = 960, H = 320, PAD_L = 40, PAD_R = 20, PAD_T = 30, PAD_B = 50;
+
+  const svg = d3.select(canvas)
+    .append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')
+    .attr('role', 'img')
+    .attr('aria-label', 'As Slothrop fades, the rocket plotlines (Blicero, Enzian, Tchitcherine) absorb the narrative weight he releases');
+
+  svg.append('rect')
+    .attr('width', W).attr('height', H)
+    .attr('fill', 'var(--color-surface)')
+    .attr('rx', 2);
+
+  const gPartBounds = svg.append('g');
+  const gPaths = svg.append('g');
+  const gOverlay = svg.append('g');
+  const gCursor = svg.append('g');
+
+  let locked: number | null = null;
+
+  const TRACES = [
+    { key: 'slothrop', label: 'Slothrop (P01)', colour: 'var(--diss-slothrop)', plotline: 'P01' },
+    { key: 'blicero', label: 'Blicero (P02)', colour: 'var(--diss-alias)', plotline: 'P02' },
+    { key: 'enzian', label: 'Enzian (P03)', colour: 'var(--diss-orbit-top)', plotline: 'P03' },
+    { key: 'tchitcherine', label: 'Tchitcherine (P04)', colour: 'var(--diss-orbit-other)', plotline: 'P04' },
+  ];
+
+  Promise.all([
+    fetch(`${base}/data/base/slothrop_dissolution_public.csv`).then(r => r.text()),
+    fetch(`${base}/data/step_3a/phase_3a_braid_intensity_matrix_public.csv`).then(r => r.text()),
+  ]).then(([dissText, braidText]) => {
+    const dissRows = d3.csvParse(dissText);
+    const braidRows = d3.csvParse(braidText);
+
+    const N = dissRows.length;
+    const barW = (W - PAD_L - PAD_R) / N;
+    const xS = d3.scaleLinear().domain([0, N - 1]).range([PAD_L + barW / 2, W - PAD_R - barW / 2]);
+
+    const slothropDensity = dissRows.map(d => +d.slothrop_mentions_per_1k_words!);
+    const maxDensity = d3.max(slothropDensity)!;
+    const yS = d3.scaleLinear().domain([0, 3]).range([H - PAD_B, PAD_T]);
+
+    const braidByEp = new Map<string, Record<string, number>>();
+    for (const r of braidRows) {
+      braidByEp.set(r.episode_id!, r as any);
+    }
+
+    const episodeIds = dissRows.map(d => d.episode_id!);
+    const partIndices = dissRows.map(d => +d.part_index!);
+
+    const traceData = TRACES.map(t => ({
+      ...t,
+      values: episodeIds.map((eid, i) => {
+        if (t.key === 'slothrop') {
+          return { x: i, y: Math.min(slothropDensity[i] / maxDensity * 3, 3), raw: slothropDensity[i] };
+        }
+        const br = braidByEp.get(eid);
+        const val = br ? +((br as any)[t.plotline] || 0) : 0;
+        return { x: i, y: val, raw: val };
+      }),
+    }));
+
+    // Part boundaries
+    const partBounds: { x: number; label: string }[] = [];
+    let prevPart = 0;
+    for (let i = 0; i < N; i++) {
+      if (partIndices[i] !== prevPart) {
+        partBounds.push({ x: PAD_L + i * barW, label: `Part ${partIndices[i]}` });
+        prevPart = partIndices[i];
+      }
+    }
+
+    gPartBounds.selectAll('line')
+      .data(partBounds.slice(1))
+      .join('line')
+      .attr('x1', d => d.x).attr('x2', d => d.x)
+      .attr('y1', PAD_T).attr('y2', H - PAD_B)
+      .attr('stroke', 'var(--color-border)')
+      .attr('stroke-dasharray', '3,3')
+      .attr('stroke-opacity', 0.4);
+
+    gPartBounds.selectAll('text')
+      .data(partBounds)
+      .join('text')
+      .attr('x', (d, i) => {
+        const next = i < partBounds.length - 1 ? partBounds[i + 1].x : W - PAD_R;
+        return (d.x + next) / 2;
+      })
+      .attr('y', H - 12)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-family', 'var(--font-mono)')
+      .attr('font-size', '10px')
+      .text(d => d.label);
+
+    // Y-axis label
+    svg.append('text')
+      .attr('x', 12).attr('y', PAD_T - 10)
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-family', 'var(--font-mono)')
+      .attr('font-size', '9px')
+      .text('normalised intensity');
+
+    // Area paths
+    const areaGen = d3.area<{ x: number; y: number }>()
+      .x(d => xS(d.x))
+      .y0(yS(0))
+      .y1(d => yS(d.y))
+      .curve(d3.curveMonotoneX);
+
+    const lineGen = d3.line<{ x: number; y: number }>()
+      .x(d => xS(d.x))
+      .y(d => yS(d.y))
+      .curve(d3.curveMonotoneX);
+
+    const areas = gPaths.selectAll('.trace-area')
+      .data(traceData).join('path')
+      .attr('class', 'trace-area')
+      .attr('d', d => areaGen(d.values))
+      .attr('fill', d => d.colour)
+      .attr('fill-opacity', 0.08)
+      .attr('stroke', 'none');
+
+    const lines = gPaths.selectAll('.trace-line')
+      .data(traceData).join('path')
+      .attr('class', 'trace-line')
+      .attr('d', d => lineGen(d.values))
+      .attr('fill', 'none')
+      .attr('stroke', d => d.colour)
+      .attr('stroke-width', 1.5)
+      .attr('stroke-opacity', 0.7);
+
+    // Cursor
+    const cursorLine = gCursor.append('line')
+      .attr('y1', PAD_T).attr('y2', H - PAD_B)
+      .attr('stroke', 'var(--color-accent)')
+      .attr('stroke-opacity', 0)
+      .attr('stroke-width', 1);
+
+    const cursorDots = gCursor.selectAll('.cursor-dot')
+      .data(traceData).join('circle')
+      .attr('class', 'cursor-dot')
+      .attr('r', 3.5)
+      .attr('fill', d => d.colour)
+      .attr('fill-opacity', 0)
+      .attr('stroke', 'var(--color-surface)')
+      .attr('stroke-width', 1)
+      .attr('stroke-opacity', 0);
+
+    // Hit areas
+    const hitAreas = gOverlay.selectAll('.hit')
+      .data(d3.range(N)).join('rect')
+      .attr('class', 'hit')
+      .attr('x', i => PAD_L + i * barW)
+      .attr('y', PAD_T)
+      .attr('width', barW)
+      .attr('height', H - PAD_T - PAD_B)
+      .attr('fill', 'transparent')
+      .attr('cursor', 'pointer');
+
+    // Key
+    for (const t of TRACES) {
+      const row = document.createElement('div');
+      row.className = 'key-row';
+      row.innerHTML = `
+        <span class="key-tick" style="background:${t.colour}"></span>
+        <span class="key-label">${t.label}</span>
+      `;
+      keyEl.appendChild(row);
+    }
+
+    // Notes
+    function updateNote() {
+      noteEl.innerHTML = `
+        <p class="note-title">Person to trajectory</p>
+        <p class="note-body">As the novel stops naming Slothrop (blue), the rocket plotlines, Blicero, Enzian, Tchitcherine, rise to fill the space he leaves behind. The book's centre shifts from a person to a weapon. Hover any episode to compare.</p>
+      `;
+      noteEl.style.opacity = '1';
+    }
+
+    function showEpNote(idx: number) {
+      const eid = episodeIds[idx];
+      const vals = traceData.map(t => ({
+        label: t.label, colour: t.colour,
+        val: t.values[idx].y, raw: t.values[idx].raw,
+      }));
+      noteEl.innerHTML = `
+        <p class="note-name">${eid}</p>
+        ${vals.map(v => `<p class="note-stats"><span style="color:${v.colour}">&bull;</span> ${v.label}: ${v.raw.toFixed(2)}</p>`).join('')}
+      `;
+      noteEl.style.opacity = '1';
+    }
+
+    function highlight(idx: number | null) {
+      if (idx === null) {
+        cursorLine.attr('stroke-opacity', 0);
+        cursorDots.attr('fill-opacity', 0).attr('stroke-opacity', 0);
+        areas.attr('fill-opacity', 0.08);
+        lines.attr('stroke-opacity', 0.7);
+        updateNote();
+        return;
+      }
+      const cx = xS(idx);
+      cursorLine.attr('x1', cx).attr('x2', cx).attr('stroke-opacity', 0.2);
+      cursorDots
+        .attr('cx', cx)
+        .attr('cy', (d: any) => yS(d.values[idx].y))
+        .attr('fill-opacity', 0.9)
+        .attr('stroke-opacity', 1);
+      showEpNote(idx);
+    }
+
+    hitAreas
+      .on('mouseenter', function(_, i: any) {
+        if (locked === null) highlight(i);
+      })
+      .on('mouseleave', function() {
+        if (locked === null) highlight(null);
+      })
+      .on('click', function(event: any, i: any) {
+        event.stopPropagation();
+        if (locked === i) { locked = null; highlight(null); }
+        else { locked = i; highlight(i); }
+      });
+
+    svg.on('click', () => { if (locked !== null) { locked = null; highlight(null); } });
+
+    updateNote();
+  });
+</script>
+
+<style>
+  .plate-head {
+    margin-bottom: var(--space-sm);
+  }
+
+  .plate-num {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .plate-title {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-text);
+    margin-top: 0.2rem;
+  }
+
+  .transfer-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .transfer-canvas {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 2px;
+    background: var(--color-surface);
+  }
+
+  .transfer-canvas :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .transfer-canvas :global(.hit) {
+    cursor: pointer;
+  }
+
+  .transfer-rail {
+    width: 12rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding-top: 0.25rem;
+  }
+
+  .transfer-note {
+    opacity: 0;
+    transition: opacity 0.25s;
+    min-height: 6rem;
+  }
+
+  .transfer-note :global(.note-title) {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .transfer-note :global(.note-name) {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: var(--color-accent);
+    line-height: 1.2;
+  }
+
+  .transfer-note :global(.note-stats) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+    margin-top: 0.15rem;
+    line-height: 1.5;
+  }
+
+  .transfer-note :global(.note-body) {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-text-dim);
+    line-height: 1.65;
+    margin-top: 0.6rem;
+  }
+
+  .transfer-key {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-md);
+  }
+
+  .transfer-key :global(.key-head) {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-sm);
+  }
+
+  .transfer-key :global(.key-row) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+  }
+
+  .transfer-key :global(.key-tick) {
+    width: 3px;
+    height: 1rem;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  .transfer-key :global(.key-label) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 72rem) {
+    .transfer-layout {
+      flex-direction: column;
+    }
+
+    .transfer-rail {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-md) var(--space-xl);
+    }
+
+    .transfer-note {
+      flex: 1;
+      min-width: 14rem;
+    }
+
+    .transfer-key {
+      flex: 1;
+      min-width: 14rem;
+      border-top: none;
+      border-left: 1px solid var(--color-border);
+      padding-top: 0;
+      padding-left: var(--space-md);
+    }
+  }
+</style>

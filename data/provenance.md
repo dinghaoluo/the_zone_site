@@ -249,3 +249,95 @@ Each entry records the source, destination, and justification for the import.
 - Imported: 2026-05-03
 - Supports: /dissolution route (future orbit visualization) — per-episode co-character orbit with mention counts and share
 - Justification: public-safe export; contains only episode IDs, character names, co-mention counts, and orbit shares; no source text or quotations
+
+## Phase E — Step 2G episode metadata enrichment export (2026-05-03)
+
+### Imported: `episode_metadata_enriched_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2g_episode_metadata_enrichment/outputs/episode_metadata_enriched_full.csv`
+- Destination: `public/data/step_2g/episode_metadata_enriched_public.csv`
+- Imported: 2026-05-03
+- Supports: /episodes route — 73-episode enriched metadata with diegetic time, location, focalisation, strand dominance, and theme tags
+- Justification: public-safe export per `diagnostics/step_2g_public_safe_policy.md`; contains only the 15 approved categorical/controlled-vocabulary columns; two columns stripped: `metadata_notes_private` (analyst prose) and `public_note_stripped_or_absent` (reserved empty column, must be absent per policy); no source text, quotations, snippets, evidence notes, or forbidden-token headers
+
+## Phase F — Step 2D extended character network exports (2026-05-03)
+
+### Exported: `network_metrics_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2d_character_network/outputs/network_metrics.csv`
+- Public-safe copy: `L:/projects/the_zone/05_publication/public_safe/data/step_2d/network_metrics_public.csv`
+- Exported: 2026-05-03
+- Supports: /network route — 130 characters × 2 network types (coarse/fine), with degree, weighted degree, centrality metrics, mention counts, episode counts, dominant strand, and strand count
+- Justification: public-safe export; contains only character names, network type labels, numeric graph metrics, strand labels, and counts; no source text, quotations, snippets, or evidence fields; no forbidden-token column headers
+
+### Exported: `network_metrics_without_slothrop_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2d_character_network/outputs/network_metrics_without_slothrop.csv`
+- Public-safe copy: `L:/projects/the_zone/05_publication/public_safe/data/step_2d/network_metrics_without_slothrop_public.csv`
+- Exported: 2026-05-03
+- Supports: /network route — same schema as `network_metrics_public.csv` but with Slothrop removed to reveal secondary network structure
+- Justification: public-safe export; identical column structure to network_metrics; no forbidden-token column headers
+
+### Exported: `network_metrics_normalised_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2d_character_network/outputs/network_metrics_normalised.csv`
+- Public-safe copy: `L:/projects/the_zone/05_publication/public_safe/data/step_2d/network_metrics_normalised_public.csv`
+- Exported: 2026-05-03
+- Supports: /network route — 130 characters with full-network and Slothrop-removed centrality metrics side by side, normalised to [0,1], plus change deltas (30 columns)
+- Justification: public-safe export; contains only character names, network type, numeric metrics, and strand labels; no source text, quotations, or evidence fields
+
+### Exported: `bridge_character_summary_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2d_character_network/outputs/bridge_character_summary.csv`
+- Public-safe copy: `L:/projects/the_zone/05_publication/public_safe/data/step_2d/bridge_character_summary_public.csv`
+- Exported: 2026-05-03
+- Supports: /network route — bridge character analysis with betweenness centrality under full/removed networks, community shift flags, and composite bridge scores
+- Justification: public-safe export; contains only character names, strand labels, numeric betweenness and degree metrics, community IDs, boolean shift flags, and composite scores; no source text or forbidden-token column headers
+
+### Exported: `character_cooccurrence_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2d_character_network/outputs/character_cooccurrence.csv`
+- Public-safe copy: `L:/projects/the_zone/05_publication/public_safe/data/step_2d/character_cooccurrence_public.csv`
+- Exported: 2026-05-03
+- Supports: /network route — 1,959 character pair co-occurrence edges (coarse network) with edge weights, shared episode counts, proximity scores, association strength, and shared episode ID lists
+- Justification: public-safe export; contains only character name pairs, numeric edge weights, episode counts, proximity scores, and episode ID lists (e.g. "1.05|1.06|…"); no source text, quotations, or evidence fields
+
+## Phase G — Step 2L rocket system infrastructure export (2026-05-03)
+
+Public-safe exports created at `02_analysis/step_2l_rocket_system_infrastructure/outputs/public_safe/`. Two of the six Step 2L output CSVs are private and were NOT exported: `step_2l_infrastructure_registry.csv` (contains `context_window_chars`, regex patterns, and analyst notes) and `step_2l_mentions_private.csv` (contains `source_text_file`, `local_context_private`, `context_before`, `context_after`, and matched surface text).
+
+### Exported: `step_2l_episode_features_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/step_2l_episode_features.csv`
+- Public-safe copy: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/public_safe/step_2l_episode_features_public.csv`
+- Exported: 2026-05-03
+- Supports: future /episodes or infrastructure visualisation — 73-episode infrastructure features with confirmed/review mention counts, density metrics, pressure index, and dominant family/subfamily labels
+- Justification: public-safe export; one column stripped: `private_public_status` (governance text); remaining 47 columns contain only episode IDs, numeric counts, densities, categorical labels, and boolean flags; no source text, quotations, snippets, context windows, or forbidden-token headers
+
+### Exported: `step_2l_episode_family_matrix_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/step_2l_episode_family_matrix.csv`
+- Public-safe copy: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/public_safe/step_2l_episode_family_matrix_public.csv`
+- Exported: 2026-05-03
+- Supports: infrastructure family breakdown per episode — long-format matrix (657 rows: 73 episodes × 9 families) with confirmed/review mention and entity counts
+- Justification: public-safe export; contains only episode IDs, family labels, and numeric counts; no columns stripped; no forbidden-token headers
+
+### Exported: `step_2l_entity_episode_matrix_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/step_2l_entity_episode_matrix.csv`
+- Public-safe copy: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/public_safe/step_2l_entity_episode_matrix_public.csv`
+- Exported: 2026-05-03
+- Supports: per-entity confirmed-mention counts across episodes — wide-format matrix (73 rows × 34 columns: episode IDs + 31 named entities)
+- Justification: public-safe export; contains only episode IDs and integer counts per named entity; no columns stripped; no forbidden-token headers
+
+### Exported: `step_2l_episode_subfamily_matrix_public.csv`
+
+- Source: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/step_2l_episode_subfamily_matrix.csv`
+- Public-safe copy: `L:/projects/the_zone/02_analysis/step_2l_rocket_system_infrastructure/outputs/public_safe/step_2l_episode_subfamily_matrix_public.csv`
+- Exported: 2026-05-03
+- Supports: infrastructure subfamily breakdown per episode — long-format matrix (2,409 rows: 73 episodes × 33 subfamilies) with confirmed/review mention and entity counts
+- Justification: public-safe export; contains only episode IDs, family/subfamily labels, and numeric counts; no columns stripped; no forbidden-token headers
+
+### Boundary note
+
+Two Step 2L outputs were explicitly excluded from export: `step_2l_infrastructure_registry.csv` (private extraction registry with regex patterns, context-window parameters, and analyst notes) and `step_2l_mentions_private.csv` (mention-level data with `source_text_file`, `local_context_private`, `context_before`, `context_after`, and matched text surfaces). These remain private-analysis only.

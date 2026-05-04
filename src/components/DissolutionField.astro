@@ -1,0 +1,569 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const phaseAnnotations: Record<string, string> = {
+  '1.04': 'Slothrop at his most watched: London, PISCES, the map on his wall',
+  '2.01': 'Part 2 opens; the pursuit across the Riviera begins',
+  '2.07': 'Ian Scuffling: the first alias, the first crack in the name',
+  '3.01': 'Into the Zone; the costume changes begin',
+  '3.06': 'The Rocketman cape appears; identity becomes performance',
+  '3.07': 'More alias than surname now; the person underneath receding',
+  '3.19': 'Von Göll orbit; the companions rotate and no one stays',
+  '3.31': 'Bodine and the Komische Oper; barely Slothrop any more',
+  '4.06': 'The preterite sermon: scattering reframed as theology',
+  '4.12': 'The Orpheus Theatre: a trace among traces, then silence',
+};
+---
+
+<div class="plate" id="plate-dissolution-field">
+  <header class="plate-head">
+    <span class="plate-num">Plate I</span>
+    <h3 class="plate-title">The dissolution field</h3>
+  </header>
+
+  <div class="view-line" id="diss-controls">
+    <span class="view-label">View</span>
+    <button class="view-btn active" data-mode="density">Naming</button>
+    <span class="view-sep">&middot;</span>
+    <button class="view-btn" data-mode="identity">Identity</button>
+    <span class="view-sep">&middot;</span>
+    <button class="view-btn" data-mode="orbit">Orbit</button>
+  </div>
+
+  <div class="diss-layout">
+    <div id="diss-canvas" class="diss-canvas" data-base={base}></div>
+    <aside class="diss-rail" id="diss-rail">
+      <div id="diss-note" class="diss-note"></div>
+    </aside>
+  </div>
+</div>
+
+<script define:vars={{ phaseAnnotations }}>
+  window.__dissAnnotations = phaseAnnotations;
+</script>
+
+<script>
+  import * as d3 from 'd3';
+
+  const canvas = document.getElementById('diss-canvas')!;
+  const noteEl = document.getElementById('diss-note')!;
+  const base = canvas.dataset.base || '';
+  const annotations: Record<string, string> = (window as any).__dissAnnotations || {};
+
+  type Mode = 'density' | 'identity' | 'orbit';
+  let mode: Mode = 'density';
+  let locked: number | null = null;
+
+  const W = 960, H = 400, PAD_L = 40, PAD_R = 20, PAD_T = 30, PAD_B = 50;
+
+  const svg = d3.select(canvas)
+    .append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')
+    .attr('role', 'img')
+    .attr('aria-label', 'Slothrop\'s dissolution across 73 episodes: how often the novel names him, what it calls him, and who surrounds him');
+
+  svg.append('rect')
+    .attr('width', W).attr('height', H)
+    .attr('fill', 'var(--color-surface)')
+    .attr('rx', 2);
+
+  const gPartBounds = svg.append('g').attr('class', 'part-bounds');
+  const gBars = svg.append('g').attr('class', 'bars');
+  const gOverlay = svg.append('g').attr('class', 'overlay');
+  const gAxis = svg.append('g').attr('class', 'axis');
+  const gCursor = svg.append('g').attr('class', 'cursor');
+
+  type Episode = {
+    episode_id: string;
+    episode_index: number;
+    part_index: number;
+    word_count: number;
+    mentions_total: number;
+    mentions_per_1k: number;
+    paragraph_coverage: number;
+    present: boolean;
+    canonical_share: number;
+    alias_share: number;
+    alias_diversity: number;
+    alias_effective_n: number;
+    human_mention_share: number;
+    orbit_count: number;
+    orbit_effective_n: number;
+    top_cocharacter: string;
+    top_cocharacter_count: number;
+    is_top: boolean;
+  };
+
+  fetch(`${base}/data/base/slothrop_dissolution_public.csv`)
+    .then(r => r.text())
+    .then(text => {
+      const rows = d3.csvParse(text);
+      const episodes: Episode[] = rows.map(d => ({
+        episode_id: d.episode_id!,
+        episode_index: +d.episode_index!,
+        part_index: +d.part_index!,
+        word_count: +d.word_count!,
+        mentions_total: +d.slothrop_mentions_total!,
+        mentions_per_1k: +d.slothrop_mentions_per_1k_words!,
+        paragraph_coverage: +d.slothrop_paragraph_coverage!,
+        present: d.slothrop_present === 'yes',
+        canonical_share: +d.slothrop_canonical_share!,
+        alias_share: +d.slothrop_alias_share!,
+        alias_diversity: +d.slothrop_alias_diversity!,
+        alias_effective_n: +d.slothrop_alias_effective_n!,
+        human_mention_share: +d.slothrop_human_mention_share!,
+        orbit_count: +d.slothrop_orbit_character_count!,
+        orbit_effective_n: +d.slothrop_orbit_effective_n!,
+        top_cocharacter: d.slothrop_top_cocharacter || '',
+        top_cocharacter_count: +d.slothrop_top_cocharacter_count! || 0,
+        is_top: d.slothrop_is_top_character === 'yes',
+      }));
+
+      build(episodes);
+    });
+
+  function build(episodes: Episode[]) {
+    const N = episodes.length;
+    const barW = (W - PAD_L - PAD_R) / N;
+
+    const xS = d3.scaleLinear().domain([0, N]).range([PAD_L, W - PAD_R]);
+
+    // Part boundaries
+    const partBounds: { x: number; label: string }[] = [];
+    let prevPart = 0;
+    for (let i = 0; i < N; i++) {
+      if (episodes[i].part_index !== prevPart) {
+        partBounds.push({ x: xS(i), label: `Part ${episodes[i].part_index}` });
+        prevPart = episodes[i].part_index;
+      }
+    }
+
+    gPartBounds.selectAll('line')
+      .data(partBounds.slice(1))
+      .join('line')
+      .attr('x1', d => d.x).attr('x2', d => d.x)
+      .attr('y1', PAD_T).attr('y2', H - PAD_B)
+      .attr('stroke', 'var(--color-border)')
+      .attr('stroke-dasharray', '3,3')
+      .attr('stroke-opacity', 0.4);
+
+    gPartBounds.selectAll('text')
+      .data(partBounds)
+      .join('text')
+      .attr('x', (d, i) => {
+        const next = i < partBounds.length - 1 ? partBounds[i + 1].x : W - PAD_R;
+        return (d.x + next) / 2;
+      })
+      .attr('y', H - 12)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-family', 'var(--font-mono)')
+      .attr('font-size', '10px')
+      .attr('letter-spacing', '0.06em')
+      .text(d => d.label);
+
+    // Episode labels on x-axis
+    gAxis.selectAll('text')
+      .data(episodes)
+      .join('text')
+      .attr('x', (_, i) => xS(i) + barW / 2)
+      .attr('y', H - PAD_B + 14)
+      .attr('text-anchor', 'end')
+      .attr('transform', (_, i) => `rotate(-50, ${xS(i) + barW / 2}, ${H - PAD_B + 14})`)
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-family', 'var(--font-mono)')
+      .attr('font-size', '7px')
+      .text(d => d.episode_id);
+
+    // Cursor highlight
+    const cursorRect = gCursor.append('rect')
+      .attr('y', PAD_T).attr('height', H - PAD_T - PAD_B)
+      .attr('fill', 'var(--color-accent)')
+      .attr('fill-opacity', 0)
+      .attr('width', barW);
+
+    // --- Scales per mode ---
+    const maxDensity = d3.max(episodes, d => d.mentions_per_1k)!;
+    const yDensity = d3.scaleLinear().domain([0, maxDensity]).range([H - PAD_B, PAD_T]);
+    const yShare = d3.scaleLinear().domain([0, 1]).range([H - PAD_B, PAD_T]);
+    const maxOrbit = d3.max(episodes, d => d.orbit_effective_n)!;
+    const yOrbit = d3.scaleLinear().domain([0, maxOrbit]).range([H - PAD_B, PAD_T]);
+
+    // Y-axis label
+    const yLabel = svg.append('text')
+      .attr('x', 12).attr('y', PAD_T - 10)
+      .attr('fill', 'var(--color-text-dim)')
+      .attr('font-family', 'var(--font-mono)')
+      .attr('font-size', '9px')
+      .attr('letter-spacing', '0.04em')
+      .text('mentions / 1k words');
+
+    // Density bars (primary)
+    const densityBars = gBars.selectAll('.bar-density')
+      .data(episodes).join('rect')
+      .attr('class', 'bar-density')
+      .attr('x', (_, i) => xS(i) + 1)
+      .attr('width', Math.max(barW - 2, 1));
+
+    // Identity bars — canonical (blue) and alias (gold) stacked
+    const canonBars = gBars.selectAll('.bar-canon')
+      .data(episodes).join('rect')
+      .attr('class', 'bar-canon')
+      .attr('x', (_, i) => xS(i) + 1)
+      .attr('width', Math.max(barW - 2, 1));
+
+    const aliasBars = gBars.selectAll('.bar-alias')
+      .data(episodes).join('rect')
+      .attr('class', 'bar-alias')
+      .attr('x', (_, i) => xS(i) + 1)
+      .attr('width', Math.max(barW - 2, 1));
+
+    // Orbit bars
+    const orbitBars = gBars.selectAll('.bar-orbit')
+      .data(episodes).join('rect')
+      .attr('class', 'bar-orbit')
+      .attr('x', (_, i) => xS(i) + 1)
+      .attr('width', Math.max(barW - 2, 1));
+
+    // Hit areas
+    const hitAreas = gOverlay.selectAll('.hit')
+      .data(episodes).join('rect')
+      .attr('class', 'hit')
+      .attr('x', (_, i) => xS(i))
+      .attr('y', PAD_T)
+      .attr('width', barW)
+      .attr('height', H - PAD_T - PAD_B)
+      .attr('fill', 'transparent')
+      .attr('cursor', 'pointer');
+
+    // --- Render modes ---
+    const DUR = 300;
+
+    function applyDensity() {
+      yLabel.text('mentions / 1k words');
+      const t = svg.transition().duration(DUR);
+      densityBars.transition(t)
+        .attr('y', d => d.present ? yDensity(d.mentions_per_1k) : H - PAD_B)
+        .attr('height', d => d.present ? H - PAD_B - yDensity(d.mentions_per_1k) : 0)
+        .attr('fill', d => d.present ? 'var(--diss-slothrop)' : 'var(--color-border)')
+        .attr('fill-opacity', d => d.present ? 0.7 : 0.15);
+      canonBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+      aliasBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+      orbitBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+    }
+
+    function applyIdentity() {
+      yLabel.text('share of references');
+      const t = svg.transition().duration(DUR);
+      densityBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+      orbitBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+
+      canonBars.transition(t)
+        .attr('y', d => d.present && d.canonical_share > 0 ? yShare(d.canonical_share) : H - PAD_B)
+        .attr('height', d => d.present && d.canonical_share > 0 ? H - PAD_B - yShare(d.canonical_share) : 0)
+        .attr('fill', 'var(--diss-slothrop)')
+        .attr('fill-opacity', 0.65);
+
+      aliasBars.transition(t)
+        .attr('y', d => {
+          if (!d.present || d.alias_share <= 0) return H - PAD_B;
+          const canonH = H - PAD_B - yShare(d.canonical_share);
+          return yShare(d.canonical_share) - (H - PAD_B - yShare(d.alias_share));
+        })
+        .attr('height', d => d.present && d.alias_share > 0 ? H - PAD_B - yShare(d.alias_share) : 0)
+        .attr('fill', 'var(--diss-alias)')
+        .attr('fill-opacity', 0.75);
+    }
+
+    function applyOrbit() {
+      yLabel.text('orbit effective N');
+      const t = svg.transition().duration(DUR);
+      densityBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+      canonBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+      aliasBars.transition(t).attr('height', 0).attr('y', H - PAD_B);
+
+      orbitBars.transition(t)
+        .attr('y', d => d.present && d.orbit_effective_n > 0 ? yOrbit(d.orbit_effective_n) : H - PAD_B)
+        .attr('height', d => d.present && d.orbit_effective_n > 0 ? H - PAD_B - yOrbit(d.orbit_effective_n) : 0)
+        .attr('fill', d => d.is_top ? 'var(--diss-orbit-top)' : 'var(--diss-orbit-other)')
+        .attr('fill-opacity', 0.65);
+    }
+
+    function setMode(m: Mode) {
+      mode = m;
+      locked = null;
+      cursorRect.attr('fill-opacity', 0);
+      document.querySelectorAll('#diss-controls .view-btn').forEach(b =>
+        b.classList.toggle('active', (b as HTMLElement).dataset.mode === m)
+      );
+      switch (m) {
+        case 'density': applyDensity(); break;
+        case 'identity': applyIdentity(); break;
+        case 'orbit': applyOrbit(); break;
+      }
+      updateModeNote();
+    }
+
+    // --- Notes ---
+    function updateModeNote() {
+      switch (mode) {
+        case 'density':
+          noteEl.innerHTML = `
+            <p class="note-title">Naming frequency</p>
+            <p class="note-stats">73 episodes</p>
+            <p class="note-body">How often the novel names Slothrop in each episode. Tall bars mean the text can barely stop talking about him; gaps are episodes where he vanishes entirely. Hover or click any bar for details.</p>
+          `;
+          break;
+        case 'identity':
+          noteEl.innerHTML = `
+            <p class="note-title">Identity fragmentation</p>
+            <p class="note-body">Blue is 'Slothrop'. Gold is the aliases: Rocketman, Ian Scuffling, Schwarzknabe. The gold appears in Part 2 and widens through Part 3 as the person gives way to the costume.</p>
+          `;
+          break;
+        case 'orbit':
+          noteEl.innerHTML = `
+            <p class="note-title">Companions</p>
+            <p class="note-body">How many characters surround Slothrop in each episode. Green means he dominates the scene; teal means someone else has taken over. Watch the companions scatter and rotate as the dissolution deepens.</p>
+          `;
+          break;
+      }
+      noteEl.style.opacity = '1';
+    }
+
+    function showEpisodeNote(idx: number) {
+      const d = episodes[idx];
+      const ann = annotations[d.episode_id] || '';
+      if (!d.present) {
+        noteEl.innerHTML = `
+          <p class="note-name">${d.episode_id}</p>
+          <p class="note-stats">${d.word_count.toLocaleString()} words</p>
+          <p class="note-body">Slothrop absent from this episode.</p>
+          ${ann ? `<p class="note-ann">${ann}</p>` : ''}
+        `;
+      } else {
+        const modeDetail = mode === 'density'
+          ? `<p class="note-stats">${d.mentions_per_1k.toFixed(1)} per 1k words &middot; ${d.mentions_total} times named</p>
+             <p class="note-stats">${(d.paragraph_coverage * 100).toFixed(0)}% of paragraphs</p>`
+          : mode === 'identity'
+          ? `<p class="note-stats">'Slothrop': ${(d.canonical_share * 100).toFixed(0)}% &middot; aliases: ${(d.alias_share * 100).toFixed(0)}%</p>
+             <p class="note-stats">${d.alias_diversity > 0 ? `${d.alias_diversity} different names` : 'no aliases'}</p>`
+          : `<p class="note-stats">${d.orbit_count} companions nearby</p>
+             <p class="note-stats">${d.top_cocharacter ? `most present: ${d.top_cocharacter} (${d.top_cocharacter_count})` : ''}</p>`;
+
+        noteEl.innerHTML = `
+          <p class="note-name">${d.episode_id}</p>
+          ${modeDetail}
+          <p class="note-stats">${d.word_count.toLocaleString()} words &middot; ${d.is_top ? 'top character' : `rank ${d.human_mention_share > 0 ? 'in episode' : ''}`}</p>
+          ${ann ? `<p class="note-ann">${ann}</p>` : ''}
+        `;
+      }
+      noteEl.style.opacity = '1';
+    }
+
+    function highlightEpisode(idx: number | null) {
+      if (idx === null) {
+        cursorRect.attr('fill-opacity', 0);
+        updateModeNote();
+        return;
+      }
+      cursorRect
+        .attr('x', xS(idx))
+        .attr('fill-opacity', 0.06);
+      showEpisodeNote(idx);
+    }
+
+    // --- Controls ---
+    document.querySelectorAll('#diss-controls .view-btn').forEach(btn => {
+      btn.addEventListener('click', () => setMode((btn as HTMLElement).dataset.mode as Mode));
+    });
+
+    // --- Interaction ---
+    hitAreas
+      .on('mouseenter', function(_, d: any) {
+        const idx = episodes.indexOf(d);
+        if (!locked) highlightEpisode(idx >= 0 ? idx : null);
+      })
+      .on('mouseleave', function() {
+        if (locked === null) highlightEpisode(null);
+      })
+      .on('click', function(event: any, d: any) {
+        event.stopPropagation();
+        const idx = episodes.indexOf(d);
+        if (locked === idx) { locked = null; highlightEpisode(null); }
+        else { locked = idx; highlightEpisode(idx); }
+      });
+
+    svg.on('click', () => {
+      if (locked !== null) { locked = null; highlightEpisode(null); }
+    });
+
+    // Initial render
+    setMode('density');
+  }
+</script>
+
+<style>
+  .plate-head {
+    margin-bottom: var(--space-sm);
+  }
+
+  .plate-num {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .plate-title {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--color-text);
+    margin-top: 0.2rem;
+  }
+
+  .view-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .view-label {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+    margin-right: 1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .view-sep {
+    color: var(--color-border);
+    margin: 0 0.6rem;
+    user-select: none;
+  }
+
+  .view-btn {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+  }
+
+  .view-btn:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .view-btn.active {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-accent);
+  }
+
+  .diss-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .diss-canvas {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 2px;
+    background: var(--color-surface);
+  }
+
+  .diss-canvas :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .diss-canvas :global(.hit) {
+    cursor: pointer;
+  }
+
+  .diss-rail {
+    width: 12rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding-top: 0.25rem;
+  }
+
+  .diss-note {
+    opacity: 0;
+    transition: opacity 0.25s;
+    min-height: 6rem;
+  }
+
+  .diss-note :global(.note-title) {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .diss-note :global(.note-name) {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: var(--color-accent);
+    line-height: 1.2;
+  }
+
+  .diss-note :global(.note-stats) {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+    margin-top: 0.15rem;
+    line-height: 1.5;
+  }
+
+  .diss-note :global(.note-body) {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-text-dim);
+    line-height: 1.65;
+    margin-top: 0.6rem;
+  }
+
+  .diss-note :global(.note-ann) {
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 72rem) {
+    .diss-layout {
+      flex-direction: column;
+    }
+
+    .diss-rail {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-md) var(--space-xl);
+    }
+
+    .diss-note {
+      flex: 1;
+      min-width: 14rem;
+    }
+  }
+</style>

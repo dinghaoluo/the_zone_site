@@ -94,7 +94,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           !Number.isFinite(d.paragraph_count)
         )
       ) {
-        throw new Error('Episode metadata did not match the expected structural fields');
+        throw new Error('Episode metadata did not match the expected data fields');
       }
 
       const summaries = d3.groups(episodes, (d) => d.part)
@@ -161,7 +161,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
 
       const longestOverall = d3.greatest(episodes, (d) => d.word_count)!;
-      noteEl.textContent = `Read with Plate I: the horizontal trace preserves episode order within each part, while the lower rule compares total word mass. ${totalEpisodes} episodes / ${formatInt(totalWords)} words in this structural export. The longest unit, ${longestOverall.episode_id}, is where technical obedience, family damage, and Rocket history concentrate rather than simply where the book gets long.`;
+      noteEl.textContent = `Read alongside Plate I: each bar is one episode, ordered within its part, with the lower rule comparing total word count. ${totalEpisodes} episodes across ${formatInt(totalWords)} words. The longest, ${longestOverall.episode_id}, is where Pökler's engineering, his daughter, and the Dora tunnels converge; it is long because there is that much to answer for.`;
     })
     .catch(showLoadError);
 </script>
@@ -344,7 +344,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     .part-rows :global(.part-longest)::before {
       content: attr(data-label);
       font-family: var(--font-mono);
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
       color: var(--color-text-dim);
       text-transform: uppercase;
       letter-spacing: 0.08em;

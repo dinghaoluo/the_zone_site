@@ -57,7 +57,7 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     .attr('viewBox', `0 0 ${W} ${H}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
     .attr('role', 'img')
-    .attr('aria-label', 'Interactive character co-presence network: 130 named characters across five communities');
+    .attr('aria-label', 'Interactive character atlas: 130 named figures grouped by the worlds they belong to in Gravity\'s Rainbow');
 
   svg.append('rect')
     .attr('width', W).attr('height', H)
@@ -196,8 +196,7 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
       noteEl.innerHTML = `
         <p class="note-name">${node.short_name}</p>
         <p class="note-community" style="color:${node.community_colour}">${node.community_label}</p>
-        <p class="note-stats">${node.episode_count} episodes · ${node.degree} connections</p>
-        <p class="note-stats">betweenness: ${node.betweenness_centrality.toFixed(3)}</p>
+        <p class="note-stats">${node.episode_count} episodes · ${node.degree} recurring companions</p>
         ${annotation ? `<p class="note-body">${annotation}</p>` : ''}
       `;
       noteEl.style.opacity = '1';
@@ -207,9 +206,9 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
       switch (mode) {
         case 'overview':
           noteEl.innerHTML = `
-            <p class="note-title">Co-presence Atlas</p>
-            <p class="note-stats">130 characters · 1,959 edges · 5 communities</p>
-            <p class="note-body">Strongest connections and community regions. Node size reflects weighted degree. Hover or click any character to explore.</p>
+            <p class="note-title">Character Atlas</p>
+            <p class="note-stats">130 characters · 5 worlds</p>
+            <p class="note-body">The novel's main social groupings at a glance. Larger points belong to figures who keep turning up with many others. Hover or click any character to explore.</p>
           `;
           break;
         case 'slothrop': {
@@ -217,9 +216,8 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
           noteEl.innerHTML = `
             <p class="note-name">Slothrop</p>
             <p class="note-community" style="color:${s.community_colour}">${s.community_label}</p>
-            <p class="note-stats">${s.episode_count} episodes · ${s.degree} connections</p>
-            <p class="note-stats">betweenness: ${s.betweenness_centrality.toFixed(3)}</p>
-            <p class="note-body">Bridges all five communities. Highest betweenness centrality in the network. Edges coloured by neighbour community.</p>
+            <p class="note-stats">${s.episode_count} episodes · ${s.degree} recurring companions</p>
+            <p class="note-body">Slothrop passes through almost every world in the book: London surveillance, Riviera pursuit, black market, film set, rocket ruin, tribal argument. This view shows the breadth of that wandering.</p>
           `;
           break;
         }
@@ -231,21 +229,21 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
             noteEl.innerHTML = `
               <p class="note-name" style="color:${c.colour}">${c.label}</p>
               <p class="note-stats">${members.length} characters</p>
-              <p class="note-body">Anchored by ${top5.map(n => n.short_name).join(', ')}.</p>
+              <p class="note-body">A local world anchored by ${top5.map(n => n.short_name).join(', ')}.</p>
             `;
           } else {
             noteEl.innerHTML = `
               <p class="note-title">Communities</p>
-              <p class="note-body">Select a community from the index below to explore its internal structure.</p>
+              <p class="note-body">Choose a world from the index below to see who belongs to it.</p>
             `;
           }
           break;
         }
         case 'full':
           noteEl.innerHTML = `
-            <p class="note-title">Complete Network</p>
-            <p class="note-stats">130 characters · 1,959 edges</p>
-            <p class="note-body">All connections visible. Association strength determines edge weight. All labels shown.</p>
+            <p class="note-title">Complete Atlas</p>
+            <p class="note-stats">130 characters</p>
+            <p class="note-body">All visible at once: the crowded human field through which the novel moves.</p>
           `;
           break;
       }
@@ -594,7 +592,7 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
 
   .atlas-key :global(.key-head) {
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-text-dim);

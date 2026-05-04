@@ -31,8 +31,32 @@ Every copy requires a corresponding entry in `data/provenance.md`.
 | `master_network_layout_nodes_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | node positions and metadata — no prose |
 | `master_network_layout_edges_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | edge weights only |
 | `master_network_layout_public.json` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | combined layout metadata |
+| `network_metrics_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | 130 characters × 2 network types, centrality metrics — no prose |
+| `network_metrics_without_slothrop_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | same schema, Slothrop removed — no prose |
+| `network_metrics_normalised_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | full vs. removed centrality, normalised, 30 columns — no prose |
+| `bridge_character_summary_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | bridge scores, community shifts, betweenness — no prose |
+| `character_cooccurrence_public.csv` | `05_publication/public_safe/data/step_2d/` | `public/data/step_2d/` | 1,959 co-occurrence edges with weights and episode lists — no prose |
 
-### 1.3 Step 2H — narrative strands
+### 1.3 Step 2G — episode metadata enrichment
+
+| File | Source | Destination | Rationale |
+| ---- | ------ | ----------- | --------- |
+| `episode_metadata_enriched_public.csv` | `02_analysis/step_2g_episode_metadata_enrichment/outputs/` | `public/data/step_2g/` | 15 categorical columns (time, location, focalisation, strands, themes); `metadata_notes_private` and `public_note_stripped_or_absent` stripped |
+
+### 1.5 Step 2L — rocket system infrastructure
+
+All files have the `_public.csv` suffix. Source: `02_analysis/step_2l_rocket_system_infrastructure/outputs/public_safe/`. Destination: `public/data/step_2l/`.
+
+| File | Rationale |
+| ---- | --------- |
+| `step_2l_episode_features_public.csv` | 73-episode infrastructure features (47 columns): mention counts, density metrics, pressure index, dominant family/subfamily labels; `private_public_status` stripped |
+| `step_2l_episode_family_matrix_public.csv` | long-format episode × 9 infrastructure families (657 rows) with confirmed/review counts — no prose |
+| `step_2l_entity_episode_matrix_public.csv` | wide-format episode × 31 named entities (73 rows) with confirmed counts — no prose |
+| `step_2l_episode_subfamily_matrix_public.csv` | long-format episode × 33 infrastructure subfamilies (2,409 rows) with confirmed/review counts — no prose |
+
+NOT exported (private-analysis only): `step_2l_infrastructure_registry.csv` (regex patterns, context-window parameters, analyst notes), `step_2l_mentions_private.csv` (matched text surfaces, local context fields).
+
+### 1.6 Step 2H — narrative strands
 
 All files have the `_public.csv` suffix. Source: `05_publication/public_safe/data/step_2h/`. Destination: `public/data/step_2h/`.
 

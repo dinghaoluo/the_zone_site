@@ -2,6 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import ModalHeatmap from "../components/ModalHeatmap.astro";
+import RecurrenceHeatmap from "../components/RecurrenceHeatmap.astro";
+import ConvergencePlate from "../components/ConvergencePlate.astro";
 
 import synopsesRaw from "../data/episode_synopses.json";
 import unifiedData from "../data/phase_3a_unified_episode_data_public.json";
@@ -10,6 +13,7 @@ import modalText from "../../public/data/step_3a/phase_3a_modal_intensity_matrix
 import recurrenceText from "../../public/data/step_3a/phase_3a_recurrence_intensity_matrix_public.csv?raw";
 import plotlineArcsRaw from "../data/plotline_arc_descriptions.json";
 import braidMatrixText from "../../public/data/step_3a/phase_3a_braid_intensity_matrix_public.csv?raw";
+import metadataText from "../../public/data/step_2g/episode_metadata_enriched_public.csv?raw";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -41,11 +45,12 @@ function parseQuotesCSV(raw: string) {
     }
     fields.push(cur);
     const eid = fields[0]?.trim();
+    const label = fields[1]?.trim();
     const quote = fields[2]?.trim();
     const note = fields[7]?.trim();
     if (eid && quote) {
       if (!result.has(eid)) result.set(eid, []);
-      result.get(eid)!.push({ quote, note: note || '' });
+      result.get(eid)!.push({ label: label || '', quote, note: note || '' });
     }
   }
   return result;
@@ -55,6 +60,101 @@ const synopsesMap = new Map((synopsesRaw as any[]).map((s: any) => [s.episode_id
 const quotesMap = parseQuotesCSV(quotesText);
 const modalMap = parseCSV(modalText);
 const recurrenceMap = parseCSV(recurrenceText);
+
+/* ── Parse 2G episode metadata ───────────────────────────── */
+function parseCsvLine(line: string): string[] {
+  const cols: string[] = [];
+  let cur = '';
+  let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuote = !inQuote; continue; }
+    if (ch === ',' && !inQuote) { cols.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  cols.push(cur);
+  return cols;
+}
+
+const LOCATION_LABELS: Record<string, string> = {
+  'london': 'London',
+  'white-visitation': 'The White Visitation',
+  'casino-hermann-goering': 'Casino Hermann Goering',
+  'riviera': 'the Riviera',
+  'netherlands-oven': 'the Netherlands, Blicero’s battery',
+  'pre-war-germany': 'pre-war Germany',
+  'zurich': 'Zurich',
+  'zone-central-germany': 'the Zone, central Germany',
+  'zone-north-germany': 'the Zone, northern Germany',
+  'schwarzkommando-camp': 'the Schwarzkommando camp',
+  'nordhausen-mittelwerk': 'Nordhausen / Mittelwerk',
+  'swinemunde-anubis': 'aboard the Anubis',
+  'film-world': 'the film world',
+  'zwolfkinder': 'Zwölfkinder',
+  'psychic-or-bardo-space': 'a psychic elsewhere',
+  'american-interior-pre-war': 'the American interior',
+};
+
+const TIME_LABELS: Record<string, string> = {
+  '1944-12-wartime-london': 'Winter 1944',
+  '1944-12-christmas-eve-london': 'Christmas Eve 1944',
+  '1944-summer-riviera': 'Summer 1944',
+  '1944-late-oven-battery': 'Late 1944',
+  'pre-war-analepsis': 'Pre-war',
+  'pokler-jamf-pre-war': 'Pre-war',
+  '1945-spring-zurich': 'Spring 1945',
+  '1945-early-zone': 'Early 1945',
+  '1945-spring-zone': 'Spring 1945',
+  '1945-spring-berlin': 'Spring 1945',
+  '1945-spring-schwarzkommando': 'Spring 1945',
+  '1945-spring-anubis': 'Spring 1945',
+  '1945-summer-zone': 'Summer 1945',
+  '1945-summer-schwarzkommando': 'Summer 1945',
+  '1945-summer-counterforce': 'Summer 1945',
+  '1945-spring-00000-prep': 'Spring 1945',
+  '1945-spring-late-rocket-field': 'Late spring 1945',
+  '1945-spring-00000-and-future': 'Spring 1945 and beyond',
+  'pokler-annual-visits-1936-1944': '1936–1944',
+  'pokler-late-zone-1945': 'Late 1945',
+};
+
+const FOCAL_LABELS: Record<string, string> = {
+  'slothrop': 'Slothrop',
+  'pointsman': 'Pointsman',
+  'mexico': 'Roger Mexico',
+  'pirate': 'Pirate Prentice',
+  'blicero': 'Blicero',
+  'katje': 'Katje',
+  'pokler': 'Pökler',
+  'enzian': 'Enzian',
+  'tchitcherine': 'Tchitcherine',
+  'layered': 'multiple voices',
+  'ambiguous': 'uncertain',
+  'counterforce-collective': 'the Counterforce',
+  'schwarzkommando-collective': 'the Schwarzkommando',
+};
+
+type MetaRow = { time: string; location: string; focalisation: string };
+const metaMap = new Map<string, MetaRow>();
+{
+  const metaLines = metadataText.replace(/^﻿/, '').trim().split('\n');
+  const metaHeaders = metaLines[0].split(',');
+  const iTime = metaHeaders.indexOf('diegetic_time_label');
+  const iLoc = metaHeaders.indexOf('primary_location');
+  const iFocal = metaHeaders.indexOf('focalisation_label');
+  for (let i = 1; i < metaLines.length; i++) {
+    const c = parseCsvLine(metaLines[i]);
+    const eid = c[0]?.trim();
+    if (!eid) continue;
+    const rawTime = c[iTime]?.trim() || '';
+    const rawLoc = c[iLoc]?.trim() || '';
+    const rawFocal = c[iFocal]?.trim() || '';
+    const time = TIME_LABELS[rawTime] || rawTime.replace(/-/g, ' ');
+    const location = LOCATION_LABELS[rawLoc] || rawLoc.replace(/-/g, ' ');
+    const focalisation = FOCAL_LABELS[rawFocal] || rawFocal.replace(/-/g, ' ');
+    metaMap.set(eid, { time, location, focalisation });
+  }
+}
 
 const PL: any = {
   P01: "Slothrop pursuit",
@@ -91,29 +191,29 @@ const RL: any = {
 const HINGES = new Set(["1.01","1.04","1.14","2.01","3.01","3.11","3.22","3.29","4.05","4.12"]);
 
 const HINGE_COMMENTARIES: Record<string, string> = {
-  "1.01": "The novel opens by establishing its modal atmosphere before committing to any plotline. The screaming across the sky, Pirate’s dream of evacuation, the rocket’s physics as governing figure: these are not character introductions but threshold conditions. Every subsequent episode enters through what this one sets.",
-  "1.04": "Slothrop’s sexual map coincides with V-2 impact sites, and from this coincidence the entire pursuit unfolds. Without the correlation that locks into place here, neither Pointsman’s programme nor Slothrop’s quest has an object. This is the braid’s first structural commitment: a body that desires and a body that is measured, discovered to be the same body.",
-  "1.14": "Blicero, Katje, and Gottfried arrive fully formed in a single episode at maximum intensity. The fairy-tale script, the erotic command structure, the 00000 rocket as terminal parabola: all present from their first appearance. What this episode establishes, Part 4 will fulfil; it is the longest-range structural commitment in the novel.",
-  "2.01": "The novel pivots from London’s institutional compression to the Riviera’s operational games. Slothrop converts from observed body to active pursuer; Pointsman’s apparatus converts from revelation to operational pursuit. The braid’s geometry shifts accordingly: from institutional density to pursuit-driven linearity.",
-  "3.01": "Part 3’s immense middle section opens with Slothrop in maximum pursuit mode, crossing into the Zone. The stripped-back modal palette signals what is coming: the Zone dissolves the institutional frames that made pursuit legible. This episode launches the scattering it does not yet name.",
-  "3.11": "One of the novel’s two most structurally dense episodes. Pökler arrives at Dora/Mittelwerk; individual engineering memory confronts the camp infrastructure it served. Four historical-recurrence registers activate simultaneously. Technical complicity is not adjacent to atrocity here; it is structurally identical with it. The novel’s ethical argument is most exposed at this node.",
-  "3.22": "The Schwarzkommando revelation reaches full structural legibility. Colonial genocide and species extinction peak; the counter-text’s messianic search is articulated against the Final Zero’s self-extinction doctrine. The colonial-historical line achieves the weight it will carry into Part 4’s convergence.",
-  "3.29": "Pökler’s plotline reaches its terminal mourning at maximum intensity. The Corporate City-state passage names the fantasy-template that Peenemünde and Mittelwerke realised: film as blueprint for technocratic complicity. The P04 line closes here; it will not appear in Part 4. Family loss has become inseparable from rocket production, and the complicity is irrevocable.",
-  "4.05": "The 00000 launch: Gottfried sealed inside the Imipolex shroud, Blicero’s fairy-tale script fulfilled. ‘Of course it happened. Of course it didn’t happen.’ The sacrificial event is simultaneously fact and unintegratable; the novel’s central epistemological paradox enacted as structural climax. Everything that 1.14 established is delivered here.",
-  "4.12": "The novel’s terminal episode, matched with 3.11 at peak structural density. Four plotlines converge: Blicero’s sacrifice, Enzian’s counter-text, Slothrop’s scattering, the film-body recurrence. The Orpheus Theatre fuses rocket, audience, and text into a single suspended instant. The descent never quite arrives. The braid holds.",
+  "1.01": "A screaming comes across the sky. Before we meet Slothrop, before Pointsman’s experiments or Blicero’s cruelty, the novel opens with a rocket’s descent over wartime London, Pirate Prentice dreaming of mass evacuation, and a banana breakfast on a Blitz-era rooftop. No single character governs this episode; instead it lays down the conditions, dread, physics, absurdist survival, that every subsequent scene will inhabit.",
+  "1.04": "Slothrop sits at his desk marking a map of his sexual conquests across London, and the pattern matches, impossibly, the distribution of V-2 rocket strikes. This is the coincidence that drives the entire novel: Pointsman’s Pavlovian programme now has its experimental subject, Slothrop’s body becomes an object of institutional obsession, and the long pursuit begins. The body that desires and the body that is measured turn out to be the same body.",
+  "1.14": "The novel’s longest Part 1 episode takes us to a V-2 battery in the occupied Netherlands, where Captain Blicero holds Katje and Gottfried in an erotic command triangle modelled on the Hansel and Gretel fairy tale. The 00000 rocket, the one that will carry Gottfried to his death, is named here for the first time. Everything in this episode waits three hundred pages for its fulfilment in Part 4; no other moment in the novel plants its payoff at such distance.",
+  "2.01": "Slothrop arrives at the Casino Hermann Goering on the Riviera, ostensibly on leave but already sensing the apparatus closing around him. The novel pivots: London’s institutional surveillance gives way to the Casino’s choreographed games, where Katje appears as Pointsman’s handler and Slothrop begins his transformation from observed body to active pursuer of rocket intelligence.",
+  "3.01": "Slothrop crosses into the Zone, postwar Europe’s stateless rubble-field, disguised, alone, chasing rumours of the rocket. The Zone dissolves every institutional frame that made London and the Riviera legible: no borders, no functioning bureaucracies, only debris, displaced populations, and competing intelligence services. This episode opens the novel’s vast middle section, and the pursuit it launches will gradually become the scattering that undoes its protagonist.",
+  "3.11": "The novel’s most devastating episode. Across seventeen thousand words, Pökler remembers his annual visits to see his daughter Ilse, or a girl he was told was Ilse, each summer at the Zwölfkinder resort, while his engineering work continued at Peenemünde. The visits were the bribe that kept him building rockets. When he finally arrives at Nordhausen and sees the tunnels of the Dora concentration camp, he recognises that the infrastructure his career served is the same infrastructure that worked slaves to death. The engineering and the atrocity were never separate things.",
+  "3.22": "The Schwarzkommando debate comes to a head: Enzian’s faction seeks to assemble the 00001 rocket as an act of Herero survival, while the Ombindi Empty Ones embrace the doctrine of the Final Zero, tribal self-extinction as escape from colonial history. The full weight of the Herero genocide and the Southwest African extermination camps enters the novel here, framed not as historical background but as a living theological question: whether survival itself is possible after what was done.",
+  "3.29": "Pökler’s last episode. The Metropolis passage, Fritz Lang’s Corporate City-state where engineers serve administrators and cinema provides the blueprint for industrial power, names the fantasy that Peenemünde and Mittelwerk made real. Pökler will not appear again. His family is gone, his complicity is settled, and the novel lets him go without forgiveness or redemption, only the recognition that his professional life and the camp system were always the same project.",
+  "4.05": "Gottfried is sealed inside the Imipolex shroud and loaded into the 00000 rocket. Blicero fires it. The fairy-tale script from 1.14 fulfils itself: the Oven’s warmth, once a threat, is now what Blicero desires. ‘Of course it happened. Of course it didn’t happen.’ The novel’s central paradox: the sacrificial event is simultaneously fact and something that cannot be integrated into any account of the world.",
+  "4.12": "The novel ends in a cinema. The Orpheus Theatre, a movie house in Los Angeles (or is it?), where the rocket descends toward the audience in the last delta-t before impact. Blicero’s sacrifice, Enzian’s counter-rocket, Slothrop’s scattered traces, the film screen gone white and silent: everything converges in a single frozen instant. The descent never quite arrives. The reader is invited to sing.",
 };
 
 const HINGE_ATMOSPHERE: Record<string, string> = {
-  "1.01": "Science and theology saturate the novel’s threshold simultaneously: Pavlovian conditioning and Puritan damnation as twin frameworks for the body under the rocket’s arc.",
-  "1.04": "Science-control and sexuality-domination fuse at the correlation’s source. The body that desires and the body that is measured are discovered to be the same body.",
-  "1.14": "Sexuality-domination and rocket-terminal at maximum, alongside species-extinction recurrence. The fairy-tale’s erotic cruelty scaled to planetary extermination logic.",
-  "2.01": "Paranoia-conspiracy peaks as Slothrop senses the apparatus; corporate-military web at full density as the Riviera’s operational structure reveals itself. The shift from passive observation to active pursuit is also a shift from institutional to paranoid epistemology.",
-  "3.01": "Corporate-military web in stripped form. The Zone’s dissolved geography requires no paranoia; power operates openly as debris, infrastructure, and ruin.",
-  "3.11": "Forced labour, Holocaust adjacency, technocratic continuation, and colonial genocide activate simultaneously. The novel’s four historical debts concentrated in a single structural node. Film-body mode makes the camp visible as projected image.",
-  "3.22": "Colonial genocide and species extinction at peak. The theological register sounds alongside them: the Schwarzkommando’s survival is framed as soteriological question, not merely political.",
-  "3.29": "Corporate-military and film-body at maximum. The Metropolis fantasy as technocratic blueprint; cinema providing the ideology that industry enacts.",
-  "4.05": "Rocket-terminal, sexuality-domination, and theology peak simultaneously. The launch is sacrificial consummation: the Oven’s warmth not as threat but as desired terminus.",
-  "4.12": "Terminal-rocket-afterlife, corporate-military, and sexuality-domination at triple maximum. The Orpheus Theatre collapses all modal registers into one frozen instant; the novel ends not in resolution but in the permanent present tense of the approaching descent.",
+  "1.01": "Pavlovian conditioning and Puritan election coexist from the first page: the body under the rocket’s arc is simultaneously a scientific specimen and a soul under judgement. The novel will never resolve which framework governs.",
+  "1.04": "The erotic and the experimental converge at the correlation’s source. Slothrop’s desire is also Pointsman’s data; the map of conquests is also a targeting grid. Two incompatible ways of knowing the body discovered to be reading the same evidence.",
+  "1.14": "Fairy-tale cruelty and erotic domination at the V-2 battery, scaled to the logic of species extermination. ‘Doomed as dodoes’: the Hansel-and-Gretel script expanded until the Oven contains not children but continents.",
+  "2.01": "Paranoia sharpens as Slothrop senses orchestration beneath the Casino’s holiday surface: the octopus rescue was too convenient, Katje’s gaze too knowing. The shift from London to the Riviera is also a shift from institutional surveillance to something more intimate and harder to name.",
+  "3.01": "The Zone needs no conspiracy; power operates openly as rubble, abandoned infrastructure, and territorial erasure. ‘Forget frontiers. Forget subdivisions.’ The dissolved geography requires a different kind of attention.",
+  "3.11": "The camp tunnels at Dora, the annual visits to Zwölfkinder, the engineering drawings at Peenemünde: all revealed as one continuous system. Film makes the camp visible as projected image. Pökler’s daughter appeared once a year like a frame of cinema, love itself reduced to persistence of vision.",
+  "3.22": "The colonial genocide of the Herero and the prospect of species self-extinction converge in a theological register: the Schwarzkommando’s survival becomes a question not merely of politics but of whether redemption is still possible after extermination. The debate between Enzian and the Empty Ones is a debate about the terms of being alive.",
+  "3.29": "Fritz Lang’s Metropolis provides the blueprint: the Corporate City-state where the engineer serves the administrator and cinema supplies the ideology that industry enacts. Pökler sees himself in the film and recognises the shape of his own complicity.",
+  "4.05": "The launch is sacrificial consummation. The Oven’s warmth, once the fairy tale’s threat, is now what Blicero desires; not punishment but homecoming. Theology, eroticism, and rocket engineering fuse in the instant of firing.",
+  "4.12": "Everything collapses into the cinema. The Orpheus Theatre holds audience, rocket, and text in a single frozen moment: the descent approaching but never arriving, the screen gone white, the novel ending not in resolution but in a hymn sung together in the dark.",
 };
 
 const STRAND_LABELS = [
@@ -128,10 +228,23 @@ const STRAND_LABELS = [
 ];
 
 /* ── Braid SVG geometry (build-time) ─────────────────────── */
-const STRAND_COLORS: Record<string, string> = {
-  P01: '#4A90D9', P02: '#D94A4A', P03: '#D9A84A', P04: '#8B6914',
-  P05: '#6B8E6B', P06: '#7B68AE', P07: '#4A8B8B', P08: '#B85C8B',
+const STRAND_CSS_VAR: Record<string, string> = {
+  P01: '--strand-slothrop', P02: '--strand-blicero', P03: '--strand-enzian', P04: '--strand-pokler',
+  P05: '--strand-pointsman', P06: '--strand-counterforce', P07: '--strand-tchitcherine', P08: '--strand-film',
 };
+
+function colourStrandRefs(text: string): string {
+  return text.replace(
+    /([\p{L}\d][\p{L}\d'''\-]*(?:\s+[\p{L}\d][\p{L}\d'''\-]*)*)(?:\s*)\(P(0[1-8])\)/gu,
+    (_, name, num) => {
+      const cssVar = STRAND_CSS_VAR['P' + num];
+      if (!cssVar) return name;
+      return `<strong style="color: var(${cssVar})">${name}</strong>`;
+    }
+  );
+}
+const STRAND_SHORT: Record<string, string> = {};
+for (const s of STRAND_LABELS) STRAND_SHORT[s.id] = s.short;
 const PLOTLINE_KEYS = ['P01','P02','P03','P04','P05','P06','P07','P08'];
 const braidMatrix = parseCSV(braidMatrixText);
 const EPISODE_IDS = Array.from(braidMatrix.keys());
@@ -139,7 +252,7 @@ const EPISODE_IDS = Array.from(braidMatrix.keys());
 const COL_W = 10;
 const COL_GAP = 2;
 const ROW_H = 11;
-const LABEL_W = 30;
+const LABEL_W = 74;
 const PAD_TOP = 4;
 const TOTAL_W = LABEL_W + EPISODE_IDS.length * (COL_W + COL_GAP);
 const TOTAL_H = PAD_TOP + PLOTLINE_KEYS.length * ROW_H + 4;
@@ -182,7 +295,7 @@ for (let ci = 0; ci < EPISODE_IDS.length; ci++) {
     braidCells.push({
       x: x + 1, y: cy, w: COL_W - 2, h: cellH,
       opacity: INTENSITY_OPACITY[val],
-      fill: STRAND_COLORS[pk],
+      cssVar: STRAND_CSS_VAR[pk],
     });
   }
 }
@@ -193,44 +306,174 @@ const plotlineArcs = (plotlineArcsRaw as any[]).map((a: any) => ({
   paragraphs: a.arc_description.split('\n\n'),
 }));
 
+interface Annotation {
+  text: string;
+  source: string;
+  url?: string;
+  page?: string;
+}
+
+const ANNOTATIONS: Record<string, Annotation[]> = {
+  "1.01": [
+    { text: "Over 1,100 V-2 rockets hit London between September 1944 and March 1945. Travelling at supersonic speed, they arrived before their own sound.", source: "V-2 rocket programme", url: "https://en.wikipedia.org/wiki/V-2_rocket" },
+    { text: "Pynchon's opening line echoes and inverts the first line of Rilke's Duino Elegies: 'Who, if I screamed, would hear me among the angelic orders?'", source: "Rilke, Duino Elegies" },
+    { text: "Page-by-page annotations for the opening episode.", source: "Pynchon Wiki", url: "https://gravitys-rainbow.pynchonwiki.com/wiki/index.php?title=Pages_3-7" },
+  ],
+  "1.04": [
+    { text: "In 1946, actuary R. D. Clarke showed that V-1 impacts across south London followed a Poisson distribution, proving randomness rather than precision. Pynchon inverts this: Slothrop's map suggests impossible correlation.", source: "R. D. Clarke, 'An Application of the Poisson Distribution' (1946)", url: "https://en.wikipedia.org/wiki/Flying_bomb_poisson" },
+    { text: "Pointsman's programme draws on Pavlov's concept of 'ultra-paradoxical' response, where inhibition and excitation reverse. Weisenburger's Companion traces the allusion.", source: "Weisenburger, A Gravity's Rainbow Companion", url: "https://www.ugapress.org/9780820328072/a-gravitys-rainbow-companion/" },
+    { text: "See also: the dissolution field on the Dissolution page tracks Slothrop's naming patterns across the novel.", page: "/dissolution" },
+  ],
+  "1.14": [
+    { text: "The V-2 was developed and test-launched at Peenemünde on the Baltic island of Usedom. The site is now a museum.", source: "Peenemünde Historical Technical Museum", url: "https://museum-peenemuende.de/?lang=en" },
+    { text: "Pöhlmann's study traces how the Hansel-and-Gretel frame exposes cultural conditioning: the fairy tale's violence is not metaphor but programme.", source: "Sascha Pöhlmann, 'The Significance of the Fairy Tale in Gravity's Rainbow'", url: "https://www.researchgate.net/publication/284581567" },
+    { text: "Imipolex G is modelled on IG Farben's real wartime polymers. The Pynchon Wiki traces the etymology as a compound pun on 'imitation' and 'explode'.", source: "Pynchon Wiki: IG Farben", url: "https://gravitys-rainbow.pynchonwiki.com/wiki/index.php?title=IG_Farben" },
+  ],
+  "2.01": [
+    { text: "Weisenburger identifies the octopus-rescue scene as a burlesque inversion of the Perseus-Andromeda myth, staged as a Pavlovian set-piece.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+    { text: "Cowart reads Pynchon's lover-spy figures as allegories of allusion itself: every intimate contact is also an act of surveillance.", source: "David Cowart, Thomas Pynchon: The Art of Allusion (1980)" },
+  ],
+  "3.01": [
+    { text: "'The Zone' corresponds to Allied-occupied Germany after May 1945, divided into American, British, French, and Soviet sectors by the Potsdam Agreement.", source: "Allied-occupied Germany", url: "https://en.wikipedia.org/wiki/Allied-occupied_Germany" },
+    { text: "Operation Paperclip recruited over 1,600 German scientists for the US, whitewashing Nazi affiliations. The transfer of rocket expertise is already underway in Pynchon's Zone.", source: "Operation Paperclip", url: "https://en.wikipedia.org/wiki/Operation_Paperclip" },
+    { text: "See also: the network atlas on the Network page shows how characters redistribute across communities in Parts 3 and 4.", page: "/network" },
+  ],
+  "3.11": [
+    { text: "Mittelbau-Dora was a real concentration camp near Nordhausen where 60,000 prisoners built V-2 rockets underground; roughly one in three died. The memorial preserves the original tunnel system.", source: "Mittelbau-Dora Memorial", url: "https://www.dora.de/en/" },
+    { text: "The Peenemünde Army Research Centre developed the V-2 from 1937 until the RAF's Operation Hydra raid (August 1943) forced production underground.", source: "Peenemünde", url: "https://en.wikipedia.org/wiki/Peenem%C3%BCnde_Army_Research_Center" },
+    { text: "Pökler's annual visits to a daughter who may be replaced each year echo the KdF (Kraft durch Freude) holiday programme's instrumentalisation of family life.", source: "Pynchon Wiki" },
+    { text: "See also: the Scenes page reading of 3.11 traces the Dora revelation in full.", page: "/scenes" },
+  ],
+  "3.22": [
+    { text: "The Schwarzkommando are fictionalised descendants of the Herero, victims of the first genocide of the twentieth century (1904-08) in German South-West Africa, where 80% of the population was exterminated.", source: "Herero and Nama genocide", url: "https://en.wikipedia.org/wiki/Herero_and_Nama_genocide" },
+    { text: "The 'Final Zero' theology of the Empty Ones inverts the colonial Vernichtungsbefehl (extermination order) of 1904 into voluntary nihilism. Germany formally acknowledged the genocide in 2021.", source: "Britannica", url: "https://www.britannica.com/topic/German-Herero-conflict-of-1904-1907" },
+    { text: "A Georgetown dissertation traces how Pynchon links the Herero genocide to the Holocaust through shared colonial and industrial structures.", source: "Georgetown Digital Repository", url: "https://repository.digital.georgetown.edu/handle/10822/553016" },
+  ],
+  "3.29": [
+    { text: "Fritz Lang's Metropolis (1927), set in a dystopian city where workers are enslaved beneath the machine, provides Pökler's mirror. He watches the film and recognises his own complicity.", source: "Metropolis (1927)", url: "https://en.wikipedia.org/wiki/Metropolis_(1927_film)" },
+    { text: "IG Farben, the chemical cartel behind Zyklon B, operated slave-labour plants at Monowitz alongside Auschwitz. Pynchon's fictional Imipolex G is its literary descendant.", source: "IG Farben", url: "https://en.wikipedia.org/wiki/IG_Farben" },
+  ],
+  "4.05": [
+    { text: "Blicero's name combines German 'bleichen' (to bleach) with Latin 'albicer' (white). Weisenburger glosses it as 'Lord Death', linking him to the medieval Death-as-white-rider.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+    { text: "The V-2's real firing sequence moved through Vorstufe (preliminary burn) to Hauptstufe (main stage). Pynchon reproduces the technical countdown with documentary precision even as its payload is a human body.", source: "V-2 rocket", url: "https://en.wikipedia.org/wiki/V-2_rocket" },
+  ],
+  "4.12": [
+    { text: "The novel's final sentence breaks off mid-word: 'Now everybody-'. The descent never completes; the reader is left in the last delta-t before impact.", source: "Final pages" },
+    { text: "Hohmann's book-length study argues that Rilke's Elegies and Sonnets to Orpheus provide the novel's entire conceptual scaffolding. The Orpheus Theatre makes this explicit.", source: "Hohmann, Thomas Pynchon's Gravity's Rainbow: A Study of Rilke's Influence" },
+    { text: "Tölölyan calls Gravity's Rainbow 'the greatest of our postwar books' for redefining war as permanent condition rather than historical event.", source: "Khachig Tölölyan, 'War as Background in Gravity's Rainbow'" },
+    { text: "The Pynchon Wiki's annotations for the final pages read the hangman game's answer as GENERATOR.", source: "Pynchon Wiki", url: "https://gravitys-rainbow.pynchonwiki.com/wiki/index.php?title=Pages_733-760" },
+  ],
+  "1.05": [
+    { text: "Peter Sachsa is based loosely on the real medium Rudi Schneider, investigated by psychical researchers in 1920s Vienna and London.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+    { text: "The séance scenes draw on the real history of the Society for Psychical Research, which operated from the 1880s and investigated mediums under laboratory conditions.", source: "Society for Psychical Research", url: "https://en.wikipedia.org/wiki/Society_for_Psychical_Research" },
+  ],
+  "1.10": [
+    { text: "The 'Kenosha Kid' variations are a virtuoso exercise in syntactic ambiguity: the same seven words rearranged to produce dozens of different meanings, each one a different interrogation.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+    { text: "Sodium amytal (amobarbital) was used as a 'truth serum' in mid-century military and intelligence interrogations. Its use on Slothrop echoes real CIA programmes including MKULTRA.", source: "MKULTRA", url: "https://en.wikipedia.org/wiki/MKUltra" },
+  ],
+  "1.13": [
+    { text: "Infant conditioning experiments were real: John B. Watson's 'Little Albert' study (1920) conditioned a baby to fear white rats. Pynchon's Jamf experiment transposes this into the novel's central mystery.", source: "Little Albert experiment", url: "https://en.wikipedia.org/wiki/Little_Albert_experiment" },
+    { text: "The Poisson distribution debate between Pointsman and Mexico enacts the novel's philosophical core: determinism versus randomness, cause versus correlation.", source: "Poisson distribution", url: "https://en.wikipedia.org/wiki/Poisson_distribution" },
+  ],
+  "1.16": [
+    { text: "The Advent evensong scene is widely regarded as one of Pynchon's most lyrical passages. The hymn 'In Paradisium' and the toothpaste-tube-as-munition meditation compress wartime's sacred and profane into a single breath.", source: "Pynchon Wiki" },
+  ],
+  "1.19": [
+    { text: "Walter Rathenau, the real German foreign minister assassinated in 1922, delivers a posthumous lecture on coal-tar chemistry and corporate cartelisation. Pynchon draws on Rathenau's actual writings about industrial mysticism.", source: "Walter Rathenau", url: "https://en.wikipedia.org/wiki/Walther_Rathenau" },
+    { text: "The Verein für Raumschiffahrt (Society for Space Travel) was the real amateur rocket club where Wernher von Braun and others began experimenting in the late 1920s. Pökler's Reinickendorf test echoes its early launches.", source: "Verein für Raumschiffahrt", url: "https://en.wikipedia.org/wiki/Verein_f%C3%BCr_Raumschiffahrt" },
+  ],
+  "2.04": [
+    { text: "Brigadier Pudding's nocturnal visits to 'Domina Nocturna' (Katje in disguise) constitute the novel's most extreme scatological scene. Weisenburger reads it as a literalisation of the Great War's afterlife: the trenches have become an erotic ritual the old soldier cannot escape.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+  ],
+  "3.02": [
+    { text: "Slothrop's Rocketman costume is assembled from scraps in Nordhausen's black market. The superhero disguise parodies American pulp culture while granting Slothrop temporary legibility in the Zone's chaos.", source: "Pynchon Wiki" },
+    { text: "See also: the dissolution field on the Dissolution page tracks how Slothrop's naming patterns multiply after he enters the Zone.", page: "/dissolution" },
+  ],
+  "3.04": [
+    { text: "Enzian's backstory reaches to German South-West Africa and the Herero wars. His presence in the Zone as leader of the Schwarzkommando literalises the return of colonial violence to the European mainland.", source: "Herero and Nama genocide", url: "https://en.wikipedia.org/wiki/Herero_and_Nama_genocide" },
+  ],
+  "3.19": [
+    { text: "The Anubis, named for the Egyptian jackal-god of embalming, is a ship of the dead carrying Margherita Erdmann, her daughter Bianca, and a cargo of wartime atrocity. Bianca's death is among the novel's most contested scenes.", source: "Pynchon Wiki" },
+    { text: "Margherita Erdmann's career in Weimar cinema connects her to the real UFA film studios, where Fritz Lang and others worked under conditions Pynchon fictionalises throughout.", source: "UFA GmbH", url: "https://en.wikipedia.org/wiki/UFA_GmbH" },
+  ],
+  "3.27": [
+    { text: "Tchitcherine's posting to Central Asia to impose a New Turkic Alphabet on nomadic peoples parallels the real Soviet latinisation campaigns of the 1920s-30s, which forcibly replaced Arabic scripts across Central Asia.", source: "Latinisation in the Soviet Union", url: "https://en.wikipedia.org/wiki/Latinisation_in_the_Soviet_Union" },
+  ],
+  "4.01": [
+    { text: "The Counterforce's first organised action. Roger Mexico disrupts a formal dinner with obscenity, enacting Pynchon's vision of resistance as vulgarity, laughter, and refusal of decorum.", source: "Pynchon Wiki" },
+    { text: "See also: the network atlas on the Network page shows how the Counterforce characters cluster in Part 4.", page: "/network" },
+  ],
+  "4.09": [
+    { text: "Slothrop's 'scattering' is the novel's most radical formal gesture: the protagonist dissolves not through death but through loss of narrative coherence. He becomes a photograph, a song, a set of rumors.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+    { text: "See also: the dissolution field on the Dissolution page visualises this scattering as the progressive disappearance of Slothrop's name.", page: "/dissolution" },
+  ],
+  "2.05": [
+    { text: "Shell's wartime role was real: Royal Dutch Shell's London headquarters was used as a V-2 guidance signal relay, and Duncan Sandys coordinated rocket intelligence from Shell Mex House on the Strand.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+    { text: "IG Farben's cross-licensing agreements with Standard Oil, ICI, and Shell created the cartel network Pynchon fictionalises. The real agreements survived into the postwar period.", source: "IG Farben", url: "https://en.wikipedia.org/wiki/IG_Farben" },
+  ],
+  "2.06": [
+    { text: "The Zoot Suit Riots (June 1943) saw US servicemen attack Mexican-American youths in Los Angeles. Slothrop's borrowed zoot suit carries this history of racial violence as literal fabric.", source: "Zoot Suit Riots", url: "https://en.wikipedia.org/wiki/Zoot_Suit_Riots" },
+  ],
+  "3.03": [
+    { text: "The rocket mandala KEZVH integrates Herero cosmology with the V-2's geometry: the five directions (up, down, north, south, and centre) mapped onto the rocket's own coordinates of thrust, guidance, and descent.", source: "Pynchon Wiki" },
+    { text: "The Empty Ones' doctrine of tribal self-extinction inverts the logic of the Vernichtungsbefehl. Survival itself becomes a theological question rather than a biological one.", source: "Georgetown Digital Repository", url: "https://repository.digital.georgetown.edu/handle/10822/553016" },
+  ],
+  "3.05": [
+    { text: "The Soviet latinisation campaigns (1920s-30s) forcibly replaced Arabic scripts across Central Asia with Latin and later Cyrillic alphabets, erasing literary traditions in the name of modernisation.", source: "Latinisation in the Soviet Union", url: "https://en.wikipedia.org/wiki/Latinisation_in_the_Soviet_Union" },
+    { text: "The 'Kirghiz Light' may allude to the Tunguska event (1908) or to atmospheric phenomena observed in Central Asian deserts. Pynchon leaves its nature undetermined.", source: "Pynchon Wiki" },
+  ],
+  "3.14": [
+    { text: "The Anubis is named for the Egyptian god of embalming and the dead. As a ship-of-the-dead motif it draws on both the Flying Dutchman and the Ship of Fools tradition.", source: "Pynchon Wiki" },
+  ],
+  "3.15": [
+    { text: "The Bianca episode is among the novel's most contested passages. Critical readings range from literal paedophilia to allegorical readings of American innocence consumed by European decadence.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+  ],
+  "3.25": [
+    { text: "The KEZVH mandala combines Herero sacred geometry with rocket engineering: five points encoding the relationship between ancestors, fire, birth, and the four cardinal directions.", source: "Pynchon Wiki" },
+    { text: "This scene is the only moment in the novel where Slothrop is genuinely welcomed into a community. He will never experience this again.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+  ],
+  "3.28": [
+    { text: "Fritz Lang's Dr. Mabuse films (1922, 1933, 1960) depicted a criminal mastermind controlling society through hypnosis and technology. Pynchon uses the films as templates for charismatic industrial power.", source: "Dr. Mabuse", url: "https://en.wikipedia.org/wiki/Dr._Mabuse" },
+  ],
+  "3.30": [
+    { text: "Operation Backfire (1945) was the real British programme to test-fire captured V-2 rockets at Cuxhaven with the help of German technicians, before the knowledge was transferred to the US and USSR.", source: "Operation Backfire", url: "https://en.wikipedia.org/wiki/Operation_Backfire_(Post_World_War_II)" },
+  ],
+  "4.03": [
+    { text: "The Phoebus cartel (1924-39) was a real conspiracy among lightbulb manufacturers (Osram, Philips, GE) to limit bulb lifespan to 1,000 hours, the first documented case of planned obsolescence.", source: "Phoebus cartel", url: "https://en.wikipedia.org/wiki/Phoebus_cartel" },
+    { text: "Byron the Bulb is widely read as an allegory for consciousness trapped within industrial systems: immortal awareness coupled with total impotence. Some critics call it the novel's secret centre.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+  ],
+  "4.04": [
+    { text: "The Katje-Enzian scene is the only moment two of Blicero's former captives meet and speak openly about what was done to them. It functions as mutual witness testimony.", source: "Pynchon Wiki" },
+  ],
+  "4.08": [
+    { text: "The Disgusting English Candy Drill (4.08) echoes the English sweets ordeal in 1.15. Both weaponise oral disgust, but here the Counterforce turns it outward against institutional power.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+  ],
+  "4.11": [
+    { text: "Tchitcherine and Enzian pass each other without recognition, the novel's colonial fraternity dissolved by magic rather than resolved by confrontation. The brothers will never meet again.", source: "Pynchon Wiki" },
+    { text: "Geli Tripping's love-spell works through sympathetic magic (toenail clippings, spoken words). The novel grants occult causality equal standing with Pavlovian and corporate causality.", source: "Weisenburger, A Gravity's Rainbow Companion" },
+  ],
+};
+
 type Ep = {
   id: string; part: number; isHinge: boolean;
-  synopsis: string; strands: string;
-  quotes: { quote: string; note: string }[];
-  atmosphere: string; registers: string;
+  synopsis: string;
+  quotes: { label: string; quote: string; note: string }[];
   hingeCommentary: string; hingeAtmosphere: string;
+  meta: MetaRow | undefined;
+  annotations: Annotation[];
 };
 
 const episodes: Ep[] = unifiedData.map((u: any) => {
-  const strands = Object.entries(u.plotlines || {})
-    .filter(([_, v]: [string, any]) => (v as any).intensity >= 1)
-    .map(([k, v]: [string, any]) => {
-      const p = k.match(/^(P\d+)/)?.[1] || '';
-      const fn = (v as any).function || 'active';
-      return PL[p] + ' (' + fn + ')';
-    });
-
-  const mRow = modalMap.get(u.episode_id) || {};
-  const modes = Object.entries(mRow)
-    .filter(([_, v]) => (v as number) >= 2)
-    .map(([k]) => ML[k] || k);
-
-  const rRow = recurrenceMap.get(u.episode_id) || {};
-  const regs = Object.entries(rRow)
-    .filter(([_, v]) => (v as number) >= 1)
-    .map(([k]) => RL[k] || k);
-
   return {
     id: u.episode_id,
     part: u.part,
     isHinge: HINGES.has(u.episode_id),
-    synopsis: synopsesMap.get(u.episode_id) || '',
-    strands: strands.length ? 'Active strands: ' + strands.join(', ') + '.' : '',
+    synopsis: colourStrandRefs(synopsesMap.get(u.episode_id) || ''),
     quotes: quotesMap.get(u.episode_id) || [],
-    atmosphere: modes.length ? 'Atmosphere: ' + modes.join(', ') + '.' : '',
-    registers: regs.length ? 'Historical registers: ' + regs.join(', ') + '.' : '',
     hingeCommentary: HINGE_COMMENTARIES[u.episode_id] || '',
     hingeAtmosphere: HINGE_ATMOSPHERE[u.episode_id] || '',
+    meta: metaMap.get(u.episode_id),
+    annotations: ANNOTATIONS[u.episode_id] || [],
   };
 });
 
@@ -246,14 +489,17 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 
   <main class="braid">
     <section class="braid-intro">
+      <h1 class="braid-hero-title reveal">
+        <span class="braid-hero-prefix"><em>Gravity&rsquo;s Rainbow</em> is a</span>
+        <span class="braid-hero-word">braid</span>
+      </h1>
       <p class="intro-text reveal">
-        <em>Gravity&rsquo;s Rainbow</em> is a braid. Eight plotlines weave
-        through seventy-three episodes across four parts, thickening where they
-        govern structure, thinning where they yield: pursuit, sacrifice,
-        counter-text, complicity, control, love, counter-line, and image. What
-        follows is the novel read as that braid: each episode placed in
-        sequence, its active strands named, its structural work made visible.
-        Scroll as one would read.
+        Eight plotlines weave through seventy-three episodes across four parts,
+        thickening where they govern structure, thinning where they yield:
+        pursuit, sacrifice, counter-text, complicity, control, love,
+        counter-line, and image. What follows is the novel read as that braid:
+        each episode placed in sequence, its active strands named, its
+        inner workings made visible. Scroll as one would read.
       </p>
     </section>
 
@@ -263,7 +509,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
           <svg
             class="braid-viz"
             viewBox={`0 0 ${TOTAL_W} ${TOTAL_H}`}
-            preserveAspectRatio="none"
+            preserveAspectRatio="xMidYMid meet"
             role="img"
             aria-label="Interactive braid: eight plotlines across seventy-three episodes"
           >
@@ -274,11 +520,10 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 x={LABEL_W - 3}
                 y={PAD_TOP + ri * ROW_H + ROW_H / 2 + 1}
                 text-anchor="end"
-                fill={STRAND_COLORS[pk]}
                 data-strand={pk}
-                style="cursor:pointer"
+                style={`fill: var(${STRAND_CSS_VAR[pk]}); cursor: pointer`}
               >
-                {pk}
+                {STRAND_SHORT[pk]}
               </text>
             ))}
 
@@ -314,7 +559,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
                 width={cell.w}
                 height={cell.h}
                 rx="1.5"
-                fill={cell.fill}
+                style={`fill: var(${cell.cssVar})`}
                 opacity={cell.opacity}
               />
             ))}
@@ -347,13 +592,6 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             />
           </svg>
         </div>
-        <nav class="strand-nav" aria-label="Plotline arcs">
-          {STRAND_LABELS.map(s => (
-            <button class="strand-btn" data-strand={s.id} type="button">
-              {s.short}
-            </button>
-          ))}
-        </nav>
         <div class="scroll-track">
           <span class="scroll-part-label" id="scroll-part-label">Part 1</span>
           <div class="scroll-bar">
@@ -373,41 +611,60 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             <header class="ep-head">
               <span class="ep-id">{ep.id}</span>
               <span class="ep-part">Part {ep.part}</span>
-              {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
-            <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.meta && (
+              <p class="ep-setting">{ep.meta.time}, {ep.meta.location} · {ep.meta.focalisation}</p>
+            )}
+            <p class="ep-synopsis" set:html={ep.synopsis} />
             {ep.hingeCommentary && (
               <div class="hinge-commentary">
-                <span class="hinge-commentary-label">Why this is a hinge</span>
                 <p>{ep.hingeCommentary}</p>
               </div>
             )}
-            {ep.strands && <p class="ep-meta">{ep.strands}</p>}
-            {ep.quotes.map((q: { quote: string; note: string }) => (
-              <blockquote class="pull-quote">
-                <p>{q.quote}</p>
-                <cite>{q.note}</cite>
-              </blockquote>
-            ))}
-            {ep.hingeAtmosphere ? (
-              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
-            ) : (
-              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            {ep.quotes.length > 0 && (
+              <div class="quote-block">
+                {ep.quotes.map((q: { label: string; quote: string; note: string }) => (
+                  <blockquote class="pull-quote">
+                    {q.label && <span class="quote-anchor-label">{q.label}</span>}
+                    <p>&lsquo;{q.quote}&rsquo;</p>
+                  </blockquote>
+                ))}
+              </div>
             )}
-            {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
+            {ep.hingeAtmosphere && (
+              <p class="hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            )}
+            {ep.annotations.length > 0 && (
+              <aside class="sidenotes">
+                {ep.annotations.map((a: Annotation) => (
+                  <div class="sidenote">
+                    <p class="sidenote-text">{a.text}</p>
+                    {a.url ? (
+                      <a class="sidenote-source" href={a.url} target="_blank" rel="noopener">{a.source}</a>
+                    ) : a.page ? (
+                      <a class="sidenote-source sidenote-internal" href={`${base}${a.page}`}>{a.source}</a>
+                    ) : (
+                      <span class="sidenote-source">{a.source}</span>
+                    )}
+                  </div>
+                ))}
+              </aside>
+            )}
           </article>
         ))}
 
         <div class="part-transition reveal">
           <p>
-            Part 1 ends with all eight strands established but unevenly
-            weighted. Slothrop&rsquo;s pursuit and the White Visitation&rsquo;s control
-            machinery dominate; Enzian&rsquo;s counter-text and Tchitcherine&rsquo;s
-            Soviet line remain subterranean. Part 2 compresses to eight episodes
-            and shifts the structural engine: Slothrop moves south into the
-            Zone&rsquo;s threshold, Pointsman&rsquo;s apparatus strains toward its
-            operational peak, and the Blicero triad receives its founding
-            backstory. The braid tightens before the Zone blows it open.
+            Part 1 ends on Christmas Eve, with the London Blitz still falling.
+            Slothrop&rsquo;s map, Pointsman&rsquo;s rats, Blicero&rsquo;s
+            fairy tale, Pökler&rsquo;s chemistry, Roger and Jessica&rsquo;s
+            love, all have been set in motion, but the Schwarzkommando and
+            Tchitcherine have not yet appeared. Part 2 compresses the novel into
+            eight episodes and moves it south: Slothrop at the Casino Hermann
+            Goering, the octopus rescue, Katje&rsquo;s departure, the Pudding
+            ritual, the Imipolex trail through Zurich, and finally
+            Pointsman&rsquo;s collapse on a crowded beach. By its end, the
+            institutional world that held Part 1 together has broken apart.
           </p>
         </div>
 
@@ -416,55 +673,72 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             <header class="ep-head">
               <span class="ep-id">{ep.id}</span>
               <span class="ep-part">Part {ep.part}</span>
-              {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
-            <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.meta && (
+              <p class="ep-setting">{ep.meta.time}, {ep.meta.location} · {ep.meta.focalisation}</p>
+            )}
+            <p class="ep-synopsis" set:html={ep.synopsis} />
             {ep.hingeCommentary && (
               <div class="hinge-commentary">
-                <span class="hinge-commentary-label">Why this is a hinge</span>
                 <p>{ep.hingeCommentary}</p>
               </div>
             )}
-            {ep.strands && <p class="ep-meta">{ep.strands}</p>}
-            {ep.quotes.map((q: { quote: string; note: string }) => (
-              <blockquote class="pull-quote">
-                <p>{q.quote}</p>
-                <cite>{q.note}</cite>
-              </blockquote>
-            ))}
-            {ep.hingeAtmosphere ? (
-              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
-            ) : (
-              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            {ep.quotes.length > 0 && (
+              <div class="quote-block">
+                {ep.quotes.map((q: { label: string; quote: string; note: string }) => (
+                  <blockquote class="pull-quote">
+                    {q.label && <span class="quote-anchor-label">{q.label}</span>}
+                    <p>&lsquo;{q.quote}&rsquo;</p>
+                  </blockquote>
+                ))}
+              </div>
             )}
-            {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
+            {ep.hingeAtmosphere && (
+              <p class="hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            )}
+            {ep.annotations.length > 0 && (
+              <aside class="sidenotes">
+                {ep.annotations.map((a: Annotation) => (
+                  <div class="sidenote">
+                    <p class="sidenote-text">{a.text}</p>
+                    {a.url ? (
+                      <a class="sidenote-source" href={a.url} target="_blank" rel="noopener">{a.source}</a>
+                    ) : a.page ? (
+                      <a class="sidenote-source sidenote-internal" href={`${base}${a.page}`}>{a.source}</a>
+                    ) : (
+                      <span class="sidenote-source">{a.source}</span>
+                    )}
+                  </div>
+                ))}
+              </aside>
+            )}
           </article>
         ))}
 
         <div class="part-transition reveal">
           <p>
-            Part 3 is the explosion. Thirty-two episodes scatter across the
-            Zone&rsquo;s dissolved geography: nearly half the novel. Slothrop
-            fragments into aliases; Enzian&rsquo;s Schwarzkommando and
-            Tchitcherine&rsquo;s counter-line claim structural weight they never had
-            before; the film-body-image strand surges through the Anubis
-            sequence; five plotlines compete for architectural command where
-            Part 1 gave that authority to one or two. The braid does not
-            loosen. It multiplies.
+            Part 3 is the explosion. Thirty-two episodes, nearly half the
+            novel, scatter across postwar Europe&rsquo;s rubble. Slothrop
+            adopts the Rocketman costume, boards the Anubis, plays Plechazunga
+            the Pig-Hero, and slowly dissolves into the Zone&rsquo;s geography.
+            Enzian&rsquo;s Schwarzkommando and Tchitcherine&rsquo;s Soviet
+            intelligence service appear for the first time. Pökler arrives at
+            Dora. Greta Erdmann tells her story aboard a ship of the dead.
+            The Counterforce begins to organise. Nothing holds the centre
+            because there is no centre to hold.
           </p>
         </div>
 
         <figure class="fig-plate reveal">
-          <img
-            src={`${base}/figures/step_3a/F03_modal_atmosphere.png`}
-            alt="Modal atmosphere heatmap across seventy-three episodes"
-            loading="lazy"
-          />
+          <ModalHeatmap />
           <figcaption class="plate-caption">
-            The novel&rsquo;s episodes are not only driven by plotlines but saturated
-            by modal atmospheres &mdash; registers of science, comedy, film, theology,
-            sexuality, and violence that shift, peak, and recombine independently
-            of the character-driven strands.
+            Beneath the characters and their stories, the novel sustains ten
+            distinct emotional and intellectual currents, science, comedy,
+            film, theology, paranoia, sexuality, and more, that rise and
+            fall independently of who is on stage. The rocket&rsquo;s physics
+            dominate 1.14 and 4.05; the corporate-military world saturates
+            Parts 2 and 3 without releasing. A book whose emotional weather
+            cannot be predicted from its plot.
           </figcaption>
         </figure>
 
@@ -473,41 +747,59 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             <header class="ep-head">
               <span class="ep-id">{ep.id}</span>
               <span class="ep-part">Part {ep.part}</span>
-              {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
-            <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.meta && (
+              <p class="ep-setting">{ep.meta.time}, {ep.meta.location} · {ep.meta.focalisation}</p>
+            )}
+            <p class="ep-synopsis" set:html={ep.synopsis} />
             {ep.hingeCommentary && (
               <div class="hinge-commentary">
-                <span class="hinge-commentary-label">Why this is a hinge</span>
                 <p>{ep.hingeCommentary}</p>
               </div>
             )}
-            {ep.strands && <p class="ep-meta">{ep.strands}</p>}
-            {ep.quotes.map((q: { quote: string; note: string }) => (
-              <blockquote class="pull-quote">
-                <p>{q.quote}</p>
-                <cite>{q.note}</cite>
-              </blockquote>
-            ))}
-            {ep.hingeAtmosphere ? (
-              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
-            ) : (
-              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            {ep.quotes.length > 0 && (
+              <div class="quote-block">
+                {ep.quotes.map((q: { label: string; quote: string; note: string }) => (
+                  <blockquote class="pull-quote">
+                    {q.label && <span class="quote-anchor-label">{q.label}</span>}
+                    <p>&lsquo;{q.quote}&rsquo;</p>
+                  </blockquote>
+                ))}
+              </div>
             )}
-            {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
+            {ep.hingeAtmosphere && (
+              <p class="hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            )}
+            {ep.annotations.length > 0 && (
+              <aside class="sidenotes">
+                {ep.annotations.map((a: Annotation) => (
+                  <div class="sidenote">
+                    <p class="sidenote-text">{a.text}</p>
+                    {a.url ? (
+                      <a class="sidenote-source" href={a.url} target="_blank" rel="noopener">{a.source}</a>
+                    ) : a.page ? (
+                      <a class="sidenote-source sidenote-internal" href={`${base}${a.page}`}>{a.source}</a>
+                    ) : (
+                      <span class="sidenote-source">{a.source}</span>
+                    )}
+                  </div>
+                ))}
+              </aside>
+            )}
           </article>
         ))}
 
         <figure class="fig-plate reveal">
-          <img
-            src={`${base}/figures/step_3a/F04_historical_recurrence.png`}
-            alt="Historical recurrence registers pulsing through specific structural nodes"
-            loading="lazy"
-          />
+          <RecurrenceHeatmap />
           <figcaption class="plate-caption">
-            Historical violence is not uniformly distributed across the novel
-            but pulses through specific structural nodes. Fifty-nine of
-            seventy-three episodes carry no recurrence register at all.
+            Historical violence enters the novel in concentrated bursts, not
+            as background. Most episodes carry none at all. When it arrives,
+            the Herero genocide in 3.03 and 3.22, the Dora forced-labour
+            tunnels in 3.11, the Holocaust running silently beneath
+            Pökler&rsquo;s family visits, it transforms everything around it.
+            The long silences between these eruptions are part of the argument:
+            the reader crosses stretches of forgetting before each return of
+            what cannot be forgotten.
           </figcaption>
         </figure>
 
@@ -516,51 +808,72 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             <header class="ep-head">
               <span class="ep-id">{ep.id}</span>
               <span class="ep-part">Part {ep.part}</span>
-              {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
-            <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.meta && (
+              <p class="ep-setting">{ep.meta.time}, {ep.meta.location} · {ep.meta.focalisation}</p>
+            )}
+            <p class="ep-synopsis" set:html={ep.synopsis} />
             {ep.hingeCommentary && (
               <div class="hinge-commentary">
-                <span class="hinge-commentary-label">Why this is a hinge</span>
                 <p>{ep.hingeCommentary}</p>
               </div>
             )}
-            {ep.strands && <p class="ep-meta">{ep.strands}</p>}
-            {ep.quotes.map((q: { quote: string; note: string }) => (
-              <blockquote class="pull-quote">
-                <p>{q.quote}</p>
-                <cite>{q.note}</cite>
-              </blockquote>
-            ))}
-            {ep.hingeAtmosphere ? (
-              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
-            ) : (
-              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            {ep.quotes.length > 0 && (
+              <div class="quote-block">
+                {ep.quotes.map((q: { label: string; quote: string; note: string }) => (
+                  <blockquote class="pull-quote">
+                    {q.label && <span class="quote-anchor-label">{q.label}</span>}
+                    <p>&lsquo;{q.quote}&rsquo;</p>
+                  </blockquote>
+                ))}
+              </div>
             )}
-            {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
+            {ep.hingeAtmosphere && (
+              <p class="hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            )}
+            {ep.annotations.length > 0 && (
+              <aside class="sidenotes">
+                {ep.annotations.map((a: Annotation) => (
+                  <div class="sidenote">
+                    <p class="sidenote-text">{a.text}</p>
+                    {a.url ? (
+                      <a class="sidenote-source" href={a.url} target="_blank" rel="noopener">{a.source}</a>
+                    ) : a.page ? (
+                      <a class="sidenote-source sidenote-internal" href={`${base}${a.page}`}>{a.source}</a>
+                    ) : (
+                      <span class="sidenote-source">{a.source}</span>
+                    )}
+                  </div>
+                ))}
+              </aside>
+            )}
           </article>
         ))}
 
         <div class="part-transition reveal">
           <p>
             Twelve episodes. Everything that scattered in Part 3 now converges
-            or extinguishes. Blicero&rsquo;s 00000 and Enzian&rsquo;s 00001 reach maximum
-            intensity simultaneously. The Counterforce fails, then mourns.
-            Slothrop scatters beyond recovery into theological trace. The
-            Orpheus Theatre fuses rocket, film, and congregation into a single
-            suspended instant.
+            or extinguishes. Blicero fires the 00000 with Gottfried inside.
+            Enzian&rsquo;s Schwarzkommando assemble and fire the 00001. Roger
+            Mexico disrupts a Krupp dinner with filth poetry and is absorbed
+            by the system he fought. Geli Tripping&rsquo;s love-spell dissolves
+            Tchitcherine&rsquo;s pursuit into unrecognition. Slothrop disperses
+            beyond recovery. In a Los Angeles cinema, the rocket descends
+            toward the audience.
           </p>
         </div>
 
         <figure class="fig-plate reveal">
-          <img
-            src={`${base}/figures/step_3a/F02_terminal_convergence.png`}
-            alt="Part 4 convergence pattern showing plotlines collapsing toward the final episode"
-            loading="lazy"
-          />
+          <ConvergencePlate />
           <figcaption class="plate-caption">
-            Part 4&rsquo;s convergence pattern. Plotlines that ran separately for
-            hundreds of pages now collapse toward the final episode.
+            Part 4 reverses Part 3&rsquo;s scattering. Characters who ran
+            independently for hundreds of pages now collapse toward the final
+            episode: Blicero&rsquo;s sacrifice, Enzian&rsquo;s counter-rocket,
+            Slothrop&rsquo;s scattered American traces, the Orpheus Theatre&rsquo;s
+            darkened screen. The Counterforce flares early and fades;
+            Pökler and Pointsman are already gone. What converges is not
+            resolution but accumulation; the novel tightens into a knot
+            it never unties.
           </figcaption>
         </figure>
 
@@ -569,28 +882,45 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
             <header class="ep-head">
               <span class="ep-id">{ep.id}</span>
               <span class="ep-part">Part {ep.part}</span>
-              {ep.isHinge && <span class="hinge-label">Structural hinge</span>}
             </header>
-            <p class="ep-synopsis">{ep.synopsis}</p>
+            {ep.meta && (
+              <p class="ep-setting">{ep.meta.time}, {ep.meta.location} · {ep.meta.focalisation}</p>
+            )}
+            <p class="ep-synopsis" set:html={ep.synopsis} />
             {ep.hingeCommentary && (
               <div class="hinge-commentary">
-                <span class="hinge-commentary-label">Why this is a hinge</span>
                 <p>{ep.hingeCommentary}</p>
               </div>
             )}
-            {ep.strands && <p class="ep-meta">{ep.strands}</p>}
-            {ep.quotes.map((q: { quote: string; note: string }) => (
-              <blockquote class="pull-quote">
-                <p>{q.quote}</p>
-                <cite>{q.note}</cite>
-              </blockquote>
-            ))}
-            {ep.hingeAtmosphere ? (
-              <p class="ep-meta hinge-atmosphere">{ep.hingeAtmosphere}</p>
-            ) : (
-              ep.atmosphere && <p class="ep-meta">{ep.atmosphere}</p>
+            {ep.quotes.length > 0 && (
+              <div class="quote-block">
+                {ep.quotes.map((q: { label: string; quote: string; note: string }) => (
+                  <blockquote class="pull-quote">
+                    {q.label && <span class="quote-anchor-label">{q.label}</span>}
+                    <p>&lsquo;{q.quote}&rsquo;</p>
+                  </blockquote>
+                ))}
+              </div>
             )}
-            {ep.registers && <p class="ep-meta ep-registers">{ep.registers}</p>}
+            {ep.hingeAtmosphere && (
+              <p class="hinge-atmosphere">{ep.hingeAtmosphere}</p>
+            )}
+            {ep.annotations.length > 0 && (
+              <aside class="sidenotes">
+                {ep.annotations.map((a: Annotation) => (
+                  <div class="sidenote">
+                    <p class="sidenote-text">{a.text}</p>
+                    {a.url ? (
+                      <a class="sidenote-source" href={a.url} target="_blank" rel="noopener">{a.source}</a>
+                    ) : a.page ? (
+                      <a class="sidenote-source sidenote-internal" href={`${base}${a.page}`}>{a.source}</a>
+                    ) : (
+                      <span class="sidenote-source">{a.source}</span>
+                    )}
+                  </div>
+                ))}
+              </aside>
+            )}
           </article>
         ))}
       </div>
@@ -630,16 +960,19 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   const total = panels.length;
   let lastVisible = -1;
   let currentPart = '1';
+  let cursorLocked = false;
+  let scrollEndTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Build episode-id → column-index lookup from hit areas
   const colHits = document.querySelectorAll('.braid-col-hit');
-  const epIdToIdx = new Map();
+  const epIdToIdx = new Map<string, number>();
   colHits.forEach((el, i) => {
     const eid = (el as SVGElement).dataset.ep;
     if (eid) epIdToIdx.set(eid, i);
   });
 
   function updateCursor(idx: number) {
+    if (cursorLocked) return;
     if (!cursor || !braidSvg || idx < 0) return;
     const hit = colHits[idx] as SVGRectElement | undefined;
     if (!hit) return;
@@ -649,8 +982,40 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   }
 
   function clearCursor() {
+    if (cursorLocked) return;
     if (cursor) cursor.setAttribute('opacity', '0');
     braidSvg?.classList.remove('cursor-active');
+  }
+
+  function forceSetCursor(idx: number) {
+    if (!cursor || !braidSvg || idx < 0) return;
+    const hit = colHits[idx] as SVGRectElement | undefined;
+    if (!hit) return;
+    cursor.setAttribute('x', hit.getAttribute('x') || '0');
+    cursor.setAttribute('opacity', '0.18');
+    braidSvg.classList.add('cursor-active');
+  }
+
+  function unlockCursorOnScrollEnd() {
+    if (scrollEndTimer) clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
+      cursorLocked = false;
+      // After unlock, find the actual episode at the current scroll position
+      // by checking which panel's top edge is closest to just below the header
+      const header = document.getElementById('braid-header');
+      const nav = document.querySelector('.nav') as HTMLElement | null;
+      const obstruction = (nav ? nav.offsetHeight : 0) + (header ? header.offsetHeight : 0) + 20;
+      let bestIdx = lastVisible;
+      let bestDist = Infinity;
+      panels.forEach((p, i) => {
+        const rect = p.getBoundingClientRect();
+        const dist = Math.abs(rect.top - obstruction);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+      });
+      lastVisible = bestIdx;
+      updateCursor(bestIdx);
+      if (fill) fill.style.width = ((bestIdx + 1) / total) * 100 + '%';
+    }, 200);
   }
 
   // Scroll tracking — forward
@@ -709,23 +1074,44 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   }, { threshold: 0.5 });
   nonEpElements.forEach(el => nonEpObs.observe(el));
 
-  // Click episode column → scroll to panel + flash
   colHits.forEach(el => {
     el.addEventListener('click', () => {
       const eid = (el as SVGElement).dataset.ep;
       if (!eid) return;
       const target = document.getElementById('ep-' + eid);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        target.classList.add('flash');
-        setTimeout(() => target.classList.remove('flash'), 900);
+      if (!target) return;
+
+      const idx = epIdToIdx.get(eid);
+      if (idx !== undefined) {
+        cursorLocked = true;
+        forceSetCursor(idx);
+        lastVisible = idx;
       }
+
+      const header = document.getElementById('braid-header');
+      const nav = document.querySelector('.nav') as HTMLElement | null;
+      const navH = nav ? nav.offsetHeight : 0;
+      const headerH = header ? header.offsetHeight : 0;
+      const obstruction = navH + headerH + 12;
+
+      const absoluteTop = target.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: absoluteTop - obstruction,
+        behavior: 'smooth',
+      });
+
+      target.classList.add('flash');
+      setTimeout(() => target.classList.remove('flash'), 900);
     });
   });
 
+  // Unlock cursor after smooth scroll finishes
+  window.addEventListener('scroll', () => {
+    if (cursorLocked) unlockCursorOnScrollEnd();
+  }, { passive: true });
+
   // Click strand label → open slide-out (reuse existing mechanism)
   const overlay = document.getElementById('arc-overlay');
-  const strandBtns = document.querySelectorAll('.strand-btn');
   let openPanelEl: HTMLElement | null = null;
 
   function closeArc() {
@@ -750,14 +1136,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     }
   }
 
-  strandBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = (btn as HTMLElement).dataset.strand;
-      if (id) openArc(id);
-    });
-  });
-
-  // SVG strand labels also open slide-outs
+  // SVG strand labels open slide-outs
   document.querySelectorAll('.braid-label').forEach(lbl => {
     lbl.addEventListener('click', () => {
       const id = (lbl as SVGElement).dataset.strand;
@@ -787,10 +1166,51 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
   }
 
-  .intro-text {
+  .braid-hero-title {
+    margin-bottom: var(--space-xl);
+    line-height: 1.15;
+  }
+
+  .braid-hero-prefix {
+    display: block;
     font-family: var(--font-heading);
-    font-size: var(--text-lg);
-    line-height: 1.85;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 400;
+    font-style: normal;
+    color: var(--color-text-secondary);
+  }
+
+  .braid-hero-prefix em {
+    font-style: italic;
+  }
+
+  .braid-hero-word {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 14vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    background: linear-gradient(
+      90deg,
+      var(--strand-slothrop),
+      var(--strand-blicero),
+      var(--strand-enzian),
+      var(--strand-pointsman),
+      var(--strand-counterforce),
+      var(--strand-tchitcherine),
+      var(--strand-film)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--color-accent);
+    margin-top: var(--space-sm);
+  }
+
+  .intro-text {
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
   }
 
@@ -800,8 +1220,6 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     z-index: 10;
     background: var(--color-bg);
     padding: 0 var(--space-lg) 0;
-    max-width: var(--max-width);
-    margin: 0 auto;
   }
 
   /* Braid visualization */
@@ -813,7 +1231,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   .braid-viz {
     display: block;
     width: 100%;
-    height: 96px;
+    height: clamp(120px, 20vh, 200px);
     transition: opacity 0.3s ease;
   }
 
@@ -822,9 +1240,9 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   }
 
   .braid-label {
-    font-size: 3.2px;
+    font-size: 6px;
     font-family: var(--font-mono);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
     cursor: pointer;
   }
 
@@ -839,7 +1257,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 
   .braid-cursor {
     pointer-events: none;
-    transition: x 0.2s ease, opacity 0.3s ease;
+    transition: x 1s ease-out, opacity 0.3s ease;
   }
 
   /* Flash animation for scroll target */
@@ -853,35 +1271,6 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     border-left: 2px solid var(--color-accent);
   }
 
-  /* Strand navigation */
-  .strand-nav {
-    display: flex;
-    gap: var(--space-sm);
-    flex-wrap: wrap;
-    padding: var(--space-sm) 0;
-  }
-
-  .strand-btn {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-text-dim);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.2em 0.5em;
-    border-radius: 2px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease;
-  }
-
-  .strand-btn:hover {
-    opacity: 1;
-    color: var(--color-accent);
-    background: rgba(196, 163, 90, 0.08);
-  }
-
   /* Scroll progress track */
   .scroll-track {
     display: flex;
@@ -892,8 +1281,8 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 
   .scroll-part-label {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-text-dim);
     white-space: nowrap;
@@ -955,6 +1344,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   .ep-panel {
     padding: var(--space-xl) 0;
     border-top: 1px solid var(--color-rule);
+    scroll-margin-top: 14rem;
   }
 
   .ep-panel:last-child {
@@ -962,9 +1352,19 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   }
 
   .hinge {
-    border-left: 2px solid var(--color-accent-dim);
-    padding-left: var(--space-lg);
-    background: linear-gradient(90deg, rgba(196, 163, 90, 0.03) 0%, transparent 40%);
+    border-left: 3px solid var(--color-accent-dim);
+    padding: var(--space-2xl) var(--space-xl) var(--space-2xl) var(--space-2xl);
+    background: linear-gradient(90deg, rgba(196, 163, 90, 0.06) 0%, transparent 60%);
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    max-width: 56rem;
+  }
+
+  .hinge .ep-synopsis {
+    font-size: var(--text-lg);
   }
 
   .ep-head {
@@ -982,6 +1382,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     letter-spacing: -0.02em;
   }
 
+  .hinge .ep-id {
+    font-size: var(--text-2xl);
+    color: var(--color-accent);
+  }
+
   .ep-part {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
@@ -990,16 +1395,18 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     text-transform: uppercase;
   }
 
-  .hinge-label {
+  .ep-setting {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: var(--color-accent-dim);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.02em;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-sm);
   }
 
   .ep-synopsis {
-    font-size: var(--text-base);
-    line-height: 1.75;
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     margin-bottom: var(--space-md);
   }
@@ -1010,52 +1417,105 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     border-left: 1px solid var(--color-accent-dim);
   }
 
-  .hinge-commentary-label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent-dim);
-    margin-bottom: var(--space-sm);
-  }
-
   .hinge-commentary p {
-    font-size: var(--text-base);
-    line-height: 1.75;
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     margin: 0;
   }
 
   .hinge-atmosphere {
-    line-height: 1.75;
+    font-family: var(--font-prose);
+    font-style: italic;
+    line-height: var(--lh-prose);
     color: var(--color-text-dim);
   }
 
-  .ep-meta {
+  /* --- Sidenotes (margin annotations for hinge episodes) --- */
+  .sidenotes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .sidenote {
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    line-height: 1.7;
+    font-size: 0.75rem;
+    line-height: 1.55;
     color: var(--color-text-dim);
-    margin-bottom: var(--space-sm);
-    letter-spacing: 0.01em;
   }
 
-  .ep-registers {
-    color: var(--color-part-4);
+  .sidenote-text {
+    margin: 0 0 0.15rem;
+  }
+
+  .sidenote-source {
+    font-size: 0.6875rem;
+    letter-spacing: 0.03em;
+    color: var(--color-accent-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  a.sidenote-source:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .sidenote-internal::before {
+    content: '→ ';
+  }
+
+  @media (min-width: 72rem) {
+    .hinge {
+      position: relative;
+    }
+
+    .sidenotes {
+      position: absolute;
+      right: -14rem;
+      top: var(--space-2xl);
+      width: 12.5rem;
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+      border-left: 1px solid var(--color-border-subtle);
+      padding-left: var(--space-md);
+    }
+  }
+
+  .quote-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .quote-anchor-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-xs);
   }
 
   .pull-quote {
-    margin: var(--space-lg) 0;
-    padding-left: var(--space-lg);
-    border-left: 1px solid var(--color-accent-dim);
+    margin: 0;
+    padding-left: var(--space-xl);
+    border-left: 3px solid rgba(196, 163, 90, 0.35);
   }
 
   .pull-quote p {
-    font-family: var(--font-heading);
+    font-family: var(--font-prose);
     font-style: italic;
-    font-size: var(--text-base);
-    line-height: 1.75;
+    font-size: var(--text-xl);
+    line-height: 1.35;
     color: var(--color-text);
   }
 
@@ -1063,9 +1523,10 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     display: block;
     margin-top: var(--space-xs);
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-size: 0.8rem;
     font-style: normal;
     color: var(--color-text-dim);
+    opacity: 0.6;
     letter-spacing: 0.01em;
   }
 
@@ -1078,19 +1539,24 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   }
 
   .part-transition p {
-    font-family: var(--font-heading);
+    font-family: var(--font-prose);
     font-size: var(--text-lg);
-    line-height: 1.85;
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     font-style: italic;
   }
 
-  /* Figure plates — wider than prose */
+  /* Figure plates — break out of reading-col to span wide */
   .fig-plate {
-    max-width: min(90vw, 64rem);
-    margin: var(--space-2xl) auto;
-    margin-left: 50%;
+    width: min(92vw, 68rem);
+    position: relative;
+    left: 50%;
     transform: translateX(-50%);
+    margin: var(--space-2xl) 0;
+    box-sizing: border-box;
+    padding: var(--space-lg) var(--space-md);
+    background: rgba(255, 255, 255, 0.015);
+    border-radius: 4px;
   }
 
   .fig-plate img {
@@ -1103,7 +1569,8 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
   .plate-caption {
     max-width: clamp(320px, 65ch, 48rem);
     margin-top: var(--space-md);
-    font-size: var(--text-sm);
+    font-family: var(--font-prose);
+    font-size: var(--text-base);
     line-height: 1.75;
     color: var(--color-text-dim);
   }
@@ -1217,7 +1684,7 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
 
     .braid-viz {
       width: max(100%, 600px);
-      height: 80px;
+      height: clamp(90px, 15vh, 140px);
     }
 
     .braid-label {
@@ -1226,7 +1693,9 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
     }
 
     .hinge {
-      padding-left: var(--space-md);
+      padding: var(--space-xl) var(--space-md) var(--space-xl) var(--space-lg);
+      width: 100vw;
+      max-width: 100vw;
     }
 
     .braid-intro {
@@ -1237,20 +1706,11 @@ const p4 = episodes.filter((e: Ep) => e.part === 4);
       padding: var(--space-lg) var(--space-md) 0;
     }
 
-    .strand-nav {
-      gap: 0.25rem;
-    }
-
-    .strand-btn {
-      font-size: 0.6rem;
-      padding: 0.15em 0.35em;
-    }
-
     .fig-plate {
-      margin-left: calc(-1 * var(--space-md));
-      margin-right: calc(-1 * var(--space-md));
-      max-width: calc(100% + var(--space-md) * 2);
+      width: calc(100% + var(--space-md) * 2);
+      left: calc(-1 * var(--space-md));
       transform: none;
+      padding: var(--space-md);
     }
 
     .arc-panel {

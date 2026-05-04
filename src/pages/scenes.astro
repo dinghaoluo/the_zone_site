@@ -1,0 +1,621 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import synopsesRaw from "../data/episode_synopses.json";
+import quotesText from "../data/episode_anchor_quotes_APPROVED_PUBLIC.csv?raw";
+import unifiedData from "../data/phase_3a_unified_episode_data_public.json";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sitePath = (path: string) => `${base}/${path.replace(/^\//, '')}`;
+
+// Parse quotes CSV (handles quoted fields with commas)
+interface Quote {
+  label: string;
+  quote: string;
+  note: string;
+  reading: string;
+}
+function parseQuotesCSV(raw: string) {
+  const result = new Map<string, Quote[]>();
+  for (const line of raw.trim().split('\n').slice(1)) {
+    const fields: string[] = [];
+    let cur = '';
+    let inQ = false;
+    for (let ci = 0; ci < line.length; ci++) {
+      const ch = line[ci];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { fields.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    fields.push(cur);
+    const eid = fields[0]?.trim();
+    const label = fields[1]?.trim();
+    const quote = fields[2]?.trim();
+    const reading = fields[6]?.trim();
+    const note = fields[7]?.trim();
+    if (eid && quote) {
+      if (!result.has(eid)) result.set(eid, []);
+      result.get(eid)!.push({ label: label || '', quote, note: note || '', reading: reading || '' });
+    }
+  }
+  return result;
+}
+const quoteMap = parseQuotesCSV(quotesText);
+
+// Synopses keyed by episode_id
+const synMap = new Map<string, { synopsis: string; part: number; isHinge: boolean }>();
+for (const ep of synopsesRaw as any[]) {
+  synMap.set(ep.episode_id, {
+    synopsis: ep.synopsis,
+    part: ep.part,
+    isHinge: ep.is_hinge,
+  });
+}
+
+// Unified episode data keyed by episode_id
+const unifiedMap = new Map<string, any>();
+for (const ep of unifiedData as any[]) {
+  unifiedMap.set(ep.episode_id, ep);
+}
+
+const PL: Record<string, string> = {
+  P01_slothrop_rocket_pursuit: "Slothrop pursuit",
+  P02_blicero_katje_gottfried_00000: "Blicero triad",
+  P03_enzian_schwarzkommando_00001: "Schwarzkommando",
+  P04_pokler_leni_ilse_jamf_imipolex: "Pökler / Imipolex",
+  P05_pointsman_white_visitation: "White Visitation",
+  P06_pirate_roger_jessica_counterforce: "Counterforce",
+  P07_tchitcherine_counter_line: "Tchitcherine",
+  P08_film_body_image: "Film-body-image",
+};
+
+// Curated scene selection — the episodes readers remember
+interface Plotline { name: string; intensity: number }
+interface Scene {
+  id: string;
+  title: string;
+  leadQuote?: Quote;
+  otherQuotes: Quote[];
+  synopsis: string;
+  part: number;
+  isHinge: boolean;
+  commentary: string;
+  plotlines: Plotline[];
+}
+
+const sceneIds: { id: string; title: string; commentary: string }[] = [
+  {
+    id: "1.01",
+    title: "A screaming comes across the sky",
+    commentary: "The novel opens not with a character but with a condition: dread, physics, absurdist survival under bombardment. Nothing is introduced as a person; everything is introduced as a shape, a parabolic arc that will govern the rest of the book. The opening sentence is the most famous in postwar American fiction because it announces a novel that will not resolve what it sets in motion. Every thread Pynchon spins over the next seven hundred pages is already knotted here.",
+  },
+  {
+    id: "1.04",
+    title: "The Kenosha Kid",
+    commentary: "Slothrop's sexual conquests, marked on a wall map with coloured stars, happen to correspond, preceding each by four and a half days, with V-2 rocket-impact sites. This coincidence generates the entire pursuit apparatus that drives the first half of the novel: Pointsman wants to break Slothrop open in a laboratory, intelligence agencies compete for jurisdiction, and Slothrop himself senses he is being watched. But the deeper question is whether the pattern is real or whether the act of looking produces what it claims to discover. Every institution in the book takes one side or the other. Neither side ever wins.",
+  },
+  {
+    id: "1.14",
+    title: "The Maerchen template",
+    commentary: "The novel's longest Part 1 episode plunges from a film set into Katje Borgesius's past: sadomasochistic captivity with Captain Blicero at a V-2 launch battery, where she and Gottfried are made to enact a Hansel-and-Gretel script. Blicero's fairy-tale framework turns the oven from a threat into a destination; everything the novel does with the 00000 rocket in Part 4 is already legible here, four hundred pages early. Meanwhile, colonial genocide, sexual bondage, rocket technology, and cinematic manipulation are braided into one knot. The reader is not asked to choose among them.",
+  },
+  {
+    id: "1.16",
+    title: "They are in love. Fuck the war.",
+    commentary: "Roger and Jessica occupy the novel's emotional centre without irony, without qualification: seven words that set a private love affair against three hundred pages of institutional machinery. Near her anti-aircraft battery on an evening before Christmas, they stop at a country church for evensong, and the episode opens into a vast meditation on Advent: a Jamaican countertenor singing above the congregation, toothpaste tubes recycled for munitions, the whole war-town's desolation held inside one hymn. The sentence works because the reader already knows the machinery will win. Jessica will return to Jeremy. Roger will be left in the snow.",
+  },
+  {
+    id: "2.01",
+    title: "A Puritan reflex, also known as paranoia",
+    commentary: "Slothrop arrives at the Casino Hermann Goering on the Riviera, giddy with relief at leaving the Blitz behind. On the beach, an enormous octopus seizes Katje; Slothrop clubs it with a wine bottle. The rescue is suspiciously convenient, and paranoia blooms on cue. The novel pauses here to name its own governing habit of mind: paranoia as an inherited search algorithm, Puritan in origin, inescapable in practice. Part 2 begins with the discovery that moving south changes nothing. The apparatus has moved with him.",
+  },
+  {
+    id: "3.01",
+    title: "Entering the Zone",
+    commentary: "'Forget frontiers now. Forget subdivisions. There aren't any.' Three sentences of decreasing length enact the erasure they describe. The Zone is not a place but a condition: the absence of the structures that made Part 1 legible, military jurisdictions, national boundaries, the distinction between pursuer and pursued. Slothrop arrives at Nordhausen, reads classified documents linking his family to IG Farben, encounters Major Marvy, and is taken in by Geli Tripping. From here on he moves through the wreckage like a planchette on a Ouija board, pushed by whatever he thinks he is pursuing.",
+  },
+  {
+    id: "3.06",
+    title: "The Rocketman costume",
+    commentary: "In ruined Berlin, Slothrop acquires a cape-and-helmet costume from Säure Bummer and becomes 'Rocketman', a figure, a performance, a comic-book version of himself. The costume literalises what the novel has been doing all along: converting a person into a sign. This is the last episode where Slothrop is fully present as a protagonist, recognisable as the man who pinned coloured stars on a London wall map. After this he sheds names, Ian Scuffling, Max Schlepzig, Plechazunga, sheds purpose, sheds coherence. The Rocketman costume is his highest visibility and his final legibility; everything afterwards is scattering.",
+  },
+  {
+    id: "3.11",
+    title: "Pökler at the gates of Dora",
+    commentary: "The novel's longest episode, and the one that changes the terms of reading most completely. Pökler's story spans the full arc of the German rocket programme, amateur rocketry in Weimar, Peenemünde, the underground factory at Nordhausen, but its centre is a private horror: Weissmann controls Pökler for years through an annual visit from a girl presented as his daughter Ilse, who may be a different child each summer, a substitution Pökler cannot bring himself to test. The 'persistence of vision' passage, love as the projector mechanism, one frame per year, is the closest the novel comes to making complicity feel like the reader's own condition. At war's end Pökler walks through the gates of the Dora camp and gives a dying woman his wedding ring. Everything he built had the camp on the other side.",
+  },
+  {
+    id: "3.22",
+    title: "The Schwarzkommando counter-text",
+    commentary: "Enzian's search for the 00001 rocket becomes an argument about survival itself. Against the Empty Ones, who advocate tribal self-extinction as a final refusal of colonial logic, Enzian proposes recovery: of freedom, territory, a right to continued existence. The passage where his own voice returns to him from Weissmann's Dictaphone, colonial history literally recorded and played back inside the rocket programme, is the novel's sharpest articulation of what it sounds like when a system captures even your resistance to it.",
+  },
+  {
+    id: "4.05",
+    title: "Of course it happened. Of course it didn't happen.",
+    commentary: "The 00000 launches. Blicero completes the fairy-tale arc announced in 1.14, consummating what the opening sentence set in motion. Thanatz, the only witness, delivers his testimony after weeks of freight trains, beatings, and fever, his memory clarifying rather than fading. Nine words suspend the event between fact and impossibility. This is not ambiguity for its own sake; it is the novel's claim that certain events exceed what witnesses and readers are able to know. Gottfried is wrapped in Imipolex, the flame turns blue, and everything Blicero promised is fulfilled. The oven was always the destination.",
+  },
+  {
+    id: "4.06",
+    title: "One of many American Mysteries",
+    commentary: "Slothrop scatters. At over eleven thousand words, this is one of the novel's longest episodes, yet its protagonist has dissolved into fragments: a comic-book kid, a letter to Ambassador Kennedy, Saure burgling an astrologer, kamikaze pilots on a forgotten island, a meditation on Hiroshima. The elect-and-preterite theology reaches its fullest expression precisely at the moment of final dissolution: the text persists but the person has gone. What remains is not a character but a field of debris, American mysteries, genealogical recursions, vaudeville routines that no longer have anyone to perform them.",
+  },
+  {
+    id: "4.12",
+    title: "Now everybody—",
+    commentary: "The Orpheus Theatre, Los Angeles. The screen is a dim page spread before us, white and silent. The rocket's last fraction of time is frozen above the roof, a parabola that will not complete itself. Richard Zhlubb rants about harmonicas. A hymn by William Slothrop invites the reader to sing. Everything in the novel collapses into this single instant: cinema into text, audience into congregation, the fictional rocket into a real silence between the reader and the page. The final instruction is not to look up but to reach sideways; touch the person next to you.",
+  },
+];
+
+const scenes: Scene[] = sceneIds.map(({ id, title, commentary }) => {
+  const syn = synMap.get(id);
+  const quotes = quoteMap.get(id) || [];
+  const unified = unifiedMap.get(id);
+  const plotlines: Plotline[] = [];
+  if (unified?.plotlines) {
+    for (const [key, val] of Object.entries(unified.plotlines)) {
+      const v = val as any;
+      if (v.intensity > 0) {
+        plotlines.push({ name: PL[key] || key, intensity: v.intensity });
+      }
+    }
+  }
+  plotlines.sort((a, b) => b.intensity - a.intensity);
+  return {
+    id,
+    title,
+    leadQuote: quotes[0],
+    otherQuotes: quotes.slice(1),
+    synopsis: syn?.synopsis || "",
+    part: syn?.part || 0,
+    isHinge: syn?.isHinge || false,
+    commentary,
+    plotlines,
+  };
+});
+
+const partLabels: Record<number, string> = {
+  1: "Beyond the Zero",
+  2: "Un Perm' au Casino Hermann Goering",
+  3: "In the Zone",
+  4: "The Counterforce",
+};
+
+/* ── Scene sections ─────────────────────────────────────────── */
+interface SceneSection {
+  title: string;
+  description: string;
+  sceneIds: string[];
+}
+
+const sections: SceneSection[] = [
+  {
+    title: "The Conditioned Reflex",
+    description: "How the novel begins: a sound that organises everything that follows, and a hallucinatory interrogation that reveals the founding paranoia. Here is the governing shape, the parabola, and here is the epistemological problem: correlation without cause.",
+    sceneIds: ["1.01", "1.04"],
+  },
+  {
+    title: "The Inherited Fairy Tale",
+    description: "Blicero's triad turns the Hansel-and-Gretel story into a machinery of domination. The opening of Part Two names the epistemology behind it: paranoia as a Puritan inheritance, the elect who see patterns because they must. Together these scenes expose the mythic scaffolding the novel's power structures rely on.",
+    sceneIds: ["1.14", "2.01"],
+  },
+  {
+    title: "Love in Wartime",
+    description: "The emotional and moral centre of the book. Roger and Jessica insist on desire against bureaucracy; Pökler arrives at the camp gate and discovers complicity is not a metaphor. Two scenes in which Pynchon writes human feeling without irony, one as defiance, the other as reckoning.",
+    sceneIds: ["1.16", "3.11"],
+  },
+  {
+    title: "Into the Zone",
+    description: "Part Three opens by dissolving every border, political, ontological, textual. The Rocketman episode is the last point before the long dispersal begins. And the Schwarzkommando introduce a counter-history: an alternative to the terminal whiteness of the rocket programme. Together these form the Zone as both territory and reading experience.",
+    sceneIds: ["3.01", "3.06", "3.22"],
+  },
+  {
+    title: "Now Everybody—",
+    description: "The final movement. The 00000 launches as an event that both happened and didn't. Slothrop scatters across the American landscape. The rocket descends on the Orpheus Theatre. Convergence and dispersal are the same gesture, and the reader is sitting beneath the descending arc.",
+    sceneIds: ["4.05", "4.06", "4.12"],
+  },
+];
+
+const sceneMap = new Map(scenes.map(s => [s.id, s]));
+let globalSceneIndex = 0;
+---
+
+<Layout title="Scenes" description="Twelve passages from Gravity's Rainbow, the moments readers remember.">
+  <Nav slot="nav" />
+
+  <section class="scenes-hero">
+    <div class="container">
+      <h1>Scenes</h1>
+      <p class="scenes-subtitle">
+        <em>Gravity&rsquo;s Rainbow</em> does not build toward a climax; it
+        accumulates. These twelve passages are the load-bearing walls:
+        the moments where Pynchon gathers characters, themes, and unresolved
+        questions into a single room and forces them to look at each other.
+      </p>
+    </div>
+  </section>
+
+  <main class="scenes-main">
+    {sections.map((section, si) => (
+      <div class="scene-section">
+        <div class="section-header container">
+          <span class="section-roman">{['i', 'ii', 'iii', 'iv', 'v'][si]}</span>
+          <h2 class="section-title">{section.title}</h2>
+          <p class="section-desc">{section.description}</p>
+        </div>
+        {section.sceneIds.map((sid) => {
+          const scene = sceneMap.get(sid);
+          if (!scene) return null;
+          const i = scenes.indexOf(scene);
+          return (
+            <article class="scene-panel" id={`scene-${scene.id.replace('.', '-')}`}>
+              <div class="scene-inner container">
+                <header class="scene-head">
+                  <span class="scene-num">{String(i + 1).padStart(2, '0')}</span>
+                  <div class="scene-meta">
+                    <span class="scene-id">{scene.id}</span>
+                    <span class="scene-part">Part {scene.part}: {partLabels[scene.part]}</span>
+                    {scene.isHinge && <span class="scene-hinge">Pivotal episode</span>}
+                  </div>
+                </header>
+
+                <h2 class="scene-title">{scene.title}</h2>
+
+                {scene.leadQuote && (
+                  <blockquote class="scene-quote">
+                    <p>&lsquo;{scene.leadQuote.quote}&rsquo;</p>
+                    <cite>{scene.leadQuote.note}</cite>
+                  </blockquote>
+                )}
+
+                <div class="scene-reading">
+                  <p>{scene.commentary}</p>
+                </div>
+
+                {scene.plotlines.length > 0 && (
+                  <div class="scene-profile">
+                    <span class="profile-label">Active plotlines</span>
+                    <ul class="profile-strands">
+                      {scene.plotlines.map((pl) => (
+                        <li>
+                          <span class="strand-name">{pl.name}</span>
+                          <span class="strand-dots">
+                            {Array.from({ length: 3 }).map((_, di) => (
+                              <span class:list={['dot', { filled: di < pl.intensity }]} />
+                            ))}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {scene.otherQuotes.length > 0 && (
+                  <div class="scene-supporting">
+                    {scene.otherQuotes.map((q) => (
+                      <blockquote class="supporting-quote">
+                        <p>&lsquo;{q.quote}&rsquo;</p>
+                        <cite>{q.note}</cite>
+                      </blockquote>
+                    ))}
+                  </div>
+                )}
+
+                <footer class="scene-foot">
+                  <a href={sitePath(`braid/#ep-${scene.id}`)}>View in the braid &rarr;</a>
+                </footer>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    ))}
+  </main>
+
+  <Footer slot="footer" />
+</Layout>
+
+<style>
+  .scenes-hero {
+    padding: var(--space-3xl) 0 var(--space-xl);
+  }
+
+  .scenes-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 12vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+  }
+
+  .scenes-subtitle {
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
+    color: var(--color-text-secondary);
+    max-width: 36rem;
+  }
+
+  .scenes-main {
+    padding-bottom: var(--space-3xl);
+  }
+
+  /* Scene sections */
+  .scene-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .section-header {
+    max-width: var(--max-width-narrow);
+    padding: var(--space-3xl) 0 var(--space-lg);
+  }
+
+  .section-roman {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    color: var(--color-accent-dim);
+    margin-bottom: var(--space-sm);
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.25;
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+  }
+
+  .section-desc {
+    font-family: var(--font-prose);
+    font-size: var(--text-sm);
+    line-height: 1.75;
+    color: var(--color-text-dim);
+    max-width: 38rem;
+  }
+
+  /* Scene panel */
+  .scene-panel {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-2xl) 0;
+  }
+
+  .scene-panel:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .scene-inner {
+    max-width: var(--max-width-narrow);
+  }
+
+  /* Header */
+  .scene-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .scene-num {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    color: var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .scene-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .scene-id {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    letter-spacing: 0.04em;
+  }
+
+  .scene-part {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  .scene-hinge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent-dim);
+    margin-top: 0.15rem;
+  }
+
+  /* Title */
+  .scene-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--color-text);
+    margin-bottom: var(--space-xl);
+  }
+
+  /* Lead quote */
+  .scene-quote {
+    margin: 0 0 var(--space-xl);
+    padding-left: var(--space-lg);
+    border-left: 2px solid var(--color-accent-dim);
+  }
+
+  .scene-quote p {
+    font-family: var(--font-prose);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .scene-quote cite {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-style: normal;
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* Commentary */
+  .scene-reading {
+    margin-bottom: var(--space-xl);
+  }
+
+  .scene-reading p {
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
+    color: var(--color-text-secondary);
+  }
+
+  /* Active plotlines */
+  .scene-profile {
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 2px;
+  }
+
+  .profile-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-md);
+  }
+
+  .profile-strands {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .profile-strands li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+  }
+
+  .strand-name {
+    min-width: 10rem;
+  }
+
+  .strand-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+  }
+
+  .dot.filled {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  /* Supporting quotes */
+  .scene-supporting {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .supporting-quote {
+    margin: 0;
+    padding-left: var(--space-md);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .supporting-quote p {
+    font-family: var(--font-prose);
+    font-style: italic;
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.3rem;
+  }
+
+  .supporting-quote cite {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-style: normal;
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* Footer link */
+  .scene-foot {
+    padding-top: var(--space-md);
+  }
+
+  .scene-foot a {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+  }
+
+  .scene-foot a:hover {
+    color: var(--color-accent);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .scenes-hero {
+      padding: var(--space-xl) 0 var(--space-lg);
+    }
+
+    .scene-panel {
+      padding: var(--space-xl) 0;
+    }
+
+    .scene-head {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .scene-num {
+      font-size: 2rem;
+    }
+
+    .scene-quote {
+      padding-left: var(--space-md);
+    }
+
+    .scene-quote p {
+      font-size: 1.05rem;
+    }
+  }
+</style>

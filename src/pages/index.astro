@@ -3,7 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import Section from "../components/Section.astro";
-import HeroCanvas from "../components/HeroCanvas.astro";
 import SectionIntro from "../components/SectionIntro.astro";
 import StructuralPreview from "../components/StructuralPreview.astro";
 
@@ -15,73 +14,69 @@ const sitePath = (path: string) => `${base}/${path.replace(/^\//, '')}`;
   <Nav slot="nav" />
 
   <section class="hero">
-    <HeroCanvas />
     <div class="container hero-inner">
-      <div class="hero-copy">
-        <h1>The Zone</h1>
-        <p class="hero-subtitle">
-          A visual companion to <em>Gravity's Rainbow</em> (1973).
-        </p>
-        <p class="hero-intro">
-          Episodes, character co-presence, Slothrop's disappearance, and
-          recurring strands — drawn from a private research pipeline and
-          reduced here to public-safe diagrams and notes.
-        </p>
-        <p class="hero-links">
-          <a href={sitePath("braid/")}>Braid</a>
-          <span class="hero-sep">&middot;</span>
-          <a href={sitePath("dissolution/")}>Dissolution</a>
-          <span class="hero-sep">&middot;</span>
-          <a href={sitePath("network/")}>Network</a>
-        </p>
-      </div>
+      <h1>The Zone</h1>
+      <p class="hero-subtitle">
+        A visual companion to <em>Gravity's Rainbow</em>&ensp;(1973)
+      </p>
+      <div class="hero-rule"></div>
+      <p class="hero-premise">
+        Eight plotlines braided through seventy-three episodes.<br />
+        A protagonist who dissolves rather than departs.<br />
+        A hundred and fifty named characters, most of whom never meet.
+      </p>
+      <p class="hero-premise hero-premise-second">
+        This site traces the novel's architecture through diagrams,
+        interactive visualisations, and close readings,
+        built from a private computational pipeline, reduced here to
+        what can be shown without reproducing the source text.
+      </p>
     </div>
   </section>
 
   <Section id="contents">
-    <div class="section-label reveal">
+    <div class="section-label">
       <p class="eyebrow">Contents</p>
     </div>
 
-    <div class="reveal">
-      <SectionIntro number="01" title="The Braid" href={sitePath("braid/")}>
-        <p>
-          Eight plotlines weaving through seventy-three episodes. Each episode
-          placed in sequence, its active strands named, its structural work
-          made visible.
-        </p>
-      </SectionIntro>
-    </div>
+    <SectionIntro number="01" title="The Braid" href={sitePath("braid/")}>
+      <p>
+        Eight plotlines weaving through seventy-three episodes. Each episode
+        placed in sequence, its active strands named, its inner workings
+        made visible.
+      </p>
+    </SectionIntro>
 
-    <div class="reveal">
-      <SectionIntro number="02" title="Dissolution" href={sitePath("dissolution/")}>
-        <p>
-          Slothrop does not simply exit the book. His name, aliases, companions,
-          and absences thin out unevenly. This view tracks that thinning as a
-          sequence.
-        </p>
-      </SectionIntro>
-    </div>
+    <SectionIntro number="02" title="Scenes" href={sitePath("scenes/")}>
+      <p>
+        Twelve passages that readers carry out of the novel. The opening
+        scream, the fairy-tale oven, P&ouml;kler at the gates of Dora,
+        the last frozen instant above the Orpheus Theatre,
+        each with a close reading.
+      </p>
+    </SectionIntro>
 
-    <div class="reveal">
-      <SectionIntro number="03" title="Network" href={sitePath("network/")}>
-        <p>
-          A co-presence map of named characters across episodes. The first
-          version uses public-safe exports from the F06 character atlas.
-        </p>
-      </SectionIntro>
-    </div>
+    <SectionIntro number="03" title="Dissolution" href={sitePath("dissolution/")}>
+      <p>
+        Slothrop does not simply exit the book. His name, aliases, companions,
+        and absences thin out unevenly. This view tracks that thinning as a
+        sequence.
+      </p>
+    </SectionIntro>
+
+    <SectionIntro number="04" title="Network" href={sitePath("network/")}>
+      <p>
+        A co-presence map of named characters across episodes. Who appears
+        with whom, when, and how the novel's social world fragments
+        across its four parts.
+      </p>
+    </SectionIntro>
   </Section>
 
   <Section id="data" narrow={true}>
     <div class="data-aside reveal">
       <div class="figure">
         <StructuralPreview />
-        <p class="figure-label">Fig.&thinsp;1.&ensp;Episode word counts, left to right, grouped by part.</p>
-        <p class="figure-caption">
-          The longest episode is 3.11; Part&nbsp;III carries the widest range of
-          episode lengths.
-        </p>
       </div>
     </div>
   </Section>
@@ -107,63 +102,49 @@ const sitePath = (path: string) => `${base}/${path.replace(/^\//, '')}`;
 <style>
   .hero {
     position: relative;
-    padding: var(--space-2xl) 0 var(--space-xl);
-    overflow: hidden;
+    padding: var(--space-3xl) 0 var(--space-xl);
   }
 
   .hero-inner {
-    position: relative;
-    z-index: 1;
-  }
-
-  .hero-copy {
     max-width: var(--max-width-narrow);
   }
 
   .hero h1 {
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    font-size: clamp(3.5rem, 12vw, 7rem);
     line-height: 1;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     color: var(--color-text);
     margin-bottom: var(--space-md);
   }
 
   .hero-subtitle {
     font-family: var(--font-heading);
-    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    font-size: clamp(1.35rem, 2.5vw, 1.8rem);
     font-weight: 400;
     font-style: italic;
-    line-height: 1.5;
+    line-height: 1.4;
     color: var(--color-text-secondary);
-    margin-bottom: var(--space-lg);
   }
 
-  .hero-intro {
-    font-size: var(--text-base);
-    line-height: 1.85;
+  .hero-rule {
+    width: 3rem;
+    height: 1px;
+    background: var(--color-accent-dim);
+    margin: var(--space-xl) 0;
+  }
+
+  .hero-premise {
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     max-width: 34rem;
-    margin-bottom: var(--space-lg);
   }
 
-  .hero-links {
-    font-size: var(--text-sm);
-    line-height: 1.8;
-  }
-
-  .hero-links a {
-    color: var(--color-text-secondary);
-    transition: color 0.2s ease;
-  }
-
-  .hero-links a:hover {
-    color: var(--color-accent);
-  }
-
-  .hero-sep {
+  .hero-premise-second {
+    margin-top: var(--space-lg);
     color: var(--color-text-dim);
-    margin: 0 0.35em;
   }
 
   .section-label {

@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import NetworkAtlas from "../components/NetworkAtlas.astro";
+import NetworkArchitecture from "../components/NetworkArchitecture.astro";
 
 import nodeText from "../../public/data/step_2d/master_network_layout_nodes_public.csv?raw";
 
@@ -77,9 +79,9 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
     <section class="page-header">
       <h1 class="page-title reveal">character co&#8209;presence</h1>
       <p class="page-subtitle reveal">
-        A map of one hundred and thirty named characters across the
-        seventy-three episodes: who shares structural space with whom,
-        how often, and where the communities form.
+        A map of who keeps turning up with whom as the novel moves from London
+        to the Zone: not quite society, not quite plot, but the human weather
+        through which <em>Gravity&rsquo;s Rainbow</em> passes.
       </p>
     </section>
 
@@ -87,130 +89,121 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
     <section class="reading-col">
       <div class="prose-section reveal">
         <p>
-          Co-occurrence is not interaction. Two characters sharing an episode
-          does not mean they meet, speak, or act together. What the network
-          shows is structural proximity: characters the novel places in the
-          same formal unit, weighted by how often that placement recurs. The
-          resulting map is a social geometry of the text, not a social
-          network of the world inside it.
+          This page does not claim that every pair of characters shown here
+          meet face to face. What it catches is something looser and, in a novel
+          like <em>Gravity&rsquo;s Rainbow</em>, often more revealing: who keeps
+          being placed in the same stretch of prose, under the same pressure,
+          inside the same local weather of paranoia, desire, command, or ruin.
         </p>
         <p>
-          The data below draws on episode-level co-presence counts exported as
-          public-safe CSVs. Edge weights use association strength (a
-          normalised co-occurrence measure) rather than raw counts.
-          Community detection uses the Louvain algorithm. Both figures reproduce
-          the analysis repository&rsquo;s approved reader-facing plates.
+          Seen this way, the character map becomes less a chart than a drift of
+          social climates. London gathers one set of people around Pointsman,
+          Roger, Jessica, and Pirate; the rocket system gathers another around
+          Blicero, Enzian, and Gottfried; Slothrop moves between them like a
+          carrier current, carrying the novel from bureaucracy to picaresque,
+          from offices and laboratories into the rubble and carnival of the Zone.
         </p>
       </div>
     </section>
 
-    <!-- C. F05 PLATE — NETWORK ARCHITECTURE -->
-    <figure class="fig-plate reveal">
-      <img
-        src={`${base}/figures/step_2d/F05_network_architecture_flagship.png`}
-        alt="Three views of the co-presence network's structural properties: degree distribution, community structure, and bridge analysis"
-        loading="lazy"
-      />
-      <figcaption class="plate-caption">
-        Three views of the co-presence network&rsquo;s structural properties.
-        The figure argues that the novel&rsquo;s social geometry is distributed
-        rather than hub-and-spoke: while Slothrop is the highest-degree node,
-        the network retains coherence if he is removed, held together by
-        secondary bridge characters across communities.
-      </figcaption>
-    </figure>
+    <!-- C. NETWORK ARCHITECTURE — INTERACTIVE -->
+    <section class="interactive-plate reveal">
+      <NetworkArchitecture />
+      <p class="plate-caption plate-caption-wide">
+        Three ways of reading the novel&rsquo;s social field. The important thing
+        is not that Slothrop touches almost everyone, but that he is not the
+        only thing holding the book together. London has its own cohesion; the
+        rocket world has its own grim continuity; several figures besides
+        Slothrop keep the traffic moving between them.
+      </p>
+    </section>
 
     <!-- D. COMMUNITIES AND BRIDGES -->
     <section class="reading-col">
       <div class="prose-section reveal">
-        <h2 class="section-heading">Communities and bridges</h2>
+        <h2 class="section-heading">Communities and crossings</h2>
         <p>
-          Community detection finds five groups. The
+          Five recognisable worlds emerge. The
           <strong style={`color: ${communityMap.get('London Counterforce')?.colour}`}>London Counterforce</strong>
-          cluster (Pointsman, Roger Mexico, Jessica Swanlake, Pirate
-          Prentice) is dense and tightly bounded, anchored in Parts 1 and
-          4. The
+          cluster gathers the White Visitation and its near-opposites:
+          Pointsman, Roger Mexico, Jessica Swanlake, Pirate Prentice, the
+          wartime offices, bedsits, and banana breakfasts of the early novel.
+          The
           <strong style={`color: ${communityMap.get('Rocket System')?.colour}`}>Rocket System</strong>
-          cluster (Blicero, Enzian, Tchitcherine, Gottfried) is
-          sparser but stretches further, tracking the rocket&rsquo;s reach into
-          the later episodes. The large
+          cluster belongs to command, sacrifice, and the weapon itself:
+          Blicero, Enzian, Tchitcherine, Gottfried, and the people drawn into
+          the rocket&rsquo;s wake. The large
           <strong style={`color: ${communityMap.get('Quest & Transition')?.colour}`}>Quest &amp; Transition</strong>
-          group gathers Slothrop&rsquo;s recurring co-presences across the middle
-          episodes: a community defined less by internal cohesion than by
-          a shared orbit around the novel&rsquo;s most connected character.
+          group is the wandering middle of the book, where Slothrop keeps
+          running into people, losing them, and moving on.
         </p>
         <p>
-          Two smaller clusters emerge at the margins. The
+          Two smaller constellations sharpen the picture. The
           <strong style={`color: ${communityMap.get('Pökler Island')?.colour}`}>P&ouml;kler Island</strong>
-          group collects the characters bound to Franz P&ouml;kler&rsquo;s
-          industrial-scientific orbit (Jamf, Mondaugen, the figures of
-          Nordhausen and Peenem&uuml;nde). The
+          cluster gathers the people attached to Franz P&ouml;kler&rsquo;s
+          memories: Jamf, Mondaugen, Peenem&uuml;nde, Nordhausen, the whole
+          haunted chain from laboratory chemistry to Dora. It makes plain that
+          P&ouml;kler&rsquo;s story is not just an isolated flashback but a sealed
+          chamber of memory, engineering, and complicity inside the novel.
+          The
           <strong style={`color: ${communityMap.get('Late Afterlives')?.colour}`}>Late Afterlives</strong>
-          cluster gathers a handful of characters who appear only in the final
-          episodes, structurally isolated from the novel&rsquo;s earlier social
-          fabric.
+          cluster belongs to the novel&rsquo;s ending, where new figures appear
+          in the book&rsquo;s final drift and feel less like members of a settled
+          world than remnants, witnesses, and after-echoes arriving after the
+          centre has already gone.
         </p>
         <p>
-          The bridge structure confirms what the braid analysis suggests.
-          Slothrop&rsquo;s betweenness centrality (0.83) places him at the
-          crossing-point between communities: the character whose removal
-          would most fragment the network&rsquo;s connectivity. But Pointsman
-          (0.24) and Roger Mexico (0.13) bridge the London cluster to the rest;
-          Blicero (0.13) and Enzian (0.12) bridge the Rocket System outward.
-          The novel distributes its connective load across several characters,
-          not just one.
+          Slothrop matters here not because everything depends on him, but
+          because he keeps passing between worlds. He moves from Pointsman&rsquo;s
+          London to Katje&rsquo;s Riviera to the Zone&rsquo;s black markets, film sets,
+          rocket ruins, and tribal arguments. Roger and Pointsman still bind the
+          early book together; Blicero and Enzian keep the rocket world in grim
+          alignment. What this page reveals is not a single social centre but a
+          novel built out of crossings.
         </p>
       </div>
     </section>
 
-    <!-- E. F06 PLATE — CHARACTER ATLAS -->
-    <figure class="fig-plate reveal">
-      <img
-        src={`${base}/figures/step_2d/F06_master_character_network_atlas.png`}
-        alt="Full 130-node character atlas with community colouring, sized by weighted degree"
-        loading="lazy"
-      />
-      <figcaption class="plate-caption">
-        The full character atlas. Each node is a named character; size reflects
-        weighted degree (the sum of association strengths across all shared
-        episodes). Colour marks community assignment. The layout is
-        force-directed, placing densely connected characters closer together.
-      </figcaption>
-    </figure>
+    <!-- E. CHARACTER ATLAS — INTERACTIVE -->
+    <section class="interactive-plate reveal">
+      <NetworkAtlas />
+      <p class="plate-caption plate-caption-wide">
+        The full character atlas. Each point is a named figure in the novel,
+        coloured by the world it most belongs to. Use the view controls to
+        isolate Slothrop&rsquo;s crossings or the individual communities, and hover
+        to see how the book clusters its people.
+      </p>
+    </section>
 
     <!-- F. NETWORK IN NUMBERS -->
     <section class="reading-col">
       <div class="prose-section reveal">
-        <h2 class="section-heading">The network in numbers</h2>
+        <h2 class="section-heading">What the atlas makes plain</h2>
         <p>
-          The co-presence network connects {totalNodes} named characters through
-          {totalEdges.toLocaleString()} edges, grouped into {totalCommunities}&nbsp;communities.
-          {topNode.short_name} holds the highest degree
-          at&nbsp;{topNode.degree}, co-present with all but nine of the
-          novel&rsquo;s named characters, and the highest betweenness
-          centrality at&nbsp;{topNode.betweenness.toFixed(2)}, reflecting his
-          structural role as a bridge across every community.
+          The map gathers {totalNodes} named characters into a surprisingly
+          legible social field. {topNode.short_name} turns up with almost
+          everyone, which confirms what any reader feels: Slothrop is the
+          wanderer through whose path much of the novel passes. But the page is
+          more interesting when it stops being a proof of Slothrop&rsquo;s importance
+          and starts showing that the novel&rsquo;s social reality is broader than his
+          path.
         </p>
         <p>
-          The next tier ({byDegree[1].short_name}
-          at&nbsp;{byDegree[1].degree},
-          {byDegree[2].short_name} at&nbsp;{byDegree[2].degree},
-          {byDegree[3].short_name} at&nbsp;{byDegree[3].degree},
-          {byDegree[4].short_name} at&nbsp;{byDegree[4].degree}) are
-          well-connected but span fewer communities. The network&rsquo;s density
-          is moderate: most characters share episodes with many others, but the
-          strongest associations cluster tightly within communities rather than
-          reaching across them.
+          Roger Mexico, Pointsman, Blicero, Enzian, Katje, Pirate, Jamf:
+          these are not mere satellites. Each anchors a local world with its own
+          temperature and grammar. Roger and Jessica belong to wartime intimacy;
+          Pointsman to behavioural command; Blicero and Gottfried to sacrificial
+          ritual; Enzian and the Schwarzkommando to the colonial counter-history
+          of the rocket; P&ouml;kler and Jamf to memory, chemistry, and Dora.
+          The novel does not keep all these people alive in the same way, but it
+          keeps returning to the worlds they make.
         </p>
         <p>
-          The community sizes are unequal. Quest &amp; Transition holds
-          {communityMap.get('Quest & Transition')?.count} of the {totalNodes}&nbsp;characters,
-          inflated by Slothrop&rsquo;s wide reach. London Counterforce
-          ({communityMap.get('London Counterforce')?.count}) and Rocket System
-          ({communityMap.get('Rocket System')?.count}) are large but bounded. P&ouml;kler Island
-          ({communityMap.get('Pökler Island')?.count}) is a recognisable sub-plot cluster.
-          Late Afterlives ({communityMap.get('Late Afterlives')?.count}) is a structural
-          residual: the characters the algorithm cannot place elsewhere.
+          Even the small groups matter. P&ouml;kler&rsquo;s cluster tells you that
+          his story is not just an isolated flashback but a whole enclave of
+          memory and manufacture. The late cluster tells you that by the end of
+          the book the old social world has frayed, and new presences arrive too
+          late to restore it. The atlas makes that drift visible at a glance.
         </p>
       </div>
     </section>
@@ -218,24 +211,22 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
     <!-- G. CLOSING FRAME -->
     <section class="reading-col">
       <div class="prose-section reveal">
-        <h2 class="section-heading">A distributed architecture</h2>
+        <h2 class="section-heading">No single centre</h2>
         <p>
-          The network&rsquo;s most important structural feature is what it
-          lacks: a single point of failure. Slothrop is the most connected and
-          most central character, but the network does not collapse without him.
-          The London Counterforce cluster remains internally coherent; the
-          Rocket System retains its own bridge characters. What dissolves is not
-          the social fabric of the novel but Slothrop&rsquo;s position within
-          it: a finding that converges with the dissolution analysis from
-          a completely independent angle.
+          The most striking thing here is that the novel has a protagonist
+          without having a single social centre. Slothrop crosses almost every
+          world in the book, yet London still coheres without him, and the rocket
+          world still coheres without him. Remove him and something important is
+          lost, the wandering thread that keeps moving between systems, but
+          not everything falls apart.
         </p>
         <p>
-          The architecture is distributed rather than centralised. The novel
-          builds its social space the same way it builds its narrative space:
-          through overlapping local densities rather than global hierarchy.
-          Communities touch at bridge characters, not at a single hub. The Zone
-          is not a world with a centre; it is a world where every
-          apparent centre turns out to be a crossing-point to somewhere else.
+          That fits the novel&rsquo;s deepest intuition. <em>Gravity&rsquo;s Rainbow</em>
+          is not organised like a kingdom with one throne. It is organised like
+          the Zone itself: overlapping territories, temporary alliances,
+          bureaucracies, rituals, black markets, old loyalties, ruined lineages.
+          Every apparent centre turns out to be a crossing-point to somewhere
+          else.
         </p>
       </div>
     </section>
@@ -265,17 +256,17 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
 
   .page-title {
     font-family: var(--font-display);
-    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-size: clamp(3rem, 10vw, 6rem);
     letter-spacing: -0.02em;
     color: var(--color-text);
     margin-bottom: var(--space-lg);
-    line-height: 1.3;
+    line-height: 1.1;
   }
 
   .page-subtitle {
-    font-family: var(--font-heading);
+    font-family: var(--font-prose);
     font-size: var(--text-lg);
-    line-height: 1.85;
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     font-style: italic;
   }
@@ -292,8 +283,9 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
   }
 
   .prose-section p {
-    font-size: var(--text-base);
-    line-height: 1.8;
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     margin-bottom: var(--space-lg);
   }
@@ -311,7 +303,19 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
     line-height: 1.4;
   }
 
-  /* Figure plates */
+  /* Interactive plates — wider than reading column */
+  .interactive-plate {
+    max-width: min(90vw, 72rem);
+    margin: var(--space-2xl) auto;
+    padding: 0 var(--space-lg);
+  }
+
+  .plate-caption-wide {
+    max-width: clamp(320px, 65ch, 48rem);
+    padding: 0;
+  }
+
+  /* Figure plates (kept for any remaining static use) */
   .fig-plate {
     max-width: min(90vw, 64rem);
     margin: var(--space-2xl) auto;
@@ -366,6 +370,10 @@ const byBetweenness = [...nodes].sort((a, b) => b.betweenness - a.betweenness);
       margin-right: calc(-1 * var(--space-md));
       max-width: calc(100% + var(--space-md) * 2);
       transform: none;
+    }
+
+    .interactive-plate {
+      padding: 0 var(--space-md);
     }
   }
 </style>

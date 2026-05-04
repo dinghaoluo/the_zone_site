@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import DissolutionField from "../components/DissolutionField.astro";
+import RocketTransfer from "../components/RocketTransfer.astro";
 
 import aliasText from "../../public/data/base/slothrop_alias_by_episode_public.csv?raw";
 
@@ -98,7 +100,7 @@ for (const row of timelineRows) {
 }
 ---
 
-<Layout title="Slothrop's Dissolution" description="A deep-dive into the novel's longest plotline: Slothrop's structural dissolution from maximum presence to distributed trace.">
+<Layout title="Slothrop's Dissolution" description="How Gravity's Rainbow dismantles its own protagonist, from London surveillance subject to scattered Zone ghost.">
   <Nav slot="nav" />
 
   <main class="dissolution">
@@ -107,9 +109,9 @@ for (const row of timelineRows) {
       <a class="back-link" href={`${base}/braid/`}>&larr; Back to the braid</a>
       <h1 class="page-title reveal">slothrop&rsquo;s dissolution</h1>
       <p class="page-subtitle reveal">
-        A deep-dive into the novel&rsquo;s longest plotline and its structural
-        paradox: the thread that governs the most episodes is the thread
-        that narrates its own disappearance.
+        The novel spends more time with Tyrone Slothrop than with anyone
+        else, and then takes him apart, piece by piece, until there is
+        no one left to follow.
       </p>
     </section>
 
@@ -117,74 +119,69 @@ for (const row of timelineRows) {
     <section class="reading-col">
       <div class="prose-section reveal">
         <p>
-          Tyrone Slothrop is present in more episodes than any other character in
-          <em>Gravity&rsquo;s Rainbow</em>, and yet his plotline&rsquo;s defining
-          structural event is not a climax but a dispersal. From Part 1&rsquo;s
-          rocket-body correlation through Part 2&rsquo;s compromised pursuit to
-          Part 3&rsquo;s long dissolution into aliases, costumes, and Puritan
-          genealogy, the arc moves from maximum institutional attention to
-          near-total structural absence. By Part 4, the protagonist appears only
-          as trace: a scattering that registers not as dramatic crisis but as
-          settled theological condition.
+          Tyrone Slothrop begins <em>Gravity&rsquo;s Rainbow</em> as its most
+          watched man. In wartime London, PISCES has him under round-the-clock
+          surveillance: Teddy Bloat photographing his map, Pointsman running
+          behavioural experiments, Katje Borgesius deployed as sexual bait. He
+          is a body that institutions fight over, a subject pinned under so many
+          gazes that the novel can barely look away from him.
         </p>
         <p>
-          What the data below makes visible is the shape of that disappearance.
-          Not a sudden vanishing but a structural diminuendo: presence
-          density declining, alias diversity rising, the orbit of co-characters
-          thinning and rotating, until the name &lsquo;Slothrop&rsquo; becomes one
-          surface among several, and then barely present at all.
+          Then Pynchon dismantles him. The pursuit across the Riviera gives way
+          to the costume changes of the Zone, Rocketman, Ian Scuffling,
+          Schwarzknabe, pig hero, and each new name peels away another layer
+          of the person underneath. By the final hundred pages, where Slothrop
+          was there is only a rumour, a scattering, a few last sightings
+          reported by people who aren&rsquo;t sure they saw him at all.
         </p>
       </div>
     </section>
 
-    <!-- C. F11 PLATE — DISSOLUTION FIELD -->
-    <figure class="fig-plate reveal">
-      <img
-        src={`${base}/figures/step_2e/F11_slothrop_dissolution_field.png`}
-        alt="Slothrop's textual presence across seventy-three episodes: mention density above, alias diversity and canonical share below"
-        loading="lazy"
-      />
-      <figcaption class="plate-caption">
-        Slothrop&rsquo;s textual presence across seventy-three episodes. The upper
-        field tracks mention density; the lower tracks alias diversity and
-        canonical share. The crossing point (where aliases begin to rival
-        the canonical name) marks the structural onset of dissolution,
-        not a single moment but a zone of transition stretching across Part 3.
-      </figcaption>
-    </figure>
+    <!-- C. DISSOLUTION FIELD — INTERACTIVE -->
+    <section class="interactive-plate reveal">
+      <DissolutionField />
+      <p class="plate-caption plate-caption-wide">
+        Slothrop&rsquo;s presence across all seventy-three episodes, measured
+        three ways. <em>Naming</em> tracks how often the novel names him;
+        <em>Identity</em> shows when aliases begin to replace the
+        given name; <em>Orbit</em> maps the companions around him. Watch
+        Part&nbsp;3: the names multiply, the companions scatter, and
+        &lsquo;Slothrop&rsquo; becomes just one of several things to call
+        whoever this person used to be.
+      </p>
+    </section>
 
     <!-- D. THE THREE PHASES -->
     <section class="reading-col">
       <div class="prose-section reveal">
         <h2 class="section-heading">The three phases</h2>
         <p>
-          The dissolution unfolds in three structural phases.
+          In Part&nbsp;1, Slothrop is a captive subject. He lives in London under
+          surveillance, eats his banana breakfasts at the NAAFI, sleeps with
+          women whose names later appear on his map of V-2 strikes. Pointsman
+          and the PISCES apparatus treat him as a conditioned reflex waiting to
+          be decoded. Everywhere the novel looks, it finds him, because
+          the institutions that govern it will not let him out of sight.
         </p>
         <p>
-          In Part 1, Slothrop is hyper-present: high mention density, zero alias
-          diversity, a stable orbit of institutional handlers (Tantivy, Katje,
-          Pointsman&rsquo;s apparatus). The name &lsquo;Slothrop&rsquo; accounts for
-          every reference to him. He is legible, observed, experimentally
-          controlled: a body fully captured by the novel&rsquo;s
-          institutional frame.
+          Part&nbsp;2 loosens the grip. Slothrop is sent to the Riviera, ostensibly
+          free but still pursued: by Katje, by the intelligence services, by
+          his own compulsion to chase Imipolex G and the secret of the
+          Schwarzger&auml;t. He crosses into Switzerland as Ian Scuffling, his
+          first disguise, and the novel begins to hold him more loosely: still
+          the protagonist, but starting to slip.
         </p>
         <p>
-          Part 2 sustains the density but shifts the orbit. Slothrop pursues
-          across the Riviera, his co-characters rotating from London handlers to
-          Zone contacts. Alias diversity remains low; Ian Scuffling appears
-          in 2.07 as the first alternate identity, but the canonical name still
-          dominates. The pursuit is compromised but the protagonist is still
-          structurally coherent.
-        </p>
-        <p>
-          Part 3 is the long collapse. At 3.06, the Rocketman costume appears and
-          alias diversity spikes: identity becoming performance rather than
-          pursuit. By 3.21, the scattering function governs, and the data shows
-          it: canonical share drops as Schwarzknabe, Rocketman, and other surface
-          forms compete with &lsquo;Slothrop&rsquo; for textual presence. The orbit
-          disperses; co-characters rotate rapidly, no single companion
-          persists. By 3.31, the braid has thinned to a single strand at
-          half-strength, carried only by comedy and pop-song.
+          Part&nbsp;3 is the long unravelling. Slothrop enters the Zone and the
+          costumes come thick and fast: Rocketman in a cape made from
+          a Wehrmacht flag, Schwarzknabe the black-market boy, pig hero of
+          the Plechazunga. Each alias adding distance between reader and
+          whatever self these names are supposed to cover. His companions
+          rotate constantly: Geli Tripping, Bodine, von G&ouml;ll, Enzian in
+          passing. No one stays. By the episode with Bodine and the
+          Komische Oper, even the novel seems to lose track of who it is
+          following. Slothrop is still named, but less and less as
+          &lsquo;Slothrop&rsquo;.
         </p>
       </div>
     </section>
@@ -194,8 +191,8 @@ for (const row of timelineRows) {
       <div class="alias-timeline reveal">
         <h2 class="section-heading">Identity fragmentation</h2>
         <p class="timeline-note">
-          Each bar represents one episode where Slothrop is named. Blue is the
-          canonical surname; other colours mark aliases as they appear and grow.
+          Each bar shows one episode where Slothrop appears. Blue is his
+          surname; other colours mark the aliases that gradually overtake it.
         </p>
 
         <div class="timeline-legend">
@@ -272,43 +269,44 @@ for (const row of timelineRows) {
       </div>
     </section>
 
-    <!-- F. F12 PLATE — ROCKET TRANSFER -->
-    <figure class="fig-plate reveal">
-      <img
-        src={`${base}/figures/step_2e/F12_slothrop_to_rocket_transfer.png`}
-        alt="Structural transfer from person-centric to rocket-centric narrative across the novel"
-        loading="lazy"
-      />
-      <figcaption class="plate-caption">
-        The structural transfer from person-centric to rocket-centric narrative.
-        As Slothrop&rsquo;s presence thins through Part 3, the rocket (and
-        the plotlines attached to it: Blicero&rsquo;s 00000, Enzian&rsquo;s
-        00001) absorbs the structural weight the protagonist releases.
-        The novel&rsquo;s centre of gravity shifts from a body to a trajectory.
-      </figcaption>
-    </figure>
+    <!-- F. ROCKET TRANSFER — INTERACTIVE -->
+    <section class="interactive-plate reveal">
+      <RocketTransfer />
+      <p class="plate-caption plate-caption-wide">
+        As Slothrop dissolves through Part&nbsp;3, the novel doesn&rsquo;t
+        lose a protagonist so much as redistribute one. The rocket
+        plotlines, Blicero&rsquo;s assembly of the 00000 at the
+        L&uuml;neburg Heath, Enzian&rsquo;s search for the 00001, Tchitcherine&rsquo;s
+        parallel chase, absorb the narrative weight that Slothrop
+        sheds. The book&rsquo;s centre of gravity shifts from a person
+        to a trajectory: from a man being watched to a weapon being built.
+      </p>
+    </section>
 
     <!-- G. THE THEOLOGICAL TERMINUS -->
     <section class="reading-col">
       <div class="prose-section reveal">
         <h2 class="section-heading">The theological terminus</h2>
         <p>
-          Part 4 resolves the dissolution as theology rather than drama. Slothrop
-          appears at background intensity in most of the final twelve episodes;
-          his scattering a settled condition, no longer an event. The
-          single exception is 4.06, where mention density surges alongside the
-          novel&rsquo;s highest intensity of elect-preterite theology: a terminal
-          statement that reframes the scattered protagonist within the deepest
-          register of Puritan damnation. The preterite body cannot be saved, only
-          scattered.
+          Part&nbsp;4 doesn&rsquo;t narrate a disappearance. The disappearance
+          has already happened. Slothrop drifts through the final twelve episodes
+          as a rumour and a reminiscence, glimpsed on a country road,
+          mentioned by Bodine in passing, half-remembered. The one exception
+          is 4.06, the novel&rsquo;s most sustained meditation on the
+          Puritan theology of the preterite: the passed-over, the left-behind,
+          the ones for whom no salvation was ever intended. Slothrop&rsquo;s
+          scattering is reframed not as a plot event but as a condition of grace
+          withheld. He was always going to be scattered. That was the point.
         </p>
         <p>
-          In 4.12, Slothrop&rsquo;s line registers at moderate intensity:
-          one thread among four converging in the Orpheus Theatre&rsquo;s frozen
-          descent. The protagonist who began as the novel&rsquo;s most observed
-          body ends as the novel&rsquo;s most distributed trace, present
-          everywhere and nowhere, scattered across the text like the fragments
-          of a hymn no one can quite remember.
+          The final episode gathers the novel&rsquo;s remaining plotlines
+          in the Orpheus Theatre as the rocket descends on Los Angeles, but
+          Slothrop is not among them, or is among them only as a trace, one
+          voice in the hymn that the audience is invited to sing
+          before the film breaks. The protagonist who began as the most
+          observed man in London ends as a presence felt but not seen,
+          scattered across the text like harmonics from a note that has
+          already stopped sounding.
         </p>
       </div>
     </section>
@@ -323,6 +321,54 @@ for (const row of timelineRows) {
 
   <Footer slot="footer" />
 </Layout>
+
+<script>
+  const timelineSvg = document.querySelector('.timeline-svg');
+  if (timelineSvg) {
+    const rows = timelineSvg.querySelectorAll('.timeline-row');
+    const tooltip = document.createElement('div');
+    tooltip.className = 'timeline-tooltip';
+    tooltip.style.cssText = 'position:fixed;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:100;background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:0.4rem 0.6rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--color-text-secondary);line-height:1.5;max-width:14rem;box-shadow:0 2px 8px rgba(0,0,0,0.15)';
+    document.body.appendChild(tooltip);
+
+    let activeRow: Element | null = null;
+
+    rows.forEach(row => {
+      const rects = row.querySelectorAll('rect');
+      const epLabel = row.querySelector('.timeline-ep-label');
+      const eid = epLabel?.textContent?.trim() || '';
+
+      row.addEventListener('mouseenter', (e) => {
+        activeRow = row;
+        row.querySelectorAll('rect').forEach(r => r.setAttribute('opacity', '1'));
+
+        const aliases = Array.from(rects).map(r => {
+          const title = r.querySelector('title');
+          return title?.textContent || '';
+        }).filter(Boolean);
+
+        const unique = [...new Set(aliases)];
+        tooltip.innerHTML = `<strong>${eid}</strong><br>${unique.join(' · ')}`;
+        tooltip.style.opacity = '1';
+      });
+
+      row.addEventListener('mousemove', (e: Event) => {
+        const me = e as MouseEvent;
+        tooltip.style.left = (me.clientX + 12) + 'px';
+        tooltip.style.top = (me.clientY - 8) + 'px';
+      });
+
+      row.addEventListener('mouseleave', () => {
+        activeRow = null;
+        const hasAlias = row.classList.contains('has-alias');
+        row.querySelectorAll('rect').forEach(r => {
+          r.setAttribute('opacity', hasAlias ? '0.85' : '0.35');
+        });
+        tooltip.style.opacity = '0';
+      });
+    });
+  }
+</script>
 
 <style>
   .dissolution {
@@ -352,7 +398,7 @@ for (const row of timelineRows) {
 
   .page-title {
     font-family: var(--font-display);
-    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-size: clamp(3rem, 10vw, 6rem);
     letter-spacing: -0.02em;
     color: var(--color-text);
     margin-bottom: var(--space-lg);
@@ -360,9 +406,9 @@ for (const row of timelineRows) {
   }
 
   .page-subtitle {
-    font-family: var(--font-heading);
+    font-family: var(--font-prose);
     font-size: var(--text-lg);
-    line-height: 1.85;
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     font-style: italic;
   }
@@ -379,8 +425,9 @@ for (const row of timelineRows) {
   }
 
   .prose-section p {
-    font-size: var(--text-base);
-    line-height: 1.8;
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
     margin-bottom: var(--space-lg);
   }
@@ -398,7 +445,23 @@ for (const row of timelineRows) {
     line-height: 1.4;
   }
 
-  /* Figure plates */
+  /* Interactive plates — wider than reading column */
+  .interactive-plate {
+    max-width: min(90vw, 72rem);
+    margin: var(--space-2xl) auto;
+    padding: 0 var(--space-lg);
+  }
+
+  .plate-caption-wide {
+    max-width: clamp(320px, 65ch, 48rem);
+    margin-top: var(--space-md);
+    font-size: var(--text-sm);
+    line-height: 1.75;
+    color: var(--color-text-dim);
+    padding: 0;
+  }
+
+  /* Figure plates (kept for any remaining static use) */
   .fig-plate {
     max-width: min(90vw, 64rem);
     margin: var(--space-2xl) auto;
@@ -446,7 +509,7 @@ for (const row of timelineRows) {
     align-items: center;
     gap: 0.35em;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     letter-spacing: 0.04em;
     color: var(--color-text-dim);
   }
@@ -515,6 +578,10 @@ for (const row of timelineRows) {
       margin-right: calc(-1 * var(--space-md));
       max-width: calc(100% + var(--space-md) * 2);
       transform: none;
+    }
+
+    .interactive-plate {
+      padding: 0 var(--space-md);
     }
 
     .timeline-svg {

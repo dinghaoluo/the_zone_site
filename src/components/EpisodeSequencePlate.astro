@@ -12,7 +12,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <span class="view-label">View</span>
     <button class="view-btn active" data-mode="length">Length</button>
     <span class="view-sep">/</span>
-    <button class="view-btn" data-mode="density">Density</button>
+    <button class="view-btn" data-mode="density">Grain</button>
   </div>
 
   <div class="sequence-layout">
@@ -104,7 +104,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     .attr('viewBox', `0 0 ${W} ${H}`)
     .attr('preserveAspectRatio', 'xMidYMid meet')
     .attr('role', 'img')
-    .attr('aria-label', 'Episode sequence score for the seventy-three formal units');
+    .attr('aria-label', 'Episode sequence for the seventy-three episodes of the novel');
 
   svg.append('rect')
     .attr('width', W)
@@ -214,7 +214,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           !Number.isFinite(d.paragraphs_per_1000)
         )
       ) {
-        throw new Error('Episode metadata did not match the expected structural fields');
+        throw new Error('Episode metadata did not match the expected data fields');
       }
 
       const x = d3.scaleBand<number>()
@@ -505,9 +505,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         if (!d) {
           const body = mode === 'length'
             ? 'Each vertical mark is an episode in reading order. Height shows word count; interior ticks carry paragraph structure. Small marks under the baseline identify selected public anchors.'
-            : 'Density view scales each mark by paragraphs per 1,000 words, foregrounding how tightly each episode is divided relative to its length. Filled anchor marks indicate approved short quotes.';
+            : 'Grain view scales each mark by how tightly the episode is divided: more paragraph breaks per thousand words means denser, more fragmented prose. Filled anchor marks indicate approved short quotes.';
           noteEl.innerHTML = `
-            <p class="note-title">Reading Score</p>
+            <p class="note-title">Episode Sequence</p>
             <p class="note-stats">73 episodes / 4 parts / ${anchors.length} anchors / ${quotes.length} quotes</p>
             <p class="note-body">${body}</p>
           `;
@@ -847,7 +847,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .sequence-note :global(.note-quote-label) {
     margin-top: 0.25rem;
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: var(--color-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -866,7 +866,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .sequence-note :global(.note-tags span) {
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: var(--color-text-dim);
     text-transform: uppercase;
   }
@@ -905,7 +905,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .sequence-key :global(.key-head) {
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--color-text-dim);
     margin-bottom: var(--space-sm);

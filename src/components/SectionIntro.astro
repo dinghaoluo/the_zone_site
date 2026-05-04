@@ -75,8 +75,9 @@ const { number, title, href } = Astro.props;
   }
 
   .section-intro-body :global(p) {
-    font-size: var(--text-base);
-    line-height: 1.8;
+    font-family: var(--font-prose);
+    font-size: var(--text-prose);
+    line-height: var(--lh-prose);
     color: var(--color-text-secondary);
   }
 

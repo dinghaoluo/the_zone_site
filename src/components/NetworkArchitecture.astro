@@ -2,29 +2,29 @@
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const centralityAnnotations: Record<string, string> = {
-  'Tyrone Slothrop': 'protagonist bridge',
-  'Ned Pointsman': 'cross-community bridge',
-  'Roger Mexico': 'counterforce anchor',
-  'Weissmann / Blicero': 'rocket-system anchor',
-  'Enzian': 'zone-line nexus',
-  'Gerhardt von Göll': 'quest-system bridge',
-  'Tchitcherine': 'parallel quest nexus',
-  'Katje Borgesius': 'transition bridge',
-  'Laszlo Jamf': 'backstory linchpin',
-  'Pirate Prentice': 'counterforce link',
+  'Tyrone Slothrop': 'passes between almost every world',
+  'Ned Pointsman': 'holds the White Visitation world together',
+  'Roger Mexico': 'keeps intimacy linked to command',
+  'Weissmann / Blicero': 'anchor of the rocket sacrificial world',
+  'Enzian': 'keeps the Zone and the Schwarzkommando in view',
+  'Gerhardt von Göll': 'film-world crossing figure',
+  'Tchitcherine': 'parallel pursuer in the Zone',
+  'Katje Borgesius': 'moves between seduction and apparatus',
+  'Laszlo Jamf': 'the chemist haunting several histories',
+  'Pirate Prentice': 'counterforce warmth in the early book',
 };
 
 const dyadAnnotations: Record<string, string> = {
-  'Jessica Swanlake — Roger Mexico': 'recurring pair',
-  'Ned Pointsman — Roger Mexico': 'cross-community bridge',
-  'Tantivy Mucker-Maffick — Tyrone Slothrop': 'early-novel pair',
-  'Jessica Swanlake — Ned Pointsman': 'cross-role pair',
-  'Ned Pointsman — Tyrone Slothrop': 'surveillance axis',
-  'Katje Borgesius — Tyrone Slothrop': 'transition pair',
-  'Weissmann / Blicero — Enzian': 'shared-system pair',
-  'Roger Mexico — Tyrone Slothrop': 'counterforce-quest bridge',
-  'Katje Borgesius — Ned Pointsman': 'institutional pair',
-  'Ned Pointsman — Pirate Prentice': 'London-cluster pair',
+  'Jessica Swanlake · Roger Mexico': 'love affair under bombardment',
+  'Ned Pointsman · Roger Mexico': 'science versus statistics',
+  'Tantivy Mucker-Maffick · Tyrone Slothrop': 'early London companionship',
+  'Jessica Swanlake · Ned Pointsman': 'desire under supervision',
+  'Ned Pointsman · Tyrone Slothrop': 'watcher and watched',
+  'Katje Borgesius · Tyrone Slothrop': 'seduction, pursuit, betrayal',
+  'Weissmann / Blicero · Enzian': 'shared rocket history',
+  'Roger Mexico · Tyrone Slothrop': 'counterforce meeting quest',
+  'Katje Borgesius · Ned Pointsman': 'the apparatus at work',
+  'Ned Pointsman · Pirate Prentice': 'White Visitation tension',
 };
 
 const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
@@ -40,7 +40,7 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     <div class="arch-panel">
       <div class="panel-head">
         <span class="panel-letter">a</span>
-        <span class="panel-label">Narrative zones</span>
+        <span class="panel-label">Narrative worlds</span>
         <span class="panel-sub">five communities by size</span>
       </div>
       <div id="community-list" class="community-list"></div>
@@ -48,16 +48,16 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
     <div class="arch-panel">
       <div class="panel-head">
         <span class="panel-letter">b</span>
-        <span class="panel-label">Connective labour</span>
-        <span class="panel-sub">betweenness centrality, top ten</span>
+        <span class="panel-label">Crossing figures</span>
+        <span class="panel-sub">the people who move between worlds</span>
       </div>
       <div id="centrality-list" class="stat-list"></div>
     </div>
     <div class="arch-panel">
       <div class="panel-head">
         <span class="panel-letter">c</span>
-        <span class="panel-label">Resilient bonds</span>
-        <span class="panel-sub">strongest non-protagonist dyads</span>
+        <span class="panel-label">Recurring pairings</span>
+        <span class="panel-sub">strongest non-Slothrop links</span>
       </div>
       <div id="dyads-list" class="stat-list"></div>
     </div>
@@ -170,7 +170,7 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
       const row = document.createElement('div');
       row.className = 'dyad-row';
       row.innerHTML = `
-        <span class="dyad-pair">${srcName} — ${tgtName}</span>
+        <span class="dyad-pair">${srcName} · ${tgtName}</span>
         <span class="dyad-track"><span class="dyad-fill" style="width:${pct}%;background:${colour}"></span></span>
         <span class="dyad-eps">${d.shared_episode_count} eps</span>
       `;
@@ -267,7 +267,7 @@ const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v'];
   }
 
   .community-entry:hover {
-    background: rgba(255, 255, 255, 0.015);
+    background: var(--hover-highlight);
   }
 
   .community-entry:last-child {

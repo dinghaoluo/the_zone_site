@@ -1,0 +1,74 @@
+﻿episode_id,global_index,part,part_title,episode_in_part,diegetic_time_label,diegetic_time_order_estimate,chronology_confidence,primary_location,secondary_locations,location_confidence,focalisation_label,focalisation_confidence,dominant_strands_from_2h,theme_tags
+1.01,1,1,Beyond the Zero,1,1944-12-wartime-london,42,high,london,,high,pirate,medium,S14;S11;S10,rocket-system;paranoia-structure;bureaucratic-apparatus
+1.02,2,1,Beyond the Zero,2,1944-12-wartime-london,42,high,london,,high,pirate,medium,S10;S02;S08,rocket-system;film-staged-reality;paranoia-structure
+1.03,3,1,Beyond the Zero,3,1944-12-wartime-london,42,high,white-visitation,,medium,pointsman,medium,S02;S01,bureaucratic-apparatus;paranoia-structure
+1.04,4,1,Beyond the Zero,4,1944-12-wartime-london,42,high,london,,high,slothrop,high,S01;S02;S11,paranoia-structure;ancestry-election;bureaucratic-apparatus;erotic-pressure
+1.05,5,1,Beyond the Zero,5,1944-12-wartime-london,41,high,london,,medium,mexico,medium,S03;S02;S14,erotic-pressure;rocket-system;mourning-afterlife
+1.06,6,1,Beyond the Zero,6,1944-12-wartime-london,41,high,white-visitation,,medium,pointsman,medium,S02;S03;S01,bureaucratic-apparatus;paranoia-structure;erotic-pressure
+1.07,7,1,Beyond the Zero,7,1944-12-wartime-london,41,high,white-visitation,,medium,pointsman,medium,S02;S01,bureaucratic-apparatus;paranoia-structure;industrial-chemistry
+1.08,8,1,Beyond the Zero,8,1944-12-wartime-london,41,high,white-visitation,,medium,pointsman,medium,S02;S01,bureaucratic-apparatus;paranoia-structure
+1.09,9,1,Beyond the Zero,9,1944-12-wartime-london,41,high,london,,medium,mexico,medium,S03;S02;S01,erotic-pressure;mourning-afterlife;rocket-system
+1.10,10,1,Beyond the Zero,10,1944-12-wartime-london,42,high,london,,high,slothrop,high,S01;S02;S11,paranoia-structure;erotic-pressure;ancestry-election
+1.11,11,1,Beyond the Zero,11,pre-war-analepsis,10,medium,white-visitation,pre-war-germany,medium,ambiguous,low,S05;S02;S14,ancestry-election;industrial-chemistry;bureaucratic-apparatus
+1.12,12,1,Beyond the Zero,12,1944-12-wartime-london,42,medium,white-visitation,,medium,pointsman,medium,S02;S01;S04,bureaucratic-apparatus;paranoia-structure;rocket-system
+1.13,13,1,Beyond the Zero,13,1944-12-wartime-london,42,medium,white-visitation,pre-war-germany,medium,layered,medium,S02;S05;S01,bureaucratic-apparatus;industrial-chemistry;ancestry-election
+1.14,14,1,Beyond the Zero,14,1944-late-oven-battery,40,medium,netherlands-oven,,medium,blicero,high,S04;S14;S10,erotic-pressure;rocket-system;colonial-violence;ancestry-election
+1.15,15,1,Beyond the Zero,15,1944-12-wartime-london,42,high,london,,high,slothrop,high,S01;S11;S02,paranoia-structure;ancestry-election;erotic-pressure
+1.16,16,1,Beyond the Zero,16,1944-12-wartime-london,41,high,london,,medium,mexico,medium,S03;S02,erotic-pressure;mourning-afterlife;songs-cabaret
+1.17,17,1,Beyond the Zero,17,1944-12-wartime-london,42,medium,white-visitation,,medium,pointsman,medium,S02;S01;S05,bureaucratic-apparatus;industrial-chemistry;paranoia-structure
+1.18,18,1,Beyond the Zero,18,1944-12-wartime-london,42,medium,white-visitation,psychic-or-bardo-space;american-interior-pre-war,medium,slothrop,medium,S02;S10;S01,paranoia-structure;film-staged-reality;ancestry-election;colonial-violence
+1.19,19,1,Beyond the Zero,19,pokler-jamf-pre-war,12,medium,pre-war-germany,,medium,pokler,high,S05;S14;S04,ancestry-election;industrial-chemistry;erotic-pressure;rocket-system
+1.20,20,1,Beyond the Zero,20,1944-12-wartime-london,42,high,white-visitation,,medium,pointsman,medium,S02;S01,bureaucratic-apparatus;paranoia-structure
+1.21,21,1,Beyond the Zero,21,1944-12-christmas-eve-london,43,high,london,,high,layered,medium,S11;S01;S03,ancestry-election;mourning-afterlife;songs-cabaret;colonial-violence
+2.01,22,2,Un Perm' au Casino Hermann Goering,1,1944-summer-riviera,38,medium,casino-hermann-goering,riviera,high,slothrop,high,S01;S10;S04,paranoia-structure;erotic-pressure;film-staged-reality;bureaucratic-apparatus
+2.02,23,2,Un Perm' au Casino Hermann Goering,2,1944-summer-riviera,38,medium,riviera,casino-hermann-goering,high,slothrop,high,S01;S04;S10,erotic-pressure;film-staged-reality;paranoia-structure
+2.03,24,2,Un Perm' au Casino Hermann Goering,3,1944-summer-riviera,38,medium,casino-hermann-goering,,high,slothrop,high,S01;S10;S11,erotic-pressure;film-staged-reality;ancestry-election;paranoia-structure
+2.04,25,2,Un Perm' au Casino Hermann Goering,4,1944-late-oven-battery,40,medium,netherlands-oven,white-visitation,medium,katje,medium,S02;S04;S03,erotic-pressure;colonial-violence;rocket-system;mourning-afterlife
+2.05,26,2,Un Perm' au Casino Hermann Goering,5,1944-summer-riviera,38,medium,casino-hermann-goering,riviera,high,slothrop,high,S01;S05;S14,paranoia-structure;industrial-chemistry;ancestry-election;rocket-system
+2.06,27,2,Un Perm' au Casino Hermann Goering,6,1944-summer-riviera,38,medium,casino-hermann-goering,,high,slothrop,high,S01;S10;S13,paranoia-structure;film-staged-reality;bureaucratic-apparatus
+2.07,28,2,Un Perm' au Casino Hermann Goering,7,1944-summer-riviera,38,medium,casino-hermann-goering,,high,slothrop,high,S01;S05;S14,paranoia-structure;industrial-chemistry;rocket-system;ancestry-election
+2.08,29,2,Un Perm' au Casino Hermann Goering,8,1944-12-wartime-london,42,medium,white-visitation,,medium,pointsman,medium,S02;S01;S03,bureaucratic-apparatus;paranoia-structure;mourning-afterlife
+3.01,30,3,In the Zone,1,1945-spring-zurich,47,medium,zurich,,medium,slothrop,high,S01;S13;S05;S11,paranoia-structure;ancestry-election;industrial-chemistry
+3.02,31,3,In the Zone,2,1945-early-zone,52,medium,zone-central-germany,,low,layered,medium,S01;S14;S13,rocket-system;paranoia-structure;bureaucratic-apparatus;industrial-chemistry
+3.03,32,3,In the Zone,3,1945-spring-schwarzkommando,53,medium,schwarzkommando-camp,zone-central-germany,medium,enzian,medium,S06;S14;S04,colonial-violence;rocket-system;ancestry-election;paranoia-structure
+3.04,33,3,In the Zone,4,1945-spring-zone,51,medium,zone-central-germany,,medium,slothrop,medium,S01;S13;S07,paranoia-structure;rocket-system
+3.05,34,3,In the Zone,5,1945-spring-zone,51,medium,zone-central-germany,,medium,tchitcherine,high,S07;S13;S06,colonial-violence;ancestry-election;bureaucratic-apparatus;paranoia-structure
+3.06,35,3,In the Zone,6,1945-spring-berlin,52,medium,zone-north-germany,film-world,medium,slothrop,high,S01;S14;S10,paranoia-structure;rocket-system;film-staged-reality
+3.07,36,3,In the Zone,7,1945-spring-berlin,52,medium,zone-north-germany,film-world,medium,slothrop,high,S01;S10;S13,paranoia-structure;songs-cabaret;rocket-system
+3.08,37,3,In the Zone,8,1945-spring-zone,52,medium,film-world,zone-central-germany,medium,layered,medium,S10;S14;S01,film-staged-reality;erotic-pressure;rocket-system
+3.09,38,3,In the Zone,9,1945-spring-zone,52,medium,zone-central-germany,,medium,tchitcherine,medium,S07;S01;S06;S13,paranoia-structure;ancestry-election;colonial-violence
+3.10,39,3,In the Zone,10,1945-spring-zone,52,medium,zone-central-germany,,medium,slothrop,medium,S01;S07;S13;S10,paranoia-structure;erotic-pressure;rocket-system
+3.11,40,3,In the Zone,11,pokler-annual-visits-1936-1944,15,low,zwolfkinder,nordhausen-mittelwerk;pre-war-germany,medium,pokler,high,S05;S04;S14,erotic-pressure;ancestry-election;industrial-chemistry;mourning-afterlife
+3.12,41,3,In the Zone,12,1945-spring-berlin,52,medium,zone-north-germany,film-world,medium,slothrop,high,S01;S10;S13,paranoia-structure;songs-cabaret;film-staged-reality
+3.13,42,3,In the Zone,13,1945-spring-schwarzkommando,53,medium,schwarzkommando-camp,nordhausen-mittelwerk,medium,enzian,medium,S14;S06;S05,rocket-system;colonial-violence;industrial-chemistry;ancestry-election
+3.14,43,3,In the Zone,14,1945-spring-anubis,54,medium,swinemunde-anubis,,high,slothrop,high,S09;S01;S10,erotic-pressure;film-staged-reality;mourning-afterlife
+3.15,44,3,In the Zone,15,1945-spring-anubis,54,medium,swinemunde-anubis,,high,layered,medium,S09;S01;S10,erotic-pressure;songs-cabaret;film-staged-reality
+3.16,45,3,In the Zone,16,1945-spring-anubis,54,medium,swinemunde-anubis,psychic-or-bardo-space,high,slothrop,high,S09;S10;S04,erotic-pressure;mourning-afterlife;ancestry-election;film-staged-reality
+3.17,46,3,In the Zone,17,1945-spring-anubis,54,medium,swinemunde-anubis,film-world,medium,layered,low,S04;S09;S14,erotic-pressure;colonial-violence;film-staged-reality;mourning-afterlife
+3.18,47,3,In the Zone,18,1945-spring-anubis,54,medium,swinemunde-anubis,,medium,slothrop,medium,S09;S01;S10,mourning-afterlife;erotic-pressure;paranoia-structure
+3.19,48,3,In the Zone,19,1945-summer-zone,56,medium,zone-central-germany,,medium,slothrop,medium,S01;S10;S13,paranoia-structure;mourning-afterlife;film-staged-reality
+3.20,49,3,In the Zone,20,1945-summer-zone,56,medium,zone-central-germany,,medium,slothrop,medium,S01;S13;S10,paranoia-structure;mourning-afterlife
+3.21,50,3,In the Zone,21,1945-summer-schwarzkommando,57,medium,schwarzkommando-camp,,medium,schwarzkommando-collective,medium,S06;S14;S04,rocket-system;colonial-violence;ancestry-election
+3.22,51,3,In the Zone,22,1945-summer-schwarzkommando,56,medium,schwarzkommando-camp,zone-central-germany,medium,schwarzkommando-collective,medium,S06;S01;S14,colonial-violence;ancestry-election;rocket-system;paranoia-structure
+3.23,52,3,In the Zone,23,1945-summer-zone,58,medium,zone-central-germany,,medium,counterforce-collective,low,S08;S10,bureaucratic-apparatus;paranoia-structure
+3.24,53,3,In the Zone,24,1945-summer-zone,58,medium,zone-central-germany,,medium,counterforce-collective,medium,S08;S10;S04,bureaucratic-apparatus;rocket-system;paranoia-structure
+3.25,54,3,In the Zone,25,1945-summer-zone,58,medium,zone-central-germany,american-interior-pre-war,medium,slothrop,medium,S11;S01;S13,ancestry-election;paranoia-structure;mourning-afterlife
+3.26,55,3,In the Zone,26,1945-summer-zone,58,medium,zone-central-germany,schwarzkommando-camp,medium,slothrop,medium,S01;S06;S13,paranoia-structure;colonial-violence
+3.27,56,3,In the Zone,27,1945-summer-zone,58,medium,zone-central-germany,,medium,tchitcherine,high,S07;S06;S14,colonial-violence;ancestry-election;paranoia-structure
+3.28,57,3,In the Zone,28,1945-summer-zone,58,medium,zone-central-germany,,medium,slothrop,medium,S01;S13;S10,paranoia-structure;songs-cabaret;mourning-afterlife
+3.29,58,3,In the Zone,29,pokler-late-zone-1945,55,medium,nordhausen-mittelwerk,zone-central-germany,medium,pokler,medium,S05;S10;S01,industrial-chemistry;mourning-afterlife;ancestry-election;film-staged-reality
+3.30,59,3,In the Zone,30,1945-summer-zone,58,low,zone-central-germany,american-interior-pre-war,medium,layered,medium,S11;S13;S01,ancestry-election;colonial-violence;paranoia-structure
+3.31,60,3,In the Zone,31,1945-summer-zone,60,medium,zone-central-germany,,medium,slothrop,low,S13;S01;S10,paranoia-structure;mourning-afterlife;film-staged-reality
+3.32,61,3,In the Zone,32,1945-summer-zone,60,medium,zone-central-germany,,medium,tchitcherine,high,S07;S14;S04,colonial-violence;rocket-system;ancestry-election
+4.01,62,4,The Counterforce,1,1945-summer-counterforce,62,medium,zone-central-germany,film-world,medium,counterforce-collective,low,S10;S08;S01,film-staged-reality;paranoia-structure;bureaucratic-apparatus
+4.02,63,4,The Counterforce,2,1945-summer-counterforce,62,medium,london,,low,counterforce-collective,medium,S08;S03;S01,bureaucratic-apparatus;paranoia-structure;mourning-afterlife
+4.03,64,4,The Counterforce,3,1945-summer-counterforce,62,medium,london,zone-central-germany,medium,counterforce-collective,medium,S13;S11;S08,ancestry-election;paranoia-structure;mourning-afterlife
+4.04,65,4,The Counterforce,4,1945-spring-schwarzkommando,53,medium,schwarzkommando-camp,,medium,schwarzkommando-collective,medium,S06;S04;S08;S01,rocket-system;colonial-violence;ancestry-election
+4.05,66,4,The Counterforce,5,1945-spring-00000-prep,49,medium,netherlands-oven,zone-north-germany,medium,blicero,high,S12;S04;S14,erotic-pressure;rocket-system;mourning-afterlife;ancestry-election
+4.06,67,4,The Counterforce,6,1945-summer-counterforce,62,low,zone-central-germany,london;american-interior-pre-war,low,layered,low,S01;S13;S11,paranoia-structure;mourning-afterlife;ancestry-election;film-staged-reality
+4.07,68,4,The Counterforce,7,1945-summer-zone,60,medium,zone-central-germany,,medium,tchitcherine,medium,S07;S06,erotic-pressure;mourning-afterlife;paranoia-structure
+4.08,69,4,The Counterforce,8,1945-summer-counterforce,62,medium,zone-central-germany,london,medium,mexico,medium,S03;S08;S01,bureaucratic-apparatus;songs-cabaret;mourning-afterlife;paranoia-structure
+4.09,70,4,The Counterforce,9,1945-spring-00000-prep,49,medium,netherlands-oven,zone-north-germany,medium,blicero,high,S12;S07;S04,rocket-system;erotic-pressure;mourning-afterlife;ancestry-election
+4.10,71,4,The Counterforce,10,1945-spring-late-rocket-field,50,low,schwarzkommando-camp,zone-north-germany,medium,layered,low,S06;S12;S14,rocket-system;mourning-afterlife;ancestry-election;colonial-violence
+4.11,72,4,The Counterforce,11,1945-summer-zone,64,medium,zone-central-germany,,medium,tchitcherine,high,S07;S12,mourning-afterlife;paranoia-structure;erotic-pressure
+4.12,73,4,The Counterforce,12,1945-spring-00000-and-future,50,low,psychic-or-bardo-space,zone-central-germany;film-world,low,ambiguous,low,S12;S04;S14,rocket-system;mourning-afterlife;film-staged-reality;colonial-violence
